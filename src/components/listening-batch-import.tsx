@@ -9,8 +9,14 @@ import {
 } from "@/lib/listening-import-receipt-model";
 import { importFirstOfficialListeningPack } from "@/lib/official-listening-import";
 import { StudyProvider, useStudy } from "./study-context";
+import { nativeBuild } from "@/lib/native/runtime";
 
 export function ListeningBatchImport() {
+  if (nativeBuild) return <main className="batch-import-page">
+    <h1>导入个人音频</h1>
+    <p>安装版暂不支持自动下载官方素材。请先从官方来源保存音频，然后在听力资料库的“个人音频与素材清单”中选择设备文件。已有素材与录音不受影响。</p>
+    <Link href="/listening?library=imported" className="button primary">打开听力资料库</Link>
+  </main>;
   return (
     <StudyProvider>
       <Suspense fallback={<p role="status">正在打开导入页面…</p>}>

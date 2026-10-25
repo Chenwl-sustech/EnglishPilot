@@ -10,6 +10,7 @@ import { AiFeedback } from "./ai-feedback";
 import { speakingPrompts } from "@/lib/content";
 import { alignDictation } from "@/lib/listening";
 import { isHostedWebClient } from "@/lib/deployment";
+import { nativeBuild } from "@/lib/native/runtime";
 type Model = {
   name: string;
   size: number;
@@ -78,7 +79,7 @@ export function WhisperPanel() {
     }
   }
   useEffect(() => {
-    void refresh();
+    if (!nativeBuild) void refresh();
   }, []);
   useEffect(() => {
     let alive = true;
@@ -225,19 +226,18 @@ export function WhisperPanel() {
   return (
     <section className="panel whisper-panel" id="whisper">
       <div className="section-line">
-        <h2>本地 Whisper · 口语与跟读分析</h2>
-        <span className="tag">可选本地服务</span>
+        <h2>{nativeBuild ? "录音回放与文字自评" : "本地 Whisper · 口语与跟读分析"}</h2>
+        <span className="tag">{nativeBuild ? "录音保存在设备" : "可选本地服务"}</span>
       </div>
       <p className="small muted">
-        公开源码包未附带 Whisper 服务，可另行配置兼容的本机
-        127.0.0.1:8765 服务。未配置时仍可录音、回放及手工自评。
+        {nativeBuild ? "安装版暂不提供设备本地转写。请回放录音后手工填写回答，保存文字后可请求 AI 语言反馈；录音不会上传。" : <>公开源码包未附带 Whisper 服务，可另行配置兼容的本机 127.0.0.1:8765 服务。未配置时仍可录音、回放及手工自评。</>}
       </p>
-      <button className="button secondary" onClick={() => void refresh()}>
+      {!nativeBuild && <button className="button secondary" onClick={() => void refresh()}>
         刷新本地模型状态
-      </button>
+      </button>}
       {error && <p role="alert">{error}</p>}
       <div className="form-grid">
-        <label>
+        {!nativeBuild && <label>
           模型
           <select
             aria-label="Whisper 模型"
@@ -260,7 +260,7 @@ export function WhisperPanel() {
               <option key={m.name}>{m.name}</option>
             ))}
           </select>
-        </label>
+        </label>}
         <label>
           已保存录音
           <select value={id} onChange={(e) => setId(e.target.value)}>
@@ -284,7 +284,7 @@ export function WhisperPanel() {
           />
         </label>
       </div>
-      {selected && (
+      {!nativeBuild && selected && (
         <>
           <p className="small">
             {selected.name} · {(selected.size / 1e6).toFixed(1)} MB ·{" "}
@@ -311,7 +311,7 @@ export function WhisperPanel() {
           )}
         </>
       )}
-      <button
+      {!nativeBuild && <button
         className="button primary"
         disabled={
           busy ||
@@ -322,7 +322,7 @@ export function WhisperPanel() {
         onClick={() => void transcribe()}
       >
         {busy ? "本地处理中…" : "本地转写所选录音"}
-      </button>
+      </button>}
       {analysis && (
         <>
           <div className="feedback-dimensions">

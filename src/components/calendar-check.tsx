@@ -4,11 +4,12 @@ import { apiFetch } from "@/lib/native/api";
 import { useEffect, useRef } from "react";
 import { useStudy } from "./study-context";
 import { chinaDate } from "@/lib/calendar";
+import { nativeBuild } from "@/lib/native/runtime";
 export function CalendarCheck() {
   const { state, update } = useStudy();
   const started = useRef(false);
   useEffect(() => {
-    if (started.current || !state.profile.onboarded) return;
+    if (nativeBuild || started.current || !state.profile.onboarded) return;
     started.current = true;
     const year = Number(chinaDate().slice(0, 4));
     void (async () => {

@@ -1,5 +1,9 @@
-export function localEnglishVoices(speech: SpeechSynthesis): SpeechSynthesisVoice[] {
-  return speech.getVoices().filter((voice) => voice.localService && /^en(?:[-_]|$)/i.test(voice.lang));
+export function localEnglishVoices(
+  speech: SpeechSynthesis,
+): SpeechSynthesisVoice[] {
+  return speech
+    .getVoices()
+    .filter((voice) => voice.localService && /^en(?:[-_]|$)/i.test(voice.lang));
 }
 
 /** WebKit can return an empty catalog until its first voiceschanged event. */
@@ -32,12 +36,16 @@ export function waitForLocalEnglishVoices(
       const voices = localEnglishVoices(speech);
       if (voices.length) finish(voices);
     };
-    if (signal.aborted) { abort(); return; }
+    if (signal.aborted) {
+      abort();
+      return;
+    }
     // Listen before querying again so discovery between the caller's initial
     // query and this subscription cannot leave the request waiting forever.
     speech.addEventListener("voiceschanged", refresh);
     signal.addEventListener("abort", abort, { once: true });
     refresh();
-    if (!finished) timer = setTimeout(() => finish(localEnglishVoices(speech)), timeoutMs);
+    if (!finished)
+      timer = setTimeout(() => finish(localEnglishVoices(speech)), timeoutMs);
   });
 }

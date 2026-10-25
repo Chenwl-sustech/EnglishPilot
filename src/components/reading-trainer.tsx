@@ -50,6 +50,7 @@ export function ReadingTrainer({ onCollectWord }: ReadingTrainerProps) {
     state.extension.timingPolicy,
   );
   const stats = readingStatistics(state);
+  useEffect(() => { if (active) window.scrollTo({ top: 0, behavior: "instant" }); }, [active?.id]);
   const lessons = readingLessons.filter(
     (lesson) => (exam === "all" || lesson.exam === exam)&&(state.extension.studyLevel==="all"||lessonLevel(lesson.id,lesson.level)===state.extension.studyLevel),
   );

@@ -121,6 +121,7 @@ export function ServiceSettings() {
       setGenerating(false);
     }
   }
+  const remoteClient = nativeBuild || isHostedWebClient;
   const voiceId =
     state.extension.voicePreference.mode === "system-local"
       ? state.extension.voicePreference.voiceURI
@@ -130,7 +131,7 @@ export function ServiceSettings() {
       <div className="section-line">
         <div>
           <span className="eyebrow">
-            {isHostedWebClient ? "WEB SERVICES" : "LOCAL SERVICES"}
+            {remoteClient ? "ONLINE SERVICES" : "LOCAL SERVICES"}
           </span>
           <h2>服务与语音配置</h2>
         </div>
@@ -160,7 +161,7 @@ export function ServiceSettings() {
       {nativeBuild && config?.backend?.endsWith(".trycloudflare.com") && <p className="small muted">当前经 Mac 临时后端连接，Mac 需保持开机联网。通道停止或重启后可能需要重新配对；这不是全天候独立托管服务。</p>}
       {!config ? (
         <p role="status">
-          {error ? "未取得服务状态，请检查网络后刷新。" : isHostedWebClient ? "正在检查服务器配置…" : "正在检查本机服务…"}
+          {error ? "未取得服务状态，请检查网络后刷新。" : remoteClient ? "正在检查服务器配置…" : "正在检查本机服务…"}
         </p>
       ) : (
         <>
@@ -182,7 +183,7 @@ export function ServiceSettings() {
                 {config.ai.reasoningEffort}
               </p>
               <p className="small muted">
-                {isHostedWebClient
+                {remoteClient
                   ? "密钥由管理员保存在部署服务器，浏览器不会收到密钥。修改模型、地址或密钥需由管理员更新服务器配置。"
                   : "密钥只保存在本机服务端配置。修改模型、地址或密钥时，请编辑 .env.local 后重启应用。"}
               </p>
@@ -196,10 +197,10 @@ export function ServiceSettings() {
               {message && <p role="status">{message}</p>}
             </article>
             <article>
-              <h3>{isHostedWebClient ? "录音与转写" : "本地 Whisper"}</h3>
+              <h3>{remoteClient ? "录音与文字自评" : "本地 Whisper"}</h3>
               <p className="tag">
-                {isHostedWebClient
-                  ? "网页版不提供本地转写"
+                {remoteClient
+                  ? (nativeBuild ? "安装版暂不提供本地转写" : "网页版不提供本地转写")
                   : config.whisper.available
                     ? "本地服务已连接"
                     : "本地服务未连接"}
@@ -207,7 +208,7 @@ export function ServiceSettings() {
               {config.whisper.error && (
                 <p className="small muted">{config.whisper.error}</p>
               )}
-              <label>
+              {!remoteClient && <label>
                 默认 Whisper 模型
                 <select
                   value={state.extension.whisperModel}
@@ -227,10 +228,10 @@ export function ServiceSettings() {
                     </option>
                   ))}
                 </select>
-              </label>
+              </label>}
               <p className="small muted">
-                {isHostedWebClient
-                  ? "可继续在当前浏览器录音、回放并手工填写文本；录音不会上传至服务器转写。"
+                {remoteClient
+                  ? "可继续在此设备录音、回放并手工填写文本；录音不会上传至服务器转写。"
                   : "只保存选择；未安装模型需要在口语页面确认下载。tiny 适合当前 CPU 配置。"}
               </p>
               {config.whisper.models?.map((model) => (
@@ -240,13 +241,13 @@ export function ServiceSettings() {
                 </p>
               ))}
               <Link href="/speaking#whisper" className="text-link">
-                {isHostedWebClient
+                {remoteClient
                   ? "录音回放与手工自评 →"
                   : "管理模型与本地转写 →"}
               </Link>
             </article>
           </div>
-          {!isHostedWebClient && (
+          {!remoteClient && (
             <>
               <hr />
               <h3>本机语音与 WAV 缓存</h3>
@@ -340,9 +341,9 @@ export function ServiceSettings() {
           )}
         </>
       )}
-      {isHostedWebClient ? (
+      {remoteClient ? (
         <p className="small muted">
-          语音朗读可使用浏览器检测到的设备本地声音；可用声音由当前设备提供。服务器不安装手机语音包。
+          语音朗读使用设备本地声音，可在听力播放器中选择。缺少英语声音时，请在系统设置中下载后重新打开应用；服务器不安装设备语音包。
         </p>
       ) : (
         <>

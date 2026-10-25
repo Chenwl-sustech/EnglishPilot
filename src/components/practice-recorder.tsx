@@ -1,4 +1,5 @@
 "use client";
+import { recordingError } from "@/lib/recording-error";
 import { useEffect, useRef, useState } from "react";
 import { db, mutateWithRecording } from "@/lib/db";
 import { attachPracticeRecording } from "@/lib/practice";
@@ -135,7 +136,7 @@ export function PracticeRecorder({
         Math.max(1, item.responseSeconds || 120) * 1000,
       );
     } catch (e) {
-      setError(e instanceof Error ? e.message : "录音失败");
+      setError(recordingError(e).message);
     } finally {
       if (mounted.current) setBusy(false);
     }

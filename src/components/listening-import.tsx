@@ -10,6 +10,7 @@ import {
 import { useStudy } from "./study-context";
 import { listeningAudioDuration as durationOf } from "@/lib/listening-audio";
 import { prepareOfficialListeningSource } from "@/lib/official-listening-import";
+import { nativeBuild } from "@/lib/native/runtime";
 
 const template = JSON.stringify(
   {
@@ -108,7 +109,8 @@ export function ListeningImportPanel({
         官方目录为公开样题和教学示例，按来源条款仅供个人学习。下载后本机保存原音；个人文件不会上传。每段音频上限
         128 MB、2 小时。
       </p>
-      <div className="actions">
+      {nativeBuild && <p className="small muted">安装版暂不支持自动下载官方素材。请从下方官方来源保存音频，再通过“个人音频与素材清单”导入设备文件。</p>}
+      {!nativeBuild && <div className="actions">
         <button
           className="button primary"
           disabled={busy || disabled}
@@ -118,7 +120,7 @@ export function ListeningImportPanel({
         >
           批量导入首批官方素材
         </button>
-      </div>
+      </div>}
       <details>
         <summary>官方样题目录 · IELTS / TOEFL 2026</summary>
         <div className="material-source-grid">
@@ -155,13 +157,13 @@ export function ListeningImportPanel({
                   使用条款
                 </a>
               </div>
-              <button
+              {!nativeBuild && <button
                 className="button secondary"
                 disabled={busy || disabled}
                 onClick={() => void preview(s.id)}
               >
                 预览 {s.title}
-              </button>
+              </button>}
             </article>
           ))}
         </div>

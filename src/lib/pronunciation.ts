@@ -30,17 +30,27 @@ export function speak(
   const request = new AbortController();
   pending = request;
   const report = (error: unknown) => {
-    if (!request.signal.aborted && !(error instanceof DOMException && error.name === "AbortError"))
+    if (
+      !request.signal.aborted &&
+      !(error instanceof DOMException && error.name === "AbortError")
+    )
       onError?.(error instanceof Error ? error.message : "发音播放失败");
     if (pending === request) pending = null;
   };
   const play = (engine: ListeningPlaybackEngine, voiceURI: string) => {
-    if (request.signal.aborted) { engine.dispose(); return; }
+    if (request.signal.aborted) {
+      engine.dispose();
+      return;
+    }
     active = engine;
-    void engine.play({ text, voiceURI, rate: rate as PlaybackRate })
+    void engine
+      .play({ text, voiceURI, rate: rate as PlaybackRate })
       .catch(report)
       .finally(() => {
-        if (active === engine) { engine.dispose(); active = null; }
+        if (active === engine) {
+          engine.dispose();
+          active = null;
+        }
         if (pending === request) pending = null;
       });
   };
@@ -54,23 +64,38 @@ export function speak(
   } else {
     const speech = window.speechSynthesis;
     if (!speech) {
-      report(new Error(nativeBuild ? "设备语音暂不可用，请重启应用后重试。" : "浏览器不支持设备语音，可在设置页选择本地 WAV 引擎"));
+      report(
+        new Error(
+          nativeBuild
+            ? "设备语音暂不可用，请重启应用后重试。"
+            : "浏览器不支持设备语音，可在设置页选择本地 WAV 引擎",
+        ),
+      );
       return;
     }
     const ready = (voices: SpeechSynthesisVoice[]) => {
       if (request.signal.aborted) return;
-      const voice = voices.find((v) => v.voiceURI === preference?.voiceURI) ??
-        voices.find((v) => v.lang === preference?.locale) ?? voices[0];
+      const voice =
+        voices.find((v) => v.voiceURI === preference?.voiceURI) ??
+        voices.find((v) => v.lang === preference?.locale) ??
+        voices[0];
       if (!voice) {
-        report(new Error(nativeBuild
-          ? "尚未检测到设备本地英语声音。请在系统设置中下载英语朗读声音后重试；未使用在线语音。"
-          : "没有检测到设备本地英语语音，请在设置页选择可用的本地 WAV 声音；未使用在线语音。"));
+        report(
+          new Error(
+            nativeBuild
+              ? "尚未检测到设备本地英语声音。请在系统设置中下载英语朗读声音后重试；未使用在线语音。"
+              : "没有检测到设备本地英语语音，请在设置页选择可用的本地 WAV 声音；未使用在线语音。",
+          ),
+        );
         return;
       }
       play(new DeviceSpeechEngine(speech), voice.voiceURI);
     };
     const voices = localEnglishVoices(speech);
     if (voices.length) ready(voices);
-    else void waitForLocalEnglishVoices(speech, request.signal).then(ready).catch(report);
+    else
+      void waitForLocalEnglishVoices(speech, request.signal)
+        .then(ready)
+        .catch(report);
   }
 }

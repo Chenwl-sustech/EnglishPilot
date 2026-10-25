@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CalendarDays, RefreshCw, Save } from "lucide-react";
 import { useStudy } from "./study-context";
 import { PageHeading } from "./exercises";
+import { nativeBuild } from "@/lib/native/runtime";
 import { budgetForState, ensureAdaptiveDay } from "@/lib/scheduler";
 import { importVerifiedCalendar } from "@/lib/calendar-import";
 import {
@@ -149,14 +150,16 @@ export function CalendarPage() {
                 onChange={(v) => setMonth(v.target.value)}
               />
             </label>
-            <button
-              className="button secondary compact"
-              onClick={() => void check()}
-              disabled={busy}
-            >
-              <RefreshCw size={14} />
-              检查年度官方安排
-            </button>
+            {!nativeBuild && (
+              <button
+                className="button secondary compact"
+                onClick={() => void check()}
+                disabled={busy}
+              >
+                <RefreshCw size={14} />
+                检查年度官方安排
+              </button>
+            )}
           </div>
           <div className="calendar-grid">
             {["一", "二", "三", "四", "五", "六", "日"].map((x) => (
@@ -181,7 +184,8 @@ export function CalendarPage() {
                   .filter((t) => !t.optional)
                   .every((t) => t.status === "done");
               const actual = state.attempts.some((a) => a.date === date);
-              const historical = date < chinaDate();
+              const historical =
+                date >= state.profile.startDate && date < chinaDate();
               const missing = historical && !b.rest && !actual;
               return (
                 <button

@@ -1,4 +1,5 @@
 "use client";
+import { recordingError } from "@/lib/recording-error";
 import { useEffect, useRef, useState } from "react";
 import { db, mutateWithRecording, type Recording } from "@/lib/db";
 import { attachTeacherRecording } from "@/lib/teacher";
@@ -245,7 +246,7 @@ export function TeacherRecorder({
     } catch (e) {
       input.current?.getTracks().forEach((t) => t.stop());
       if (mounted.current)
-        setError(e instanceof Error ? e.message : "麦克风启动失败");
+        setError(recordingError(e).message);
     } finally {
       if (mounted.current) setBusy(false);
     }

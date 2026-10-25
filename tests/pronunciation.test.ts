@@ -4,12 +4,17 @@ import { speak, stopPronunciation } from "../src/lib/pronunciation";
 vi.mock("../src/lib/native/runtime", () => ({ nativeBuild: true }));
 vi.mock("../src/lib/local-wav-player", () => ({
   LocalWavEngine: class {
-    constructor() { throw new Error("Desktop WAV must not be used on iPad"); }
+    constructor() {
+      throw new Error("Desktop WAV must not be used on iPad");
+    }
   },
 }));
 
 const localVoice = {
-  name: "Samantha", lang: "en-US", voiceURI: "local-en", localService: true,
+  name: "Samantha",
+  lang: "en-US",
+  voiceURI: "local-en",
+  localService: true,
   default: true,
 } as SpeechSynthesisVoice;
 
@@ -30,9 +35,12 @@ beforeEach(() => {
   vi.useFakeTimers();
   speech = new FakeSpeech();
   vi.stubGlobal("window", { speechSynthesis: speech });
-  vi.stubGlobal("SpeechSynthesisUtterance", class {
-    constructor(public text: string) {}
-  });
+  vi.stubGlobal(
+    "SpeechSynthesisUtterance",
+    class {
+      constructor(public text: string) {}
+    },
+  );
 });
 afterEach(async () => {
   stopPronunciation();
@@ -48,7 +56,10 @@ test("first pronunciation waits for asynchronously discovered local voices", asy
   speech.ready();
   await vi.advanceTimersByTimeAsync(0);
   expect(speech.speak).toHaveBeenCalledTimes(1);
-  expect(speech.speak.mock.calls[0][0]).toMatchObject({ text: "adapt", voice: localVoice });
+  expect(speech.speak.mock.calls[0][0]).toMatchObject({
+    text: "adapt",
+    voice: localVoice,
+  });
   expect(error).not.toHaveBeenCalled();
 });
 
@@ -78,7 +89,9 @@ test("a newer pronunciation replaces a pending request", async () => {
 
 test("voice discovery times out with useful device instructions and never uses an online voice", async () => {
   const error = vi.fn();
-  speech.voices = [{ ...localVoice, voiceURI: "online-en", localService: false }];
+  speech.voices = [
+    { ...localVoice, voiceURI: "online-en", localService: false },
+  ];
   speak("private study text", 1, error);
   expect(error).not.toHaveBeenCalled();
   await vi.advanceTimersByTimeAsync(5000);
@@ -98,9 +111,13 @@ test("ready voices play immediately without a discovery timer", () => {
 test("iPad restores a desktop WAV preference using an available local device voice", async () => {
   speech.ready();
   const error = vi.fn();
-  expect(() => speak("restored", 1, error, {
-    mode: "system-local", voiceURI: "windows-desktop-voice", locale: "en-GB",
-  })).not.toThrow();
+  expect(() =>
+    speak("restored", 1, error, {
+      mode: "system-local",
+      voiceURI: "windows-desktop-voice",
+      locale: "en-GB",
+    }),
+  ).not.toThrow();
   await vi.advanceTimersByTimeAsync(0);
   expect(speech.speak).toHaveBeenCalledTimes(1);
   expect(error).not.toHaveBeenCalled();

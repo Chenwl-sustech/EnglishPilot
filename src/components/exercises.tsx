@@ -46,6 +46,8 @@ import { persistWritingTime, consumeWritingTime } from "@/lib/writing-timing";
 import { filterVocabulary } from "@/lib/vocabulary-import";
 import { isVocabularyLearnable, openVocabularySources } from "@/lib/open-vocabulary";
 import { VocabularyImportPanel } from "./vocabulary-import";
+import { nativeBuild } from "@/lib/native/runtime";
+import { recordingError } from "@/lib/recording-error";
 
 export function ExerciseList({
   kind,
@@ -91,6 +93,7 @@ export function ExerciseList({
       if (lesson) setActive(lesson);
     }
   }, [list]);
+  useEffect(() => { if (active) window.scrollTo({ top: 0, behavior: "instant" }); }, [active?.id]);
   if (active)
     return (
       <Quiz
@@ -1072,7 +1075,7 @@ function WritingEditor({
               {count} words ·{" "}
               {conflict
                 ? "草稿有外部更新，请手动保存版本"
-                : state.drafts[id] === text
+                : (state.drafts[id] ?? "") === text
                   ? "草稿已自动保存"
                   : "正在保存草稿…"}
             </span>
@@ -1149,7 +1152,7 @@ export function Speaking() {
       <PageHeading
         eyebrow="SPEAKING · ONE SENTENCE AT A TIME"
         title="开口，就是很好的开始。"
-        description="原创话题 · 本地录音与回放 · 本地 Whisper 转写 · 核对文本后可请求语言反馈"
+        description={nativeBuild ? "原创话题 · 本地录音与回放 · 手工核对文本后可请求 AI 语言反馈" : "原创话题 · 本地录音与回放 · 本地 Whisper 转写 · 核对文本后可请求语言反馈"}
       />
       <label className="prompt-select">
         口语考试模式
@@ -1247,7 +1250,7 @@ function Recorder({ index }: { index: number }) {
       setRecording(true);
       setPending(null);
     } catch (e) {
-      fail(e);
+      fail(recordingError(e));
     } finally {
       setBusy(false);
     }

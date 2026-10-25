@@ -7,6 +7,7 @@ import { setTeacherDraft } from "@/lib/teacher";
 import type { TeacherSession } from "@/lib/teacher-model";
 import { speechAnalysisSchema } from "@/lib/adaptive-model";
 import { isHostedWebClient } from "@/lib/deployment";
+import { nativeBuild } from "@/lib/native/runtime";
 import { useStudy } from "./study-context";
 import { TeacherAudio, TeacherRecorder } from "./teacher-recorder";
 
@@ -177,7 +178,7 @@ export function TeacherComposer({
             id={draft.recordingId}
             version={draft.audioRevision}
           />
-          <button
+          {!nativeBuild && <button
             className="button secondary"
             disabled={
               isHostedWebClient || disabled || capturing || transcribing
@@ -189,7 +190,8 @@ export function TeacherComposer({
               : transcribing
                 ? "本地转写中…"
                 : "本地转写此录音"}
-          </button>
+          </button>}
+          {nativeBuild && <p className="small muted">请回放录音并填写下方文字。安装版暂不提供本地转写，AI 只接收你确认发送的文字。</p>}
         </>
       )}
       <label>
