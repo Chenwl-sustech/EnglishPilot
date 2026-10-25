@@ -6,9 +6,11 @@ import {unzipSync} from 'fflate';
 
 export function assertPublicEntries(entries,{nativePayload=false}={}){
  for(const [path,bytes] of Object.entries(entries)){
-  const parts=path.split('/');
+  const directory=path.endsWith('/');
+  const normalized=directory?path.slice(0,-1):path;
+  const parts=normalized.split('/');
   const generated=nativePayload&&/(?:^|\/)\.local\/native-web\/(?:out\/|\.englishpilot-generated$)/.test(path);
-  if(!path||path.startsWith('/')||path.includes('\\')||parts.some(p=>p==='..'||p==='.'||!p)||parts.some(p=>/^(?:\.git|\.vercel|node_modules|recordings|backups|signing|Payload)$/i.test(p))||(!generated&&parts.includes('.local'))||/\.(?:ipa|mobileprovision|provisionprofile|p12|pfx|pem|key|cer|epbackup|epstate|sqlite\d*|db|log|wav|mp3|m4a|webm)$/i.test(path)||/\.app(?:\/|$)/i.test(path))throw new Error('Not a public release file: '+path);
+  if(!normalized||path.startsWith('/')||path.includes('\\')||(directory&&bytes.length>0)||parts.some(p=>p==='..'||p==='.'||!p)||parts.some(p=>/^(?:\.git|\.vercel|node_modules|recordings|backups|signing|Payload)$/i.test(p))||parts.some(p=>p.startsWith('.env')&&(p!=='.env.example'||directory))||(!generated&&parts.includes('.local'))||/\.(?:ipa|mobileprovision|provisionprofile|p12|pfx|pem|key|cer|epbackup|epstate|sqlite\d*|db|log|wav|mp3|m4a|webm)$/i.test(normalized)||/\.app(?:\/|$)/i.test(path))throw new Error('Not a public release file: '+path);
   const name=parts.at(-1);
   if(name.startsWith('.env')&&name!=='.env.example')throw new Error('Private environment file: '+path);
   const text=new TextDecoder().decode(bytes);

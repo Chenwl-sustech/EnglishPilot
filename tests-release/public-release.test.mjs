@@ -36,3 +36,8 @@ test('accepts blank templates and licensed source, and allows only explicit nati
  assert.doesNotThrow(()=>assertPublicEntries(payload,{nativePayload:true}));
  assert.throws(()=>assertPublicEntries({'.local/backups/private.json':bytes('{}')},{nativePayload:true}));
 });
+test('accepts legitimate empty ZIP directory entries but rejects hidden or traversing directories',()=>{
+ assert.doesNotThrow(()=>assertPublicEntries({'EnglishPilot/':new Uint8Array(),'EnglishPilot/LICENSE':bytes('MIT License')}));
+ for(const path of ['EnglishPilot/../private/','EnglishPilot/.env.local/'])assert.throws(()=>assertPublicEntries({[path]:new Uint8Array()}));
+ assert.throws(()=>assertPublicEntries({'EnglishPilot/':bytes('not an empty directory')}));
+});
