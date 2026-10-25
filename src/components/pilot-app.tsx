@@ -33,6 +33,7 @@ import { CalendarCheck } from "./calendar-check";
 import { MiniTest } from "./mini-test";
 import { MockExams } from "./mock-exams";
 import { SpeakingTeacher } from "./speaking-teacher";
+import { usePronunciationCleanup } from "./use-pronunciation-cleanup";
 import { WordCollector } from "./word-collector";
 import { ReadingTrainer } from "./reading-trainer";
 import { ListeningLab } from "./listening-lab";
@@ -81,6 +82,7 @@ export function PilotApp({ section }: { section: string }) {
 function App({ section }: { section: string }) {
   const { state, update } = useStudy();
   const pathname = usePathname();
+  usePronunciationCleanup(pathname);
   const [open, setOpen] = useState(false);
   const title =
     nav
