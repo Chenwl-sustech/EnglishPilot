@@ -1,0 +1,5 @@
+{ "string": [
+  { "name": "module_desc", "value": "EnglishPilot 本地学习" },
+  { "name": "app_name", "value": "EnglishPilot" },
+  { "name": "microphone_reason", "value": "用于口语练习与影子跟读；录音保存本机，不会自动上传。" }
+] }

@@ -1,0 +1,1133 @@
+[
+  {
+    "name": "@capacitor/core",
+    "version": "8.5.3",
+    "license": "MIT",
+    "notices": [
+      "npm/_capacitor_core_8.5.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_capacitor_core_8.5.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@capacitor/filesystem",
+    "version": "8.1.5",
+    "license": "MIT",
+    "notices": [
+      "npm/_capacitor_filesystem_8.1.5--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_capacitor_filesystem_8.1.5--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@capacitor/share",
+    "version": "8.0.3",
+    "license": "MIT",
+    "notices": [
+      "npm/_capacitor_share_8.0.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_capacitor_share_8.0.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@capacitor/synapse",
+    "version": "1.0.4",
+    "license": "ISC",
+    "notices": [
+      "npm/_capacitor_synapse_1.0.4--LICENSE.md.txt"
+    ],
+    "noticeSources": {
+      "npm/_capacitor_synapse_1.0.4--LICENSE.md.txt": "LICENSE.md"
+    }
+  },
+  {
+    "name": "@img/colour",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_img_colour_1.1.0--LICENSE.md.txt"
+    ],
+    "noticeSources": {
+      "npm/_img_colour_1.1.0--LICENSE.md.txt": "LICENSE.md"
+    }
+  },
+  {
+    "name": "@img/sharp-darwin-arm64",
+    "version": "0.35.5",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/_img_sharp-darwin-arm64_0.35.5--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_img_sharp-darwin-arm64_0.35.5--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@img/sharp-libvips-darwin-arm64",
+    "version": "1.3.4",
+    "license": "LGPL-3.0-or-later",
+    "notices": [],
+    "noticeSources": {}
+  },
+  {
+    "name": "@next/env",
+    "version": "16.4.1",
+    "license": "MIT",
+    "notices": [],
+    "noticeSources": {}
+  },
+  {
+    "name": "@next/swc-darwin-arm64",
+    "version": "16.4.1",
+    "license": "MIT",
+    "notices": [],
+    "noticeSources": {}
+  },
+  {
+    "name": "@playwright/test",
+    "version": "1.64.1",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/_playwright_test_1.64.1--LICENSE.txt",
+      "npm/_playwright_test_1.64.1--NOTICE.txt"
+    ],
+    "noticeSources": {
+      "npm/_playwright_test_1.64.1--LICENSE.txt": "LICENSE",
+      "npm/_playwright_test_1.64.1--NOTICE.txt": "NOTICE"
+    }
+  },
+  {
+    "name": "@reduxjs/toolkit",
+    "version": "2.13.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_reduxjs_toolkit_2.13.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_reduxjs_toolkit_2.13.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@standard-schema/spec",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_standard-schema_spec_1.1.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_standard-schema_spec_1.1.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@standard-schema/utils",
+    "version": "0.3.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_standard-schema_utils_0.3.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_standard-schema_utils_0.3.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@swc/helpers",
+    "version": "0.5.23",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/_swc_helpers_0.5.23--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_swc_helpers_0.5.23--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-array",
+    "version": "3.2.2",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-array_3.2.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-array_3.2.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-color",
+    "version": "3.1.3",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-color_3.1.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-color_3.1.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-ease",
+    "version": "3.0.2",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-ease_3.0.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-ease_3.0.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-interpolate",
+    "version": "3.0.4",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-interpolate_3.0.4--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-interpolate_3.0.4--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-path",
+    "version": "3.1.1",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-path_3.1.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-path_3.1.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-scale",
+    "version": "4.0.9",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-scale_4.0.9--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-scale_4.0.9--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-shape",
+    "version": "3.2.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-shape_3.2.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-shape_3.2.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-time",
+    "version": "3.0.4",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-time_3.0.4--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-time_3.0.4--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/d3-timer",
+    "version": "3.0.2",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_d3-timer_3.0.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_d3-timer_3.0.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/react",
+    "version": "19.3.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_react_19.3.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_react_19.3.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@types/use-sync-external-store",
+    "version": "0.0.6",
+    "license": "MIT",
+    "notices": [
+      "npm/_types_use-sync-external-store_0.0.6--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_types_use-sync-external-store_0.0.6--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@upstash/redis",
+    "version": "1.39.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_upstash_redis_1.39.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_upstash_redis_1.39.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "baseline-browser-mapping",
+    "version": "2.11.28",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/baseline-browser-mapping_2.11.28--LICENSE.txt.txt"
+    ],
+    "noticeSources": {
+      "npm/baseline-browser-mapping_2.11.28--LICENSE.txt.txt": "LICENSE.txt"
+    }
+  },
+  {
+    "name": "caniuse-lite",
+    "version": "1.0.30001816",
+    "license": "CC-BY-4.0",
+    "notices": [
+      "npm/caniuse-lite_1.0.30001816--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/caniuse-lite_1.0.30001816--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "client-only",
+    "version": "0.0.1",
+    "license": "MIT",
+    "notices": [],
+    "noticeSources": {}
+  },
+  {
+    "name": "clsx",
+    "version": "2.1.1",
+    "license": "MIT",
+    "notices": [
+      "npm/clsx_2.1.1--license.txt"
+    ],
+    "noticeSources": {
+      "npm/clsx_2.1.1--license.txt": "license"
+    }
+  },
+  {
+    "name": "csstype",
+    "version": "3.2.3",
+    "license": "MIT",
+    "notices": [
+      "npm/csstype_3.2.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/csstype_3.2.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-array",
+    "version": "3.2.4",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-array_3.2.4--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-array_3.2.4--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-color",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-color_3.1.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-color_3.1.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-ease",
+    "version": "3.0.1",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "npm/d3-ease_3.0.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-ease_3.0.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-format",
+    "version": "3.1.2",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-format_3.1.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-format_3.1.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-interpolate",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-interpolate_3.0.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-interpolate_3.0.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-path",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-path_3.1.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-path_3.1.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-scale",
+    "version": "4.0.2",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-scale_4.0.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-scale_4.0.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-shape",
+    "version": "3.2.0",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-shape_3.2.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-shape_3.2.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-time",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-time_3.1.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-time_3.1.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-time-format",
+    "version": "4.1.0",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-time-format_4.1.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-time-format_4.1.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "d3-timer",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "npm/d3-timer_3.0.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/d3-timer_3.0.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "decimal.js-light",
+    "version": "2.5.1",
+    "license": "MIT",
+    "notices": [
+      "npm/decimal.js-light_2.5.1--LICENCE.md.txt"
+    ],
+    "noticeSources": {
+      "npm/decimal.js-light_2.5.1--LICENCE.md.txt": "LICENCE.md"
+    }
+  },
+  {
+    "name": "detect-libc",
+    "version": "2.1.2",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/detect-libc_2.1.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/detect-libc_2.1.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "dexie",
+    "version": "4.4.6",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/dexie_4.4.6--LICENSE.txt",
+      "npm/dexie_4.4.6--NOTICE.txt"
+    ],
+    "noticeSources": {
+      "npm/dexie_4.4.6--LICENSE.txt": "LICENSE",
+      "npm/dexie_4.4.6--NOTICE.txt": "NOTICE"
+    }
+  },
+  {
+    "name": "es-toolkit",
+    "version": "1.52.0",
+    "license": "MIT",
+    "notices": [
+      "npm/es-toolkit_1.52.0--LICENSE.txt",
+      "npm/es-toolkit_1.52.0--NOTICE.txt"
+    ],
+    "noticeSources": {
+      "npm/es-toolkit_1.52.0--LICENSE.txt": "LICENSE",
+      "npm/es-toolkit_1.52.0--NOTICE.txt": "NOTICE"
+    }
+  },
+  {
+    "name": "eventemitter3",
+    "version": "5.0.4",
+    "license": "MIT",
+    "notices": [
+      "npm/eventemitter3_5.0.4--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/eventemitter3_5.0.4--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "fflate",
+    "version": "0.8.3",
+    "license": "MIT",
+    "notices": [
+      "npm/fflate_0.8.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/fflate_0.8.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "immer",
+    "version": "11.1.21",
+    "license": "MIT",
+    "notices": [
+      "npm/immer_11.1.21--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/immer_11.1.21--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "internmap",
+    "version": "2.0.3",
+    "license": "ISC",
+    "notices": [
+      "npm/internmap_2.0.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/internmap_2.0.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "lucide-react",
+    "version": "0.468.0",
+    "license": "ISC",
+    "notices": [
+      "npm/lucide-react_0.468.0--dist_esm_icons_copyright.js.txt",
+      "npm/lucide-react_0.468.0--dist_esm_icons_copyright.js.map.txt",
+      "npm/lucide-react_0.468.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/lucide-react_0.468.0--dist_esm_icons_copyright.js.txt": "dist/esm/icons/copyright.js",
+      "npm/lucide-react_0.468.0--dist_esm_icons_copyright.js.map.txt": "dist/esm/icons/copyright.js.map",
+      "npm/lucide-react_0.468.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "nanoid",
+    "version": "3.3.20",
+    "license": "MIT",
+    "notices": [
+      "npm/nanoid_3.3.20--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/nanoid_3.3.20--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "next",
+    "version": "16.4.1",
+    "license": "MIT",
+    "notices": [
+      "npm/next_16.4.1--dist_compiled__babel_runtime_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__hapi_accept_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__mswjs_interceptors_ClientRequest_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__napi-rs_triples_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__opentelemetry_api_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__vercel_blob_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__vercel_detect-agent_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__vercel_nft_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__vercel_og_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__vercel_og_satori_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled__vercel_routing-utils_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_acorn_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_anser_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_assert_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_async-retry_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_async-sema_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_babel_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_browserify-zlib_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_browserslist_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_buffer_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_busboy_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_bytes_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_ci-info_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_cli-select_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_commander_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_comment-json_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_compression_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_conf_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_content-disposition_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_content-type_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_cookie_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_cross-spawn_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_crypto-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_debug_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_devalue_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_domain-browser_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_edge-runtime_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_events_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_find-up_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_fresh_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_glob_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_gzip-size_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_hash.js_sha256_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_https-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_httpxy_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_icss-utils_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_ignore-loader_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_image-size_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_ipaddr.js_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_is-animated_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_is-docker_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_is-wsl_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_jest-worker_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_json5_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_jsonwebtoken_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_loader-runner_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_loader-utils2_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_loader-utils3_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_lodash.curry_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_lru-cache_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_mini-css-extract-plugin_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_nanoid_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_native-url_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_neo-async_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_node-html-parser_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_ora_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_os-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_p-limit_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_p-queue_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_path-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_path-to-regexp_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_picomatch_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-flexbugs-fixes_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-extract-imports_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-local-by-default_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-scope_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-values_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-preset-env_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-safe-parser_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-scss_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_postcss-value-parser_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_process_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_querystring-es3_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_raw-body_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-dom_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-dom-experimental_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-experimental_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-is_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-refresh_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-turbopack_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-turbopack-experimental_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-webpack_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-webpack-experimental_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_regenerator-runtime_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_safe-stable-stringify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_sass-loader_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_scheduler_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_scheduler-experimental_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_schema-utils2_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_schema-utils3_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_semver_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_send_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_serve-handler_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_shell-quote_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_source-map_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_source-map08_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_stacktrace-parser_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_stream-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_stream-http_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_string_decoder_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_strip-ansi_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_superstruct_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_tar_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_terser_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_text-table_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_timers-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_tty-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_ua-parser-js_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_util_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_vm-browserify_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_watchpack_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_web-vitals_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_web-vitals-attribution_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_webpack_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_webpack-sources1_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_webpack-sources3_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_write-file-atomic_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_ws_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_zod_LICENSE.txt",
+      "npm/next_16.4.1--dist_compiled_zod-validation-error_LICENSE.txt",
+      "npm/next_16.4.1--license.md.txt"
+    ],
+    "noticeSources": {
+      "npm/next_16.4.1--dist_compiled__babel_runtime_LICENSE.txt": "dist/compiled/@babel/runtime/LICENSE",
+      "npm/next_16.4.1--dist_compiled__hapi_accept_LICENSE.txt": "dist/compiled/@hapi/accept/LICENSE",
+      "npm/next_16.4.1--dist_compiled__mswjs_interceptors_ClientRequest_LICENSE.txt": "dist/compiled/@mswjs/interceptors/ClientRequest/LICENSE",
+      "npm/next_16.4.1--dist_compiled__napi-rs_triples_LICENSE.txt": "dist/compiled/@napi-rs/triples/LICENSE",
+      "npm/next_16.4.1--dist_compiled__opentelemetry_api_LICENSE.txt": "dist/compiled/@opentelemetry/api/LICENSE",
+      "npm/next_16.4.1--dist_compiled__vercel_blob_LICENSE.txt": "dist/compiled/@vercel/blob/LICENSE",
+      "npm/next_16.4.1--dist_compiled__vercel_detect-agent_LICENSE.txt": "dist/compiled/@vercel/detect-agent/LICENSE",
+      "npm/next_16.4.1--dist_compiled__vercel_nft_LICENSE.txt": "dist/compiled/@vercel/nft/LICENSE",
+      "npm/next_16.4.1--dist_compiled__vercel_og_LICENSE.txt": "dist/compiled/@vercel/og/LICENSE",
+      "npm/next_16.4.1--dist_compiled__vercel_og_satori_LICENSE.txt": "dist/compiled/@vercel/og/satori/LICENSE",
+      "npm/next_16.4.1--dist_compiled__vercel_routing-utils_LICENSE.txt": "dist/compiled/@vercel/routing-utils/LICENSE",
+      "npm/next_16.4.1--dist_compiled_acorn_LICENSE.txt": "dist/compiled/acorn/LICENSE",
+      "npm/next_16.4.1--dist_compiled_anser_LICENSE.txt": "dist/compiled/anser/LICENSE",
+      "npm/next_16.4.1--dist_compiled_assert_LICENSE.txt": "dist/compiled/assert/LICENSE",
+      "npm/next_16.4.1--dist_compiled_async-retry_LICENSE.txt": "dist/compiled/async-retry/LICENSE",
+      "npm/next_16.4.1--dist_compiled_async-sema_LICENSE.txt": "dist/compiled/async-sema/LICENSE",
+      "npm/next_16.4.1--dist_compiled_babel_LICENSE.txt": "dist/compiled/babel/LICENSE",
+      "npm/next_16.4.1--dist_compiled_browserify-zlib_LICENSE.txt": "dist/compiled/browserify-zlib/LICENSE",
+      "npm/next_16.4.1--dist_compiled_browserslist_LICENSE.txt": "dist/compiled/browserslist/LICENSE",
+      "npm/next_16.4.1--dist_compiled_buffer_LICENSE.txt": "dist/compiled/buffer/LICENSE",
+      "npm/next_16.4.1--dist_compiled_busboy_LICENSE.txt": "dist/compiled/busboy/LICENSE",
+      "npm/next_16.4.1--dist_compiled_bytes_LICENSE.txt": "dist/compiled/bytes/LICENSE",
+      "npm/next_16.4.1--dist_compiled_ci-info_LICENSE.txt": "dist/compiled/ci-info/LICENSE",
+      "npm/next_16.4.1--dist_compiled_cli-select_LICENSE.txt": "dist/compiled/cli-select/LICENSE",
+      "npm/next_16.4.1--dist_compiled_commander_LICENSE.txt": "dist/compiled/commander/LICENSE",
+      "npm/next_16.4.1--dist_compiled_comment-json_LICENSE.txt": "dist/compiled/comment-json/LICENSE",
+      "npm/next_16.4.1--dist_compiled_compression_LICENSE.txt": "dist/compiled/compression/LICENSE",
+      "npm/next_16.4.1--dist_compiled_conf_LICENSE.txt": "dist/compiled/conf/LICENSE",
+      "npm/next_16.4.1--dist_compiled_content-disposition_LICENSE.txt": "dist/compiled/content-disposition/LICENSE",
+      "npm/next_16.4.1--dist_compiled_content-type_LICENSE.txt": "dist/compiled/content-type/LICENSE",
+      "npm/next_16.4.1--dist_compiled_cookie_LICENSE.txt": "dist/compiled/cookie/LICENSE",
+      "npm/next_16.4.1--dist_compiled_cross-spawn_LICENSE.txt": "dist/compiled/cross-spawn/LICENSE",
+      "npm/next_16.4.1--dist_compiled_crypto-browserify_LICENSE.txt": "dist/compiled/crypto-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_debug_LICENSE.txt": "dist/compiled/debug/LICENSE",
+      "npm/next_16.4.1--dist_compiled_devalue_LICENSE.txt": "dist/compiled/devalue/LICENSE",
+      "npm/next_16.4.1--dist_compiled_domain-browser_LICENSE.txt": "dist/compiled/domain-browser/LICENSE",
+      "npm/next_16.4.1--dist_compiled_edge-runtime_LICENSE.txt": "dist/compiled/edge-runtime/LICENSE",
+      "npm/next_16.4.1--dist_compiled_events_LICENSE.txt": "dist/compiled/events/LICENSE",
+      "npm/next_16.4.1--dist_compiled_find-up_LICENSE.txt": "dist/compiled/find-up/LICENSE",
+      "npm/next_16.4.1--dist_compiled_fresh_LICENSE.txt": "dist/compiled/fresh/LICENSE",
+      "npm/next_16.4.1--dist_compiled_glob_LICENSE.txt": "dist/compiled/glob/LICENSE",
+      "npm/next_16.4.1--dist_compiled_gzip-size_LICENSE.txt": "dist/compiled/gzip-size/LICENSE",
+      "npm/next_16.4.1--dist_compiled_hash.js_sha256_LICENSE.txt": "dist/compiled/hash.js/sha256/LICENSE",
+      "npm/next_16.4.1--dist_compiled_https-browserify_LICENSE.txt": "dist/compiled/https-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_httpxy_LICENSE.txt": "dist/compiled/httpxy/LICENSE",
+      "npm/next_16.4.1--dist_compiled_icss-utils_LICENSE.txt": "dist/compiled/icss-utils/LICENSE",
+      "npm/next_16.4.1--dist_compiled_ignore-loader_LICENSE.txt": "dist/compiled/ignore-loader/LICENSE",
+      "npm/next_16.4.1--dist_compiled_image-size_LICENSE.txt": "dist/compiled/image-size/LICENSE",
+      "npm/next_16.4.1--dist_compiled_ipaddr.js_LICENSE.txt": "dist/compiled/ipaddr.js/LICENSE",
+      "npm/next_16.4.1--dist_compiled_is-animated_LICENSE.txt": "dist/compiled/is-animated/LICENSE",
+      "npm/next_16.4.1--dist_compiled_is-docker_LICENSE.txt": "dist/compiled/is-docker/LICENSE",
+      "npm/next_16.4.1--dist_compiled_is-wsl_LICENSE.txt": "dist/compiled/is-wsl/LICENSE",
+      "npm/next_16.4.1--dist_compiled_jest-worker_LICENSE.txt": "dist/compiled/jest-worker/LICENSE",
+      "npm/next_16.4.1--dist_compiled_json5_LICENSE.txt": "dist/compiled/json5/LICENSE",
+      "npm/next_16.4.1--dist_compiled_jsonwebtoken_LICENSE.txt": "dist/compiled/jsonwebtoken/LICENSE",
+      "npm/next_16.4.1--dist_compiled_loader-runner_LICENSE.txt": "dist/compiled/loader-runner/LICENSE",
+      "npm/next_16.4.1--dist_compiled_loader-utils2_LICENSE.txt": "dist/compiled/loader-utils2/LICENSE",
+      "npm/next_16.4.1--dist_compiled_loader-utils3_LICENSE.txt": "dist/compiled/loader-utils3/LICENSE",
+      "npm/next_16.4.1--dist_compiled_lodash.curry_LICENSE.txt": "dist/compiled/lodash.curry/LICENSE",
+      "npm/next_16.4.1--dist_compiled_lru-cache_LICENSE.txt": "dist/compiled/lru-cache/LICENSE",
+      "npm/next_16.4.1--dist_compiled_mini-css-extract-plugin_LICENSE.txt": "dist/compiled/mini-css-extract-plugin/LICENSE",
+      "npm/next_16.4.1--dist_compiled_nanoid_LICENSE.txt": "dist/compiled/nanoid/LICENSE",
+      "npm/next_16.4.1--dist_compiled_native-url_LICENSE.txt": "dist/compiled/native-url/LICENSE",
+      "npm/next_16.4.1--dist_compiled_neo-async_LICENSE.txt": "dist/compiled/neo-async/LICENSE",
+      "npm/next_16.4.1--dist_compiled_node-html-parser_LICENSE.txt": "dist/compiled/node-html-parser/LICENSE",
+      "npm/next_16.4.1--dist_compiled_ora_LICENSE.txt": "dist/compiled/ora/LICENSE",
+      "npm/next_16.4.1--dist_compiled_os-browserify_LICENSE.txt": "dist/compiled/os-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_p-limit_LICENSE.txt": "dist/compiled/p-limit/LICENSE",
+      "npm/next_16.4.1--dist_compiled_p-queue_LICENSE.txt": "dist/compiled/p-queue/LICENSE",
+      "npm/next_16.4.1--dist_compiled_path-browserify_LICENSE.txt": "dist/compiled/path-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_path-to-regexp_LICENSE.txt": "dist/compiled/path-to-regexp/LICENSE",
+      "npm/next_16.4.1--dist_compiled_picomatch_LICENSE.txt": "dist/compiled/picomatch/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-flexbugs-fixes_LICENSE.txt": "dist/compiled/postcss-flexbugs-fixes/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-extract-imports_LICENSE.txt": "dist/compiled/postcss-modules-extract-imports/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-local-by-default_LICENSE.txt": "dist/compiled/postcss-modules-local-by-default/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-scope_LICENSE.txt": "dist/compiled/postcss-modules-scope/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-modules-values_LICENSE.txt": "dist/compiled/postcss-modules-values/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-preset-env_LICENSE.txt": "dist/compiled/postcss-preset-env/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-safe-parser_LICENSE.txt": "dist/compiled/postcss-safe-parser/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-scss_LICENSE.txt": "dist/compiled/postcss-scss/LICENSE",
+      "npm/next_16.4.1--dist_compiled_postcss-value-parser_LICENSE.txt": "dist/compiled/postcss-value-parser/LICENSE",
+      "npm/next_16.4.1--dist_compiled_process_LICENSE.txt": "dist/compiled/process/LICENSE",
+      "npm/next_16.4.1--dist_compiled_querystring-es3_LICENSE.txt": "dist/compiled/querystring-es3/LICENSE",
+      "npm/next_16.4.1--dist_compiled_raw-body_LICENSE.txt": "dist/compiled/raw-body/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react_LICENSE.txt": "dist/compiled/react/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-dom_LICENSE.txt": "dist/compiled/react-dom/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-dom-experimental_LICENSE.txt": "dist/compiled/react-dom-experimental/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-experimental_LICENSE.txt": "dist/compiled/react-experimental/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-is_LICENSE.txt": "dist/compiled/react-is/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-refresh_LICENSE.txt": "dist/compiled/react-refresh/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-turbopack_LICENSE.txt": "dist/compiled/react-server-dom-turbopack/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-turbopack-experimental_LICENSE.txt": "dist/compiled/react-server-dom-turbopack-experimental/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-webpack_LICENSE.txt": "dist/compiled/react-server-dom-webpack/LICENSE",
+      "npm/next_16.4.1--dist_compiled_react-server-dom-webpack-experimental_LICENSE.txt": "dist/compiled/react-server-dom-webpack-experimental/LICENSE",
+      "npm/next_16.4.1--dist_compiled_regenerator-runtime_LICENSE.txt": "dist/compiled/regenerator-runtime/LICENSE",
+      "npm/next_16.4.1--dist_compiled_safe-stable-stringify_LICENSE.txt": "dist/compiled/safe-stable-stringify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_sass-loader_LICENSE.txt": "dist/compiled/sass-loader/LICENSE",
+      "npm/next_16.4.1--dist_compiled_scheduler_LICENSE.txt": "dist/compiled/scheduler/LICENSE",
+      "npm/next_16.4.1--dist_compiled_scheduler-experimental_LICENSE.txt": "dist/compiled/scheduler-experimental/LICENSE",
+      "npm/next_16.4.1--dist_compiled_schema-utils2_LICENSE.txt": "dist/compiled/schema-utils2/LICENSE",
+      "npm/next_16.4.1--dist_compiled_schema-utils3_LICENSE.txt": "dist/compiled/schema-utils3/LICENSE",
+      "npm/next_16.4.1--dist_compiled_semver_LICENSE.txt": "dist/compiled/semver/LICENSE",
+      "npm/next_16.4.1--dist_compiled_send_LICENSE.txt": "dist/compiled/send/LICENSE",
+      "npm/next_16.4.1--dist_compiled_serve-handler_LICENSE.txt": "dist/compiled/serve-handler/LICENSE",
+      "npm/next_16.4.1--dist_compiled_shell-quote_LICENSE.txt": "dist/compiled/shell-quote/LICENSE",
+      "npm/next_16.4.1--dist_compiled_source-map_LICENSE.txt": "dist/compiled/source-map/LICENSE",
+      "npm/next_16.4.1--dist_compiled_source-map08_LICENSE.txt": "dist/compiled/source-map08/LICENSE",
+      "npm/next_16.4.1--dist_compiled_stacktrace-parser_LICENSE.txt": "dist/compiled/stacktrace-parser/LICENSE",
+      "npm/next_16.4.1--dist_compiled_stream-browserify_LICENSE.txt": "dist/compiled/stream-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_stream-http_LICENSE.txt": "dist/compiled/stream-http/LICENSE",
+      "npm/next_16.4.1--dist_compiled_string_decoder_LICENSE.txt": "dist/compiled/string_decoder/LICENSE",
+      "npm/next_16.4.1--dist_compiled_strip-ansi_LICENSE.txt": "dist/compiled/strip-ansi/LICENSE",
+      "npm/next_16.4.1--dist_compiled_superstruct_LICENSE.txt": "dist/compiled/superstruct/LICENSE",
+      "npm/next_16.4.1--dist_compiled_tar_LICENSE.txt": "dist/compiled/tar/LICENSE",
+      "npm/next_16.4.1--dist_compiled_terser_LICENSE.txt": "dist/compiled/terser/LICENSE",
+      "npm/next_16.4.1--dist_compiled_text-table_LICENSE.txt": "dist/compiled/text-table/LICENSE",
+      "npm/next_16.4.1--dist_compiled_timers-browserify_LICENSE.txt": "dist/compiled/timers-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_tty-browserify_LICENSE.txt": "dist/compiled/tty-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_ua-parser-js_LICENSE.txt": "dist/compiled/ua-parser-js/LICENSE",
+      "npm/next_16.4.1--dist_compiled_util_LICENSE.txt": "dist/compiled/util/LICENSE",
+      "npm/next_16.4.1--dist_compiled_vm-browserify_LICENSE.txt": "dist/compiled/vm-browserify/LICENSE",
+      "npm/next_16.4.1--dist_compiled_watchpack_LICENSE.txt": "dist/compiled/watchpack/LICENSE",
+      "npm/next_16.4.1--dist_compiled_web-vitals_LICENSE.txt": "dist/compiled/web-vitals/LICENSE",
+      "npm/next_16.4.1--dist_compiled_web-vitals-attribution_LICENSE.txt": "dist/compiled/web-vitals-attribution/LICENSE",
+      "npm/next_16.4.1--dist_compiled_webpack_LICENSE.txt": "dist/compiled/webpack/LICENSE",
+      "npm/next_16.4.1--dist_compiled_webpack-sources1_LICENSE.txt": "dist/compiled/webpack-sources1/LICENSE",
+      "npm/next_16.4.1--dist_compiled_webpack-sources3_LICENSE.txt": "dist/compiled/webpack-sources3/LICENSE",
+      "npm/next_16.4.1--dist_compiled_write-file-atomic_LICENSE.txt": "dist/compiled/write-file-atomic/LICENSE",
+      "npm/next_16.4.1--dist_compiled_ws_LICENSE.txt": "dist/compiled/ws/LICENSE",
+      "npm/next_16.4.1--dist_compiled_zod_LICENSE.txt": "dist/compiled/zod/LICENSE",
+      "npm/next_16.4.1--dist_compiled_zod-validation-error_LICENSE.txt": "dist/compiled/zod-validation-error/LICENSE",
+      "npm/next_16.4.1--license.md.txt": "license.md"
+    }
+  },
+  {
+    "name": "picocolors",
+    "version": "1.1.1",
+    "license": "ISC",
+    "notices": [
+      "npm/picocolors_1.1.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/picocolors_1.1.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "playwright",
+    "version": "1.64.1",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/playwright_1.64.1--LICENSE.txt",
+      "npm/playwright_1.64.1--NOTICE.txt"
+    ],
+    "noticeSources": {
+      "npm/playwright_1.64.1--LICENSE.txt": "LICENSE",
+      "npm/playwright_1.64.1--NOTICE.txt": "NOTICE"
+    }
+  },
+  {
+    "name": "playwright-core",
+    "version": "1.64.1",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/playwright-core_1.64.1--LICENSE.txt",
+      "npm/playwright-core_1.64.1--NOTICE.txt"
+    ],
+    "noticeSources": {
+      "npm/playwright-core_1.64.1--LICENSE.txt": "LICENSE",
+      "npm/playwright-core_1.64.1--NOTICE.txt": "NOTICE"
+    }
+  },
+  {
+    "name": "postcss",
+    "version": "8.5.23",
+    "license": "MIT",
+    "notices": [
+      "npm/postcss_8.5.23--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/postcss_8.5.23--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "react",
+    "version": "19.3.1",
+    "license": "MIT",
+    "notices": [
+      "npm/react_19.3.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/react_19.3.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "react-dom",
+    "version": "19.3.1",
+    "license": "MIT",
+    "notices": [
+      "npm/react-dom_19.3.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/react-dom_19.3.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "react-is",
+    "version": "19.3.1",
+    "license": "MIT",
+    "notices": [
+      "npm/react-is_19.3.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/react-is_19.3.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "react-redux",
+    "version": "9.3.0",
+    "license": "MIT",
+    "notices": [
+      "npm/react-redux_9.3.0--LICENSE.md.txt"
+    ],
+    "noticeSources": {
+      "npm/react-redux_9.3.0--LICENSE.md.txt": "LICENSE.md"
+    }
+  },
+  {
+    "name": "recharts",
+    "version": "3.10.1",
+    "license": "MIT",
+    "notices": [
+      "npm/recharts_3.10.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/recharts_3.10.1--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "redux",
+    "version": "5.0.1",
+    "license": "MIT",
+    "notices": [
+      "npm/redux_5.0.1--LICENSE.md.txt"
+    ],
+    "noticeSources": {
+      "npm/redux_5.0.1--LICENSE.md.txt": "LICENSE.md"
+    }
+  },
+  {
+    "name": "redux-thunk",
+    "version": "3.1.0",
+    "license": "MIT",
+    "notices": [
+      "npm/redux-thunk_3.1.0--LICENSE.md.txt"
+    ],
+    "noticeSources": {
+      "npm/redux-thunk_3.1.0--LICENSE.md.txt": "LICENSE.md"
+    }
+  },
+  {
+    "name": "reselect",
+    "version": "5.2.0",
+    "license": "MIT",
+    "notices": [
+      "npm/reselect_5.2.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/reselect_5.2.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "scheduler",
+    "version": "0.28.0",
+    "license": "MIT",
+    "notices": [
+      "npm/scheduler_0.28.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/scheduler_0.28.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "semver",
+    "version": "7.8.5",
+    "license": "ISC",
+    "notices": [
+      "npm/semver_7.8.5--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/semver_7.8.5--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "sharp",
+    "version": "0.35.5",
+    "license": "Apache-2.0",
+    "notices": [
+      "npm/sharp_0.35.5--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/sharp_0.35.5--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "source-map-js",
+    "version": "1.2.2",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "npm/source-map-js_1.2.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/source-map-js_1.2.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "styled-jsx",
+    "version": "5.1.6",
+    "license": "MIT",
+    "notices": [
+      "npm/styled-jsx_5.1.6--license.md.txt"
+    ],
+    "noticeSources": {
+      "npm/styled-jsx_5.1.6--license.md.txt": "license.md"
+    }
+  },
+  {
+    "name": "tiny-invariant",
+    "version": "1.3.3",
+    "license": "MIT",
+    "notices": [
+      "npm/tiny-invariant_1.3.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/tiny-invariant_1.3.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "ts-fsrs",
+    "version": "5.4.2",
+    "license": "MIT",
+    "notices": [
+      "npm/ts-fsrs_5.4.2--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/ts-fsrs_5.4.2--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "tslib",
+    "version": "2.8.1",
+    "license": "0BSD",
+    "notices": [
+      "npm/tslib_2.8.1--LICENSE.txt.txt"
+    ],
+    "noticeSources": {
+      "npm/tslib_2.8.1--LICENSE.txt.txt": "LICENSE.txt"
+    }
+  },
+  {
+    "name": "uncrypto",
+    "version": "0.1.3",
+    "license": "MIT",
+    "notices": [
+      "npm/uncrypto_0.1.3--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/uncrypto_0.1.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "use-sync-external-store",
+    "version": "1.7.0",
+    "license": "MIT",
+    "notices": [
+      "npm/use-sync-external-store_1.7.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/use-sync-external-store_1.7.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "victory-vendor",
+    "version": "37.3.6",
+    "license": "MIT AND ISC",
+    "notices": [
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-array_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-color_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-ease_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-format_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-interpolate_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-path_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-scale_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-shape_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-time_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-time-format_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-timer_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-voronoi_LICENSE.txt",
+      "npm/victory-vendor_37.3.6--lib-vendor_internmap_LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-array_LICENSE.txt": "lib-vendor/d3-array/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-color_LICENSE.txt": "lib-vendor/d3-color/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-ease_LICENSE.txt": "lib-vendor/d3-ease/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-format_LICENSE.txt": "lib-vendor/d3-format/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-interpolate_LICENSE.txt": "lib-vendor/d3-interpolate/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-path_LICENSE.txt": "lib-vendor/d3-path/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-scale_LICENSE.txt": "lib-vendor/d3-scale/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-shape_LICENSE.txt": "lib-vendor/d3-shape/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-time_LICENSE.txt": "lib-vendor/d3-time/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-time-format_LICENSE.txt": "lib-vendor/d3-time-format/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-timer_LICENSE.txt": "lib-vendor/d3-timer/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_d3-voronoi_LICENSE.txt": "lib-vendor/d3-voronoi/LICENSE",
+      "npm/victory-vendor_37.3.6--lib-vendor_internmap_LICENSE.txt": "lib-vendor/internmap/LICENSE"
+    }
+  },
+  {
+    "name": "zod",
+    "version": "4.6.7",
+    "license": "MIT",
+    "notices": [
+      "npm/zod_4.6.7--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/zod_4.6.7--LICENSE.txt": "LICENSE"
+    }
+  }
+]

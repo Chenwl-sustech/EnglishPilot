@@ -1,0 +1,40 @@
+# 开放词表署名与来源
+
+本词表数据与原应用代码分别保留各自许可。词表来自以下来源；整理改动列在每项来源下。
+
+## New General Service List 1.2 (NGSL)
+
+来源：https://www.newgeneralservicelist.com/new-general-service-list
+
+许可：CC BY-SA 4.0
+https://creativecommons.org/licenses/by-sa/4.0/
+
+New General Service List 1.2 (NGSL) by Browne, C., Culligan, B., and Phillips, J. Retrieved from newgeneralservicelist.com on 2026-10-24. Licensed under CC BY-SA 4.0.
+
+Joined the official list headwords to official English definitions and teaching-form data; trimmed outer whitespace; matched headwords case-insensitively; excluded the headword itself and duplicate forms from family arrays. Mapped source spelling e-mail to authoritative headword email. No part of speech was inferred.
+
+## New Academic Word List 1.2 (NAWL)
+
+来源：https://www.newgeneralservicelist.com/new-academic-word-list
+
+许可：CC BY-SA 4.0
+https://creativecommons.org/licenses/by-sa/4.0/
+
+New Academic Word List 1.2 (NAWL) by Browne, C., Culligan, B., and Phillips, J. Retrieved from newgeneralservicelist.com on 2026-10-24. Licensed under CC BY-SA 4.0.
+
+Joined the official list headwords to official English definitions and teaching-form data; trimmed outer whitespace; matched headwords case-insensitively; excluded the headword itself and duplicate forms from family arrays. Expanded the source POS abbreviations to English labels. Excluded non-headword rows cheers, criteria, and founds. Blank definition and undefined POS remain empty. Japanese translations were not included.
+
+## BNC/COCA Level 6 word family lists, version 1.0.0 (2017)
+
+来源：https://www.wgtn.ac.nz/lals/resources/paul-nations-resources/vocabulary-analysis-programs
+
+许可：CC-BY-SA-4.0
+https://creativecommons.org/licenses/by-sa/4.0/
+
+Nation, I.S.P. (2017). The BNC/COCA Level 6 word family lists (Version 1.0.0) [Data file]. Victoria University of Wellington / Te Herenga Waka. Normalized for EnglishPilot from the official publisher download.
+
+Converted the first 25 frequency-band files to lowercase UTF-8 JSON; removed BOM and formatting whitespace; grouped indented family members under their source headword; retained source family order and band assignment. Omitted zero padding, Range software, five placeholder files, and four supplementary lists. No definitions, phonetics, or examples added.
+
+BNC/COCA 使用大学明确链接的1.0.0旧版25,000词族；许可依据为原作者大学资源页的开放资源声明，原ZIP没有独立的逐文件许可文本。新版30个分频段数据未混入。
+
+未生成缺失释义、中文翻译、音标或例句。单词表按规范化词头合并，但不同词族不是严格的考试词汇量指标。

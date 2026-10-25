@@ -1,0 +1,56 @@
+# EnglishPilot
+
+本地优先的英语学习工具，提供雅思 / 托福方向的词汇复习、原创分级练习、口语录音、写作练习、学习计划、完整备份及可选 AI 教师与模拟评价。
+
+本仓库包含 Web 源码、iPhone/iPad 的 Capacitor/Swift 工程、HarmonyOS ArkTS 工程和独立的 Vercel/Upstash AI 后端。**公开工程不包含个人 AI Key、配对凭据、签名身份或学习数据。**
+
+## 下载和安装
+
+[下载 Release](https://github.com/Chenwl-sustech/EnglishPilot/releases/latest)
+
+- `EnglishPilot-Source-v0.1.1.zip`：完整源码，含独立 AI 后端。
+- `EnglishPilot-Xcode-Project-v0.1.1.zip`：已内置页面的原生工程包；解压后按文档选择自己的 Apple Team 和 Bundle Identifier，再编译安装。
+- `SHA256SUMS.txt`：下载文件校验值。
+
+当前公开 Release 提供可自行签名的工程，**不是免签安装包**。免费 Personal Team 的安装仅适用于自己的已登记设备，签名会到期。面向其他用户的 TestFlight / App Store 分发需要适当的 Apple 开发者资格和签名；本项目没有发布他人的个人签名 Profile。
+
+完整步骤见 [iPhone/iPad 安装](docs/installation.md)。HarmonyOS 工程需在 DevEco Studio 中自行配置和验证，本次未提供已签名 HAP。
+
+## 本地运行
+
+要求 Node 22+；独立 AI 后端要求 Node 24。
+
+```sh
+npm ci
+npm run dev
+```
+
+打开终端给出的 localhost 地址。练习、复习状态与录音保存在当前设备；换设备前请在设置中导出完整备份。
+
+```sh
+npm test
+npm run typecheck
+npm run native:build
+```
+
+`native:build` 生成静态页面并同步到两端原生工程。`native:ios:check` 尝试不签名的模拟器构建；它通过不代表已完成真机签名。
+
+## 可选 AI
+
+离线学习和录音不需要 AI Key。AI 功能需要使用自己的服务端配置，见 [云后端部署](docs/cloud-backend.md)。
+
+- 独立后端位于 `backend/`，支持 Vercel Hobby + Upstash Redis Free。
+- DeepSeek Key 留在服务端；设备使用单独的访问凭据。
+- 提交的文字会发送给所配置的 AI 服务；录音不由此接口上传。
+- 默认北京时间每日 20 次、200000 token、单次最多 4096 输出 token；存储失败时停止 AI，不自动清零。
+- AI 模拟评价不是官方考试成绩。托管在免费额度内可免费使用，模型调用按服务商账号计费。
+
+## 内容来源
+
+项目包含原创练习、公开许可词库和官方/第三方资源入口。外站链接不等于已复制整套试卷；不包含商业题库、九分学长题库、私人导入材料或官方完整试卷与音频。
+
+NGSL、NAWL 和 BNC/COCA 的版本、署名、整理变化与许可见 [第三方声明](NOTICE.md)、[词库署名](public/open-vocabulary-attribution.txt) 和 `data-provenance/`。按来源合并的词头与词族不应当作考试官方规定的“必须掌握单词总数”。
+
+## 许可
+
+自有程序代码使用 [MIT](LICENSE)。`src/lib/data/open-vocabulary.json`、`public/vocabulary-ngsl-nawl.json` 及其中来源词表的整理数据按 **CC BY-SA 4.0** 保留原作者署名和相同方式共享要求；它们不被重新许可为 MIT。依赖及第三方内容保留各自许可。

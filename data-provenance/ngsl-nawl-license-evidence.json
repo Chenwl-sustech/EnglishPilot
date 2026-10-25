@@ -1,0 +1,24 @@
+[
+  {
+    "sourceId": "ngsl-1.2",
+    "page": "https://www.newgeneralservicelist.com/new-general-service-list",
+    "localTextFile": "ngsl-source-text.txt",
+    "line": 76,
+    "statement": "New General Service List by Browne, C., Culligan, B., and Phillips, J. is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.",
+    "definitionsLinkLabel": "NGSL 1.2 list with definitions in easy English",
+    "definitionsListedUnder": "NGSL 1.2 Downloadable Word Lists",
+    "fileLevelNoticeFound": false,
+    "basis": "Official page-level list license. No differing license or separate license notice was found in the downloaded definitions."
+  },
+  {
+    "sourceId": "nawl-1.2",
+    "page": "https://www.newgeneralservicelist.com/new-academic-word-list",
+    "localTextFile": "nawl-source-text.txt",
+    "line": 66,
+    "statement": "New Academic Word List by Browne, C., Culligan, B., and Phillips, J. is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.",
+    "definitionsLinkLabel": "NAWL 1.2 list with definitions in easy English",
+    "definitionsListedUnder": "NAWL 1.2 Downloadable Word Lists",
+    "fileLevelNoticeFound": false,
+    "basis": "Official page-level list license. No differing license or separate license notice was found in the downloaded definitions."
+  }
+]

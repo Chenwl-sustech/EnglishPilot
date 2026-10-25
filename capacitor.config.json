@@ -1,0 +1,7 @@
+{
+  "appId": "com.example.englishpilot",
+  "appName": "EnglishPilot",
+  "webDir": ".local/native-web/out",
+  "ios": { "path": "native/ios", "contentInset": "automatic" },
+  "server": { "hostname": "localhost", "iosScheme": "capacitor" }
+}

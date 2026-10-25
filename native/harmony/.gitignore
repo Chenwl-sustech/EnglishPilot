@@ -1,0 +1,12 @@
+.hvigor/
+oh_modules/
+local.properties
+build/
+entry/build/
+entry/src/main/resources/rawfile/web/
+entry/src/main/ets/ResourcePath.ets
+*.p7b
+*.cer
+*.hap
+*.app
+signing/

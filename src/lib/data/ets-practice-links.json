@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Practice Test 1",
+    "pdf": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/toefl-ibt-full-length-practice-test-1.pdf",
+    "audio": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/student-practice-test-1-audio-files.zip"
+  },
+  {
+    "name": "Practice Test 2",
+    "pdf": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/toefl-ibt-full-length-practice-test-2.pdf",
+    "audio": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/student-practice-test-2-audio-files.zip"
+  },
+  {
+    "name": "Teacher Practice Test 1",
+    "pdf": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/toefl-ibt-teachers-resources-practice-test-1.pdf",
+    "audio": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/teacher-practice-test-1-audio-file.zip"
+  },
+  {
+    "name": "Teacher Practice Test 2",
+    "pdf": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/toefl-ibt-teachers-resources-practice-test-2.pdf",
+    "audio": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/teacher-practice-test-2-audio-file.zip"
+  },
+  {
+    "name": "Teacher Practice Test 3",
+    "pdf": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/toefl-ibt-teachers-resources-practice-test-3.pdf",
+    "audio": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/teacher-practice-test-3-audio.zip"
+  },
+  {
+    "name": "Teacher Practice Test 4",
+    "pdf": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/toefl-ibt-teachers-resources-practice-test-4.pdf",
+    "audio": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/teacher-practice-test-4-audio-files.zip"
+  },
+  {
+    "name": "Teacher Practice Test 5",
+    "pdf": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/toefl-ibt-teachers-resources-practice-test-5.pdf",
+    "audio": "https://www.ets.org/content/dam/ets-org/pdfs/toefl/teacher-practice-test-5-audio-files.zip"
+  }
+]

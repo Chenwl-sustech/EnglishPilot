@@ -1,0 +1,46 @@
+{
+  "source": {
+    "id": "bnc-coca-1.0.0",
+    "name": "BNC/COCA Level 6 word family lists, version 1.0.0 (2017)",
+    "url": "https://www.wgtn.ac.nz/lals/resources/paul-nations-resources/vocabulary-analysis-programs",
+    "license": "CC-BY-SA-4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "attribution": "Nation, I.S.P. (2017). The BNC/COCA Level 6 word family lists (Version 1.0.0) [Data file]. Victoria University of Wellington / Te Herenga Waka. Normalized for EnglishPilot from the official publisher download.",
+    "modification": "Converted the first 25 frequency-band files to lowercase UTF-8 JSON; removed BOM and formatting whitespace; grouped indented family members under their source headword; retained source family order and band assignment. Omitted zero padding, Range software, five placeholder files, and four supplementary lists. No definitions, phonetics, or examples added."
+  },
+  "sourceDetails": {
+    "id": "bnc-coca-1.0.0",
+    "downloadUrl": "https://www.wgtn.ac.nz/lals/resources/paul-nations-resources/vocabulary-analysis-programs/range/BNC_COCA_25000.zip",
+    "version": "1.0.0",
+    "licenseBasis": "Publisher resource-hub grant for the named resources. The hub names Range and its BNC/COCA lists; the direct child download page identifies this archive as version 1.0.0. The data uses the hub's CC BY-SA terms; the software alternative on that hub is GNU GPL v2/v3. No separate per-file license was found in the archive.",
+    "retrievedAt": "2026-10-24",
+    "archiveSha256": "ac81c7a60e5c76cd2bbf0c59b0501808f0d4fa026b2936919dd54329a9bb6a69"
+  },
+  "licenseEvidence": [
+    {
+      "url": "https://www.wgtn.ac.nz/lals/resources/paul-nations-resources",
+      "accessMethod": "Ordinary browser, visible resource-hub text, 2026-10-24",
+      "quote": "These resources may be used under the terms of the Creative Commons Attribution-ShareAlike 4.0 license",
+      "qualificationQuote": "as appropriate to the resource.",
+      "note": "The same sentence also names GNU GPL v2/v3 as an alternative appropriate to software. The hub explicitly identifies Range as including the BNC/COCA lists. CC BY-SA is the publisher-resource license basis for this data; no independent grant is claimed."
+    },
+    {
+      "url": "https://www.wgtn.ac.nz/lals/resources/paul-nations-resources/vocabulary-analysis-programs",
+      "accessMethod": "Ordinary browser, download anchor and label, 2026-10-24",
+      "quote": "Range with 25,000 words from the BNC/COCA lists (version 1.0.0)",
+      "downloadUrl": "https://www.wgtn.ac.nz/lals/resources/paul-nations-resources/vocabulary-analysis-programs/range/BNC_COCA_25000.zip"
+    },
+    {
+      "url": "https://www.wgtn.ac.nz/__data/assets/pdf_file/0004/1689349/Information-on-the-BNC_COCA-word-family-lists-20180705.pdf",
+      "note": "Official 2018 documentation identifies the 2017 Level 6 version 1.0.0, 25 frequency lists plus four supplements, and citation. It contains no additional per-file license assignment."
+    }
+  ],
+  "warnings": [
+    "The license is evidenced by the publisher's resource-hub grant, not an embedded per-file LICENSE. The hub also names GNU GPL v2/v3 as appropriate to the resource.",
+    "Only numbered frequency lists 1–25 are included. Files 26–30 contain fake Range placeholders, not vocabulary bands; lists 31–34 are supplements and excluded.",
+    "All frequency suffixes in this v1.0.0 archive are zero padding. They were not interpreted as word-frequency measurements.",
+    "BOM removed from: basewrd5.txt, basewrd18.txt, basewrd19.txt. Unicode spelling is preserved, including führer, fainéant, and musée.",
+    "This is reference vocabulary-family data without definitions, phonetics, translations, examples, or an exam syllabus mapping.",
+    "WordFamilyFinder v1.3.0 is a different data version and was not merged into these 25,000 families."
+  ]
+}
