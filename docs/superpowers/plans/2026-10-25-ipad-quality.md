@@ -58,8 +58,8 @@
 
 **Interfaces:** Consume verified fixes, produce v0.1.2 source and self-signing Xcode project ZIPs; personal signed IPA stays local.
 
-- [ ] Finish navigation/settings/import/backup tests, recording tests when authorized, plus online/offline AI behavior.
-- [ ] Run app, backend and release suites, typecheck, native build and iOS build.
-- [ ] Obtain a fresh whole-change review; fix important findings with RED→GREEN evidence.
-- [ ] Upgrade the original iPad app without uninstalling; compare recording hashes and recheck the cloud connection.
+- [x] Finish representative navigation/settings/import/backup and authorized recording tests; verify cloud AI and record remaining physical offline / post-upgrade UI limits.
+- [x] Run app, backend and release suites, typecheck, native build and iOS build.
+- [x] Obtain a fresh whole-change review; fix important findings with RED→GREEN evidence.
+- [x] Upgrade the original iPad app without uninstalling; compare recording hashes and separately recheck the deployed cloud service. Final on-device interaction limitation is documented.
 - [ ] Scan staged source and public ZIPs, commit, push and publish the maintenance Release; independently verify downloads.

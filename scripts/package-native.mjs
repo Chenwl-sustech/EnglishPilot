@@ -292,7 +292,7 @@ if (
   try {
     const { archive, inventory } = await buildNativeProjectArchive();
     await mkdir("dist", { recursive: true });
-    const filename = "EnglishPilot-Xcode-Project-v0.1.1.zip";
+    const filename = "EnglishPilot-Xcode-Project-v0.1.2.zip";
     await writeFile(join("dist", filename), archive);
     await writeFile(
       join("dist", `${filename}.sha256`),

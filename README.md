@@ -8,8 +8,8 @@
 
 [下载 Release](https://github.com/Chenwl-sustech/EnglishPilot/releases/latest)
 
-- `EnglishPilot-Source-v0.1.1.zip`：完整源码，含独立 AI 后端。
-- `EnglishPilot-Xcode-Project-v0.1.1.zip`：已内置页面的原生工程包；解压后按文档选择自己的 Apple Team 和 Bundle Identifier，再编译安装。
+- `EnglishPilot-Source-v0.1.2.zip`：完整源码，含独立 AI 后端。
+- `EnglishPilot-Xcode-Project-v0.1.2.zip`：已内置页面的原生工程包；解压后按文档选择自己的 Apple Team 和 Bundle Identifier，再编译安装。
 - `SHA256SUMS.txt`：下载文件校验值。
 
 当前公开 Release 提供可自行签名的工程，**不是免签安装包**。免费 Personal Team 的安装仅适用于自己的已登记设备，签名会到期。面向其他用户的 TestFlight / App Store 分发需要适当的 Apple 开发者资格和签名；本项目没有发布他人的个人签名 Profile。
@@ -50,6 +50,10 @@ npm run native:build
 项目包含原创练习、公开许可词库和官方/第三方资源入口。外站链接不等于已复制整套试卷；不包含商业题库、九分学长题库、私人导入材料或官方完整试卷与音频。
 
 NGSL、NAWL 和 BNC/COCA 的版本、署名、整理变化与许可见 [第三方声明](NOTICE.md)、[词库署名](public/open-vocabulary-attribution.txt) 和 `data-provenance/`。按来源合并的词头与词族不应当作考试官方规定的“必须掌握单词总数”。
+
+## 质量记录
+
+v0.1.2 修复 iPad 首次发音、退出后延迟朗读、录音权限提示、课程进入位置和日历状态问题，并整理安装版可用的操作入口。测试范围、结果与未验证场景见 [iPad 功能审计](docs/qa/2026-10-25-ipad-audit.md)。
 
 ## 许可
 
