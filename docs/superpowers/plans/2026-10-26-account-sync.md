@@ -79,7 +79,7 @@
 
 ### Task 6: Standalone mobile web and authenticated AI gateway
 
-**Files:** `web-cloud/api/index.js`, `web-cloud/server/proxy.mjs`, `web-cloud/vercel.json`, `scripts/build-account-web.mjs`, `src/lib/sync/web-session.ts`, `src/lib/native/api.ts`, `tests/account-web-*.test.ts`.
+**Files:** `web-cloud/api/{evaluate,teacher,configuration,ai-usage}.js`, `web-cloud/server/proxy.mjs`, `web-cloud/vercel.json`, `scripts/build-account-web.mjs`, `src/lib/sync/web-session.ts`, `src/lib/native/api.ts`, `tests/account-web-*.test.ts`.
 
 **Interfaces:** `accountWebResponse(request,env,fetcher) -> Promise<Response>` verifies Supabase's `/auth/v1/user`, applies `ENGLISHPILOT_ALLOWED_USERS`, and proxies only `/api/evaluate`, `/api/teacher`, `/api/configuration`, `/api/ai-usage` to a fixed server origin. `createApiFetch` accepts optional async account-token supplier for the separate web build; native transport keeps precedence. `buildAccountWeb` stages static sources, strips all private environment variables from the build and assembles public assets separately from server code.
 

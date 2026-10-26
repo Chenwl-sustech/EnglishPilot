@@ -1,6 +1,9 @@
 import { expect, test, vi } from "vitest";
-import handler from "../web-cloud/api/index.js";
-test("Vercel adapter preserves the original API path and caps auto-parsed JSON bodies", async () => {
+import evaluate from "../web-cloud/api/evaluate.js";
+import teacher from "../web-cloud/api/teacher.js";
+import configuration from "../web-cloud/api/configuration.js";
+import usage from "../web-cloud/api/ai-usage.js";
+test("each Vercel fetch entry retains its real API URL and bounds raw request bodies", async () => {
   const env = {
     SUPABASE_URL: "https://test.supabase.co",
     SUPABASE_PUBLISHABLE_KEY: "sb_publishable_fixture_public_123456789",
@@ -17,54 +20,36 @@ test("Vercel adapter preserves the original API path and caps auto-parsed JSON b
           id: env.ENGLISHPILOT_ALLOWED_USERS,
           is_anonymous: false,
         })
-      : Response.json({ reply: "okay" });
+      : Response.json({ okay: true });
   });
-  const response = () => ({
-    statusCode: 0,
-    headers: new Map<string, string>(),
-    output: "",
-    setHeader(name: string, value: string) {
-      this.headers.set(name, value);
-    },
-    end(value: Buffer | string) {
-      this.output = value.toString();
-    },
-  });
+  const request = (path: string, text = "hi") =>
+    new Request("https://app.test" + path, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer user-session",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text }),
+    });
   try {
-    const res = response();
-    await handler(
-      {
-        method: "POST",
-        url: "/api/teacher",
-        headers: {
-          authorization: "Bearer user-session",
-          "content-type": "application/json",
-        },
-        body: { text: "hi" },
-      },
-      res,
-    );
-    expect(res.statusCode).toBe(200);
-    expect(JSON.parse(res.output)).toEqual({ reply: "okay" });
-    expect(urls).toEqual([
-      "https://test.supabase.co/auth/v1/user",
-      "https://fixture.vercel.app/api/teacher",
-    ]);
-    const tooLarge = response();
-    await handler(
-      {
-        method: "POST",
-        url: "/api/teacher",
-        headers: {
-          authorization: "Bearer user-session",
-          "content-type": "application/json",
-        },
-        body: { text: "x".repeat(200001) },
-      },
-      tooLarge,
-    );
-    expect(tooLarge.statusCode).toBe(413);
-    expect(urls).toHaveLength(2);
+    for (const [entry, path] of [
+      [evaluate, "/api/evaluate"],
+      [teacher, "/api/teacher"],
+      [configuration, "/api/configuration"],
+      [usage, "/api/ai-usage"],
+    ] as const) {
+      expect((await entry.fetch(request(path))).status).toBe(200);
+      expect(urls.at(-1)).toBe("https://fixture.vercel.app" + path);
+    }
+    const count = urls.length;
+    expect(
+      (await teacher.fetch(request("/api/teacher", "x".repeat(200001)))).status,
+    ).toBe(413);
+    expect(
+      (await evaluate.fetch(new Request("https://app.test/api/evaluate")))
+        .status,
+    ).toBe(401);
+    expect(urls).toHaveLength(count);
   } finally {
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();

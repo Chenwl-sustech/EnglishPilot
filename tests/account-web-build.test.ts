@@ -75,10 +75,10 @@ test("deployment separates static assets from authenticated server code and refu
       "<h1>App</h1>",
     );
     expect(
-      (await readFile(join(destination, "api/index.js"), "utf8")).length,
+      (await readFile(join(destination, "api/evaluate.js"), "utf8")).length,
     ).toBeGreaterThan(0);
     await expect(
-      readFile(join(destination, "public/api/index.js")),
+      readFile(join(destination, "public/api/evaluate.js")),
     ).rejects.toThrow();
     await expect(readFile(join(destination, ".env.example"))).rejects.toThrow();
     await symlink(join(source, "index.html"), join(source, "link.html"));
