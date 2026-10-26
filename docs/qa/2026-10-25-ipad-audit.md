@@ -1,4 +1,4 @@
-# iPad functional audit — v0.1.2
+# iPad functional audit — v0.1.3
 
 Audit started 2026-10-25; continued 2026-10-26 (Asia/Shanghai).
 Baseline: v0.1.1 (`ecc8f51`). Device: 11-inch iPad Pro, iPadOS 27.2.
@@ -22,7 +22,9 @@ signing profiles, credentials, screenshots and recordings are not published.
    controls now describe supported recording, file import and manual text review.
    Restored desktop WAV preferences fall back to device speech on native builds.
    Windows voice-pack controls were already hidden by the released web flag; the
-   native flag now independently enforces that distinction.
+   native flag now independently enforces that distinction. The follow-up also
+   removes the AI teacher's desktop WAV/Whisper probes and misleading model-management
+   link, while retaining its device voice catalog and desktop behavior.
 4. Opening reading/grammar lessons from a scrolled list hid the heading and timing
    controls. Lesson entry now resets the viewport to the top.
 5. An untouched, empty writing draft could remain labeled as saving. Empty drafts
@@ -55,7 +57,7 @@ this is not evidence of two user-visible recordings. The restored UI showed one.
 ## Automated verification
 
 - Baseline: 17 app, 9 backend and 8 release tests passed.
-- Current: 34 app, 9 backend and 8 release tests passed; TypeScript check passed.
+- Current: 35 app, 9 backend and 8 release tests passed (52 total); TypeScript check passed.
 - New regressions were observed failing before implementation: asynchronous voice
   discovery/cancellation, native control capabilities, enrollment calendar boundary,
   microphone error translation and leaving a pronunciation scope.
@@ -86,18 +88,34 @@ One synthetic writing request returned an `ai-estimate`, suggestions and a revis
 with the correct attempt ID. This was a direct cloud smoke check, not a claim of a
 post-upgrade end-to-end iPad AI submission. No real recording was uploaded.
 
-Device Hub later stopped accepting coordinate input although screenshots and
-accessibility text remained readable. Reopening the window did not resolve it;
-Mac unlock was requested. Consequently the final post-upgrade playback click,
-physical network-off test and final on-device AI submission remain unverified.
-Earlier native recording/playback and backup restore succeeded before this control
-failure. This is recorded as a test limitation, not attributed to an app defect.
+## Follow-up after Mac unlock — 2026-10-26
 
+The prior three pending native checks were completed after input was restored:
+
+- The existing 14-second recording played to its end on the upgraded installation.
+- Wi-Fi was disabled in iPad Settings. Vocabulary, definitions and a grammar unit
+  loaded; terminating and relaunching the app still opened the original local home
+  profile. Wi-Fi was then re-enabled, with the original network and VPN connected.
+- A synthetic QA answer was submitted from the installed AI teacher. A real reply
+  and suggestions appeared, the daily allowance changed from 19 to 18, and a
+  separate end-of-conversation review returned successfully. No original recording
+  or private transcript was submitted.
+
+The AI teacher still showed a desktop WAV error alongside an available Samantha
+voice and linked to unsupported model management. v0.1.3 corrects these native
+probes and messages. Its added regression failed before the fix and passed after;
+an independent review reported no Critical, Important or Minor findings.
+
+The original app was then upgraded in place to 0.1.3 (build 7). All three original
+audio payload hashes remained identical. The new setup page showed device speech
+and manual text instructions without the desktop error or model-management link.
+The real AI reply and end review were still visible after this upgrade and relaunch.
+Personal signed IPA creation and payload verification also passed; that IPA stays
+local. These follow-up results replace the earlier Mac-control test limitation.
 
 ## Public artifact checks
 
-The staged Git index (486 files) and decompressed native project archive (915
-entries) passed both the public-file policy scan and exact checks for the real
+The staged Git index and decompressed native project archive passed both the public-file policy scan and exact checks for the real
 session credentials and device/signing identifiers. The native project ZIP contains
 bundled pages and unsigned source projects, with no personal provisioning profile
 or signed IPA. Its inventory and bundled-resource hashes passed validation.
