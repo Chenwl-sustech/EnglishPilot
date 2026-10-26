@@ -8,6 +8,7 @@
     "build": "node scripts/next.mjs build && node scripts/prepare-pwa.mjs",
     "native:build": "node scripts/build-native.mjs && node scripts/sync-native.mjs",
     "cloud:web:build": "node scripts/build-account-web.mjs",
+    "cloud:web:netlify": "node scripts/build-account-netlify.mjs",
     "native:sync": "node scripts/sync-native.mjs",
     "native:doctor": "node scripts/native-doctor.mjs",
     "native:ios:open": "cap open ios",
