@@ -6,13 +6,6 @@
   "functions": { "api/*.js": { "maxDuration": 120 } },
   "headers": [
     {
-      "source": "/reset-password/:path*",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-store" },
-        { "key": "Referrer-Policy", "value": "no-referrer" }
-      ]
-    },
-    {
       "source": "/sw.js",
       "headers": [
         {
@@ -36,6 +29,13 @@
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/reset-password/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "Referrer-Policy", "value": "no-referrer" }
       ]
     }
   ]
