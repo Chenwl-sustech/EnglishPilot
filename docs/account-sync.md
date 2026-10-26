@@ -2,6 +2,8 @@
 
 本功能使用 **Supabase Auth + PostgreSQL + 私有 Storage**，Mac 关机后仍由云服务处理同步。现有 Vercel AI 服务保持独立；学习账号不自动获得任何私人 AI 配对令牌。
 
+当前个人部署的[手机网页预览](https://englishpilot-sync.vercel.app/)已可访问。首次页面展开“已有学习账号？登录并同步到此设备”，使用管理员已创建的学习账号。网页与云服务已部署，登录后的同步和真实双设备验收仍在进行，进度见[验证记录](qa/2026-10-26-account-sync.md)。v0.1.3 安装包尚未包含此功能。
+
 ## 当前接入范围
 
 - iPhone / iPad：更新后的 iOS 安装版；账号会话存储在设备钥匙串。最低 iOS 15，实际系统兼容性以 Xcode / 设备为准。
@@ -59,9 +61,9 @@ Supabase 默认邮件服务只向项目组织成员邮箱发送，当前额度�
 
 公开注册需同时在项目 Auth 设置中允许注册、配置 SMTP，并在前端构建时设置 `NEXT_PUBLIC_SYNC_SIGNUP=1`。确认邮件链接完成邮箱验证后，回应用使用邮箱和密码登录。建议开启项目提供的注册保护，避免公开项目被滥用；注册对云服务条款的确认由部署者负责。
 
-此客户端的找回密码使用**邮件验证码**，不把会话放进 URL。请在 Authentication → Email Templates → Reset Password 模板中加入：
+此客户端的找回密码使用**邮件验证码**，不把会话放进 URL。邮件找回入口默认关闭（`NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=0`）。须先配置可编辑的 SMTP / 邮件发送服务和下方验证码模板，并实际验证收信；之后设置 `NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=1` 重新构建。当前私人免费项目尚未完成邮件服务配置，界面会明确显示尚未启用；登录与同步不依赖找回邮件。
 
-邮件找回入口默认关闭（`NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=0`）。须先配置可编辑的 SMTP / 邮件发送服务和下方验证码模板，并实际验证收信；之后设置 `NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=1` 重新构建。当前私人免费项目尚未完成邮件服务配置，界面会明确显示尚未启用；登录与同步不依赖找回邮件。
+在 Authentication → Email Templates → Reset Password 模板中加入：
 
 ```html
 <h2>重设 EnglishPilot 学习账号密码</h2>
