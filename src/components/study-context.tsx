@@ -10,6 +10,8 @@ import type { State } from "@/lib/model";
 import { db, loadState, mutateState } from "@/lib/db";
 import { today } from "@/lib/engine";
 import { ZodError } from "zod";
+import { SyncProvider } from "./sync-provider";
+import { AccountSpaceGate } from "./account-space-gate";
 type Study = {
   state: State;
   update: (
@@ -101,24 +103,26 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
     );
   return (
     <Context.Provider value={{ state, update, notify, fail }}>
-      {children}
-      {(message || error) && (
-        <div
-          className={`toast ${error ? "toast-error" : ""}`}
-          role={error ? "alert" : "status"}
-        >
-          <span>{error || message}</span>
-          <button
-            aria-label="关闭提示"
-            onClick={() => {
-              setError("");
-              setMessage("");
-            }}
+      <SyncProvider>
+        <AccountSpaceGate>{children}</AccountSpaceGate>
+        {(message || error) && (
+          <div
+            className={`toast ${error ? "toast-error" : ""}`}
+            role={error ? "alert" : "status"}
           >
-            ×
-          </button>
-        </div>
-      )}
+            <span>{error || message}</span>
+            <button
+              aria-label="关闭提示"
+              onClick={() => {
+                setError("");
+                setMessage("");
+              }}
+            >
+              ×
+            </button>
+          </div>
+        )}
+      </SyncProvider>
     </Context.Provider>
   );
 }
