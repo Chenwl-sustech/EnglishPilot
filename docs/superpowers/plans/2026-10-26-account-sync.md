@@ -76,3 +76,14 @@
 - [ ] Fresh whole-branch review; fix any material findings with reproducing tests.
 - [ ] Configure real cloud only once available; test two synthetic accounts for isolation and CAS, then two devices. Keep real-data activation explicit.
 - [ ] Publish reviewed code to GitHub under the existing authorization; report any cloud/account/device step still pending without claiming completion.
+
+### Task 6: Standalone mobile web and authenticated AI gateway
+
+**Files:** `web-cloud/api/index.js`, `web-cloud/server/proxy.mjs`, `web-cloud/vercel.json`, `scripts/build-account-web.mjs`, `src/lib/sync/web-session.ts`, `src/lib/native/api.ts`, `tests/account-web-*.test.ts`.
+
+**Interfaces:** `accountWebResponse(request,env,fetcher) -> Promise<Response>` verifies Supabase's `/auth/v1/user`, applies `ENGLISHPILOT_ALLOWED_USERS`, and proxies only `/api/evaluate`, `/api/teacher`, `/api/configuration`, `/api/ai-usage` to a fixed server origin. `createApiFetch` accepts optional async account-token supplier for the separate web build; native transport keeps precedence. `buildAccountWeb` stages static sources, strips all private environment variables from the build and assembles public assets separately from server code.
+
+- [ ] Write RED tests for denied auth/config/uid, fixed upstream identity boundary, route/body restrictions, HTML/error handling, web session header binding, private build-env exclusion and output separation.
+- [ ] Implement the minimum gateway and build package; run full suite and typecheck GREEN.
+- [ ] Independent security review, then build/scan and deploy to a new Vercel Free project with runtime secrets outside static assets.
+- [ ] Verify anonymous web access cannot call AI, authorized owner can log in and use the same existing quota ledger; test cloud sync on installed and web clients without claiming untested device behavior.

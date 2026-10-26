@@ -36,6 +36,23 @@
 6. 在 iPad 登录学习账号。确认上传范围，首次关联时选择“带入本机学习数据（含录音）”，再点“进入账号空间并启用同步”。原本机空间保留，新的账号副本开始同步。首次也有云端数据时会保守提示冲突。
 7. 在手机打开已部署网址或更新后的 iOS 安装版，首次页面可展开“已有学习账号？登录并同步到此设备”。使用同一个学习账号，空的新设备不要勾选带入本机数据。启用后接收云端数据。
 
+## 手机网页与同账号 AI（免费部署变体）
+
+独立部署使用 `npm run cloud:web:build`，生成 `.local/account-web-deploy`。该目录包含公开静态页面与单独的 Vercel AI 函数，不部署原完整 Next.js 站点的本地服务；原站点的 Basic 访问保护不改动。
+
+构建前提供 `NEXT_PUBLIC_SUPABASE_URL`、`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`。静态构建只接收这些公开配置和必要系统环境，排除全部私人 AI 凭据。发布到新的 Vercel Hobby 项目，避免覆盖原来的 `englishpilot` 或 `englishpilot-ai-free` 项目。
+
+在新项目的 **服务端** 配置以下运行时环境变量；不能写入 `NEXT_PUBLIC_*`、静态文件、公开仓库或截图：
+
+- `SUPABASE_URL`、`SUPABASE_PUBLISHABLE_KEY`：同一云项目。
+- `ENGLISHPILOT_ALLOWED_USERS`：管理员明确批准使用私人 AI 的学习账号 uid，以逗号分隔；空值时拒绝 AI 调用。
+- `AI_BACKEND_ORIGIN`：现有私人 AI 后端的 HTTPS 根地址。
+- `AI_BACKEND_TOKEN`：后端设备访问凭据，使用云平台 Secret 环境变量保存。
+
+网页使用当前账号会话调用同源接口，网关向 Supabase 验证身份，并检查 uid 白名单；仅转发四个既有 AI JSON 路径。用户 JWT、浏览器 Cookie 和 Origin 不转发给私人 AI 后端。每日 AI 额度继续由原后端共享累计，模型调用费与此前相同。
+
+未登录、账号未获批准、运行时配置缺失或验证失败时不调用 AI。网页的 Whisper 本地转写等依赖 Mac 的服务仍不可用；可保存录音并手工核对文字。账号同步直接使用 Supabase 的 RLS 和私有 Storage，网页关闭后的后台同步仍不保证。
+
 ## 邮件、公开注册与找回密码
 
 Supabase 默认邮件服务只向项目组织成员邮箱发送，当前额度为每小时 2 封，不适合公开注册。私人部署可以先在控制台创建并确认自己的账号；需要向其他邮箱发送注册 / 找回邮件时必须配置自己的 SMTP 服务。参见 [官方 SMTP 说明](https://supabase.com/docs/guides/auth/auth-smtp)。
