@@ -13,6 +13,7 @@ import {
   webBuildEnvironment,
   assembleAccountWeb,
 } from "../scripts/build-account-web.mjs";
+import { nativeBuildEnvironment } from "../scripts/build-native.mjs";
 test("static build receives public configuration while private service credentials stay out", () => {
   const env = webBuildEnvironment({
     PATH: "/bin",
@@ -30,6 +31,37 @@ test("static build receives public configuration while private service credentia
   expect(env.NEXT_PUBLIC_ENGLISHPILOT_NATIVE).toBe("0");
   expect(env.NEXT_PUBLIC_ENGLISHPILOT_ACCOUNT_WEB).toBe("1");
   expect(env.NEXT_PUBLIC_SUPABASE_URL).toBe("https://test.supabase.co");
+});
+test("static build fails before Next runs when public configuration is missing or contains administrator credentials", () => {
+  const base = {
+    NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test123456789",
+  };
+  const serviceRole = `eyJhbGciOiJIUzI1NiJ9.${btoa(JSON.stringify({ role: "service_role" }))}.fixture`;
+  for (const key of ["", "sb_secret_fixture_admin_123456789", serviceRole])
+    expect(() =>
+      webBuildEnvironment({
+        ...base,
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: key,
+      }),
+    ).toThrow();
+  for (const url of [
+    "",
+    "http://test.supabase.co",
+    "https://test.supabase.co.evil.test",
+  ])
+    expect(() =>
+      webBuildEnvironment({ ...base, NEXT_PUBLIC_SUPABASE_URL: url }),
+    ).toThrow();
+});
+test("native builds allow an unconfigured public package but reject a privileged account key", () => {
+  expect(nativeBuildEnvironment({}).NEXT_PUBLIC_ENGLISHPILOT_NATIVE).toBe("1");
+  expect(() =>
+    nativeBuildEnvironment({
+      NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_secret_fixture_admin_123456789",
+    }),
+  ).toThrow();
 });
 test("deployment separates static assets from authenticated server code and refuses unsafe inputs", async () => {
   const root = await mkdtemp(join(tmpdir(), "account-web-test-")),

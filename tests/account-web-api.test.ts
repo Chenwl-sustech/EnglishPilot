@@ -1,5 +1,6 @@
 import { expect, test } from "vitest";
 import { createApiFetch } from "../src/lib/native/api";
+import { accountWebResponse } from "../web-cloud/server/proxy.mjs";
 test("account web requests attach only the current session to approved relative routes", async () => {
   const calls: { input: RequestInfo | URL; init?: RequestInit }[] = [];
   const api = createApiFetch({
@@ -58,4 +59,32 @@ test("native pairing remains authoritative when an account-token supplier is als
   });
   expect((await (await api("/api/evaluate")).json()).configured).toBe(true);
   expect(tokenReads).toBe(0);
+});
+test("the existing bodyless configuration check remains usable through the account gateway", async () => {
+  const env = {
+    SUPABASE_URL: "https://test.supabase.co",
+    SUPABASE_PUBLISHABLE_KEY: "sb_publishable_fixture_public_123456789",
+    ENGLISHPILOT_ALLOWED_USERS: "11111111-1111-4111-8111-111111111111",
+    AI_BACKEND_ORIGIN: "https://fixture.vercel.app",
+    AI_BACKEND_TOKEN: "private-fixture-backend-token-123456789",
+  };
+  const api = createApiFetch({
+    native: false,
+    accountToken: async () => "user-session",
+    fetcher: async (input, init) =>
+      accountWebResponse(
+        new Request("https://app.test" + input, init),
+        env,
+        async (url) =>
+          String(url).includes("/auth/v1/user")
+            ? Response.json({
+                id: env.ENGLISHPILOT_ALLOWED_USERS,
+                is_anonymous: false,
+              })
+            : Response.json({ configured: true }),
+      ),
+  });
+  const response = await api("/api/configuration", { method: "POST" });
+  expect(response.status).toBe(200);
+  expect((await response.json()).configured).toBe(true);
 });

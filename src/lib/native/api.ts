@@ -75,11 +75,18 @@ export function createApiFetch({
         }
         const headers = new Headers(init?.headers);
         headers.set("Authorization", `Bearer ${token}`);
+        const accountBody =
+          rawBody ??
+          (path === "/api/configuration" && method === "POST"
+            ? "{}"
+            : undefined);
+        if (accountBody !== undefined && !headers.has("Content-Type"))
+          headers.set("Content-Type", "application/json");
         return await fetcher(path, {
           ...init,
           method,
           headers,
-          ...(rawBody == null ? {} : { body: rawBody }),
+          ...(accountBody === undefined ? {} : { body: accountBody }),
           signal,
         });
       } catch {

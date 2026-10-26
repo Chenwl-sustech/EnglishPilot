@@ -15,10 +15,15 @@ import { join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { stageNativeApp } from "./build-native.mjs";
 import { preparePwa } from "./prepare-pwa.mjs";
+import { parsePublicSyncConfig } from "../src/lib/sync/public-config.mjs";
 const require = createRequire(import.meta.url);
 const template = fileURLToPath(new URL("../web-cloud/", import.meta.url));
 /** @param {Record<string, string | undefined>} source @returns {Record<string, string>} */
 export function webBuildEnvironment(source = process.env) {
+  const config = parsePublicSyncConfig({
+    url: source.NEXT_PUBLIC_SUPABASE_URL ?? "",
+    key: source.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
+  });
   const env = {};
   for (const key of [
     "PATH",
@@ -34,6 +39,8 @@ export function webBuildEnvironment(source = process.env) {
     if (source[key]) env[key] = source[key];
   return {
     ...env,
+    NEXT_PUBLIC_SUPABASE_URL: config.url,
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: config.key,
     NEXT_TELEMETRY_DISABLED: "1",
     NEXT_PUBLIC_ENGLISHPILOT_NATIVE: "0",
     NEXT_PUBLIC_ENGLISHPILOT_WEB: "1",
