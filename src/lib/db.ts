@@ -13,14 +13,17 @@ import {
 import { curriculumSources } from "./curriculum";
 import { weeklyExamSource } from "./weekly-exam-bank";
 import { openVocabularySources } from "./open-vocabulary";
+import { activeDatabaseName } from "./sync/space";
+import type { SyncMeta } from "./sync/local";
 
-export type Recording = { id: string; blob: Blob; date: string; title: string };
-class PilotDB extends Dexie {
+export type Recording = { id: string; blob: Blob; date: string; title: string; _syncStamp?: string };
+export class PilotDB extends Dexie {
   state!: Table<{ id: string; value: State }, string>;
   recordings!: Table<Recording, string>;
   listeningAudio!: Table<Recording, string>;
-  constructor() {
-    super("EnglishPilot");
+  syncMeta!: Table<SyncMeta, string>;
+  constructor(name = "EnglishPilot") {
+    super(name);
     this.version(1).stores({ state: "id", recordings: "id,date" });
     this.version(2)
       .stores({ state: "id", recordings: "id,date" })
@@ -47,9 +50,16 @@ class PilotDB extends Dexie {
       recordings: "id,date",
       listeningAudio: "id,date",
     });
+    this.version(5).stores({ state: "id", recordings: "id,date", listeningAudio: "id,date", syncMeta: "id" });
+    // All existing recording writers, including recovery-only writes, pass
+    // these hooks. A same-length replacement must invalidate a sync snapshot.
+    for (const table of [this.recordings, this.listeningAudio]) {
+      table.hook("creating", (_key, row) => { row._syncStamp = crypto.randomUUID(); });
+      table.hook("updating", () => ({ _syncStamp: crypto.randomUUID() }));
+    }
   }
 }
-export const db = new PilotDB();
+export const db = new PilotDB(activeDatabaseName());
 let channel: BroadcastChannel | undefined;
 function announce() {
   if (typeof window !== "undefined") {
@@ -61,7 +71,8 @@ function announce() {
     channel?.postMessage("changed");
   }
 }
-export async function loadState(date = today()): Promise<State> {
+export async function loadState(date = today(), dbTarget = db): Promise<State> {
+  const db = dbTarget;
   return db.transaction("rw", [db.state, db.listeningAudio], async () => {
     const row = await db.state.get("main");
     let state = row
@@ -124,7 +135,8 @@ export async function loadState(date = today()): Promise<State> {
       state = applyWeeklyAllocation(state, date);
       state = ensureAdaptiveDay(state, date);
     }
-    await db.state.put({ id: "main", value: state });
+    if (!row || JSON.stringify(row.value) !== JSON.stringify(state))
+      await db.state.put({ id: "main", value: state });
     return state;
   });
 }
