@@ -4,10 +4,11 @@ import {
   mkdir,
   readFile,
   readdir,
+  realpath,
   rm,
   writeFile,
 } from "node:fs/promises";
-import { join, resolve, sep } from "node:path";
+import { basename, dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { buildAccountWeb } from "./build-account-web.mjs";
 
@@ -19,17 +20,38 @@ async function rejectLinks(path) {
   if (info.isDirectory())
     for (const name of await readdir(path)) await rejectLinks(join(path, name));
 }
+async function canonicalDestination(path) {
+  try {
+    return await realpath(path);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    const parent = dirname(path);
+    if (parent === path) throw error;
+    return join(await canonicalDestination(parent), basename(path));
+  }
+}
 /** Repackage only known inputs; runtime secrets and other deploy roots stay out. */
 export async function assembleAccountNetlify(publicSource, destination) {
   publicSource = resolve(publicSource);
   destination = resolve(destination);
+  await rejectLinks(publicSource);
+  if (
+    (
+      await lstat(destination).catch((error) => {
+        if (error.code !== "ENOENT") throw error;
+        return null;
+      })
+    )?.isSymbolicLink()
+  )
+    throw Error("部署内容不接受符号链接");
+  publicSource = await realpath(publicSource);
+  destination = await canonicalDestination(destination);
   if (
     publicSource === destination ||
     publicSource.startsWith(destination + sep) ||
     destination.startsWith(publicSource + sep)
   )
     throw Error("部署目录不能覆盖或包含静态源目录");
-  await rejectLinks(publicSource);
   for (const name of [
     "server",
     "netlify-functions",

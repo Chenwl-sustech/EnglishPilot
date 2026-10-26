@@ -127,3 +127,24 @@ test("Netlify gateway keeps original URLs and stops hanging network work before 
     vi.unstubAllEnvs();
   }
 });
+
+test("a symlink ancestor cannot disguise source overlap and delete the static export", async () => {
+  const root = await mkdtemp(join(tmpdir(), "pilot-netlify-alias-")),
+    source = join(root, "export"),
+    target = join(root, "deploy"),
+    alias = join(root, "alias");
+  try {
+    await mkdir(source);
+    await writeFile(join(source, "index.html"), "preserve-this-export");
+    await assembleAccountNetlify(source, target);
+    await symlink(target, alias, "dir");
+    await expect(
+      assembleAccountNetlify(join(alias, "public"), target),
+    ).rejects.toThrow();
+    expect(await readFile(join(target, "public/index.html"), "utf8")).toBe(
+      "preserve-this-export",
+    );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
