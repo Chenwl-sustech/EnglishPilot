@@ -2,6 +2,7 @@ import "fake-indexeddb/auto";
 import { afterEach, expect, test } from "vitest";
 import { PilotDB } from "../src/lib/db";
 import { defaultState } from "../src/lib/engine";
+import Dexie from "dexie";
 import {
   prepareAccountSpace,
   readSnapshot,
@@ -122,4 +123,18 @@ test("successful local application atomically persists baseline and all audio", 
   expect((await db.syncMeta.get("main"))?.revision).toBe(7);
   expect((await readSnapshot(db)).state.profile.name).toBe("Synced");
   expect((await readSnapshot(db)).recordings).toHaveLength(1);
+});
+test("database upgrade retains existing version-four learning data and untagged audio", async () => {
+  const name = `sync-upgrade-${crypto.randomUUID()}`, old = new Dexie(name);
+  old.version(4).stores({ state: "id", recordings: "id,date", listeningAudio: "id,date" });
+  const state = defaultState("2026-10-26"); state.drafts.essay = "Existing iPad work";
+  await old.table("state").put({ id: "main", value: state });
+  await old.table("recordings").put(audio(66)); old.close();
+  const upgraded = new PilotDB(name); opened.push(upgraded);
+  const before = await readSnapshot(upgraded);
+  expect(before.state.drafts.essay).toBe("Existing iPad work");
+  expect(new Uint8Array(await before.recordings[0].blob.arrayBuffer())).toEqual(new Uint8Array([66]));
+  expect(before.recordings[0]._syncStamp).toBeUndefined();
+  await upgraded.recordings.put(audio(67));
+  expect(await applySnapshot(upgraded, before, before, { id: "main", owner: "a", project: "p", revision: 1 })).toBe(false);
 });
