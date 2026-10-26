@@ -1,3 +1,8 @@
+export function pendingAfterLocalChange<T extends string>(
+  status: T,
+): T | "pending" {
+  return status === "synced" ? "pending" : status;
+}
 export function createSyncScheduler(
   run: () => Promise<void>,
   visible: () => boolean,

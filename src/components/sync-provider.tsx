@@ -23,7 +23,10 @@ import {
   type SyncResult,
 } from "@/lib/sync/engine";
 import type { SyncMeta } from "@/lib/sync/local";
-import { createSyncScheduler } from "@/lib/sync/lifecycle";
+import {
+  createSyncScheduler,
+  pendingAfterLocalChange,
+} from "@/lib/sync/lifecycle";
 
 type SyncContext = {
   config: SyncConfig | null;
@@ -234,14 +237,23 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
       () => run(),
       () => document.visibilityState === "visible",
     );
-    const changed = () => scheduler.changed(),
+    const changed = () => {
+        setStatus(pendingAfterLocalChange);
+        scheduler.changed();
+      },
       resume = () => scheduler.resume();
+    const channel =
+      typeof BroadcastChannel !== "undefined"
+        ? new BroadcastChannel("englishpilot")
+        : null;
+    channel?.addEventListener("message", changed);
     window.addEventListener("pilot-updated", changed);
     window.addEventListener("online", resume);
     document.addEventListener("visibilitychange", resume);
     scheduler.resume();
     return () => {
       scheduler.dispose();
+      channel?.close();
       window.removeEventListener("pilot-updated", changed);
       window.removeEventListener("online", resume);
       document.removeEventListener("visibilitychange", resume);

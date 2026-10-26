@@ -1,6 +1,15 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { createSyncScheduler } from "../src/lib/sync/lifecycle";
+import {
+  createSyncScheduler,
+  pendingAfterLocalChange,
+} from "../src/lib/sync/lifecycle";
 afterEach(() => vi.useRealTimers());
+test("new edits immediately invalidate a synced label but do not clear conflicts or errors", () => {
+  expect(pendingAfterLocalChange("synced")).toBe("pending");
+  expect(pendingAfterLocalChange("conflict")).toBe("conflict");
+  expect(pendingAfterLocalChange("error")).toBe("error");
+  expect(pendingAfterLocalChange("syncing")).toBe("syncing");
+});
 test("changes debounce, hidden pages wait, and disposed accounts never schedule again", async () => {
   vi.useFakeTimers();
   let visible = true,

@@ -1,5 +1,6 @@
 "use client";
 import { apiFetch } from "@/lib/native/api";
+import { teacherDraftCacheKey } from "@/lib/teacher-draft-cache";
 import { nativeBuild } from "@/lib/native/runtime";
 
 import { useEffect, useRef, useState } from "react";
@@ -445,7 +446,7 @@ function TeacherWorkspace({
   }
   async function finish() {
     try {
-      const key = `teacher-draft:${p.id}:${p.draft.id}`;
+      const key = teacherDraftCacheKey(db.name, p.id, p.draft.id);
       let text: string | null = null;
       try {
         text = localStorage.getItem(key);
