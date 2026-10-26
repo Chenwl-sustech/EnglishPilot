@@ -7,6 +7,7 @@ import { WhisperPanel } from "../src/components/whisper-panel";
 import { ListeningImportPanel } from "../src/components/listening-import";
 import { ListeningBatchImport } from "../src/components/listening-batch-import";
 import { ListeningLab } from "../src/components/listening-lab";
+import { SpeakingTeacher } from "../src/components/speaking-teacher";
 import { CalendarPage } from "../src/components/calendar-page";
 
 vi.mock("../src/lib/native/runtime", () => ({ nativeBuild: true }));
@@ -77,4 +78,12 @@ test("calendar does not mark days before the learning start date as missed", () 
   } finally {
     vi.useRealTimers();
   }
+});
+
+test("native AI teacher describes manual text and device speech without desktop model management", () => {
+  const html = render(SpeakingTeacher);
+  expect(html).not.toContain("管理本地模型");
+  expect(html).not.toContain("正在检查本地 Whisper");
+  expect(html).toContain("手工填写");
+  expect(html).toContain("设备本地");
 });

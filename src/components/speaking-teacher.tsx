@@ -1,5 +1,6 @@
 "use client";
 import { apiFetch } from "@/lib/native/api";
+import { nativeBuild } from "@/lib/native/runtime";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -55,7 +56,11 @@ export function SpeakingTeacher() {
     [voiceKey, setVoiceKey] = useState(""),
     [voiceError, setVoiceError] = useState(""),
     [autoVoice, setAutoVoice] = useState(false),
-    [whisper, setWhisper] = useState("正在检查本地 Whisper…");
+    [whisper, setWhisper] = useState(
+      nativeBuild
+        ? "可直接打字，或回放录音后手工填写回答。朗读使用设备本地声音；录音不上传。"
+        : "正在检查本地 Whisper…",
+    );
   const sessions = state.extension.teacherSessions,
     session = sessions.find((p) => p.id === selected) ?? sessions.at(-1);
   const preference =
@@ -90,50 +95,53 @@ export function SpeakingTeacher() {
     };
     refreshDevice();
     window.speechSynthesis?.addEventListener("voiceschanged", refreshDevice);
-    void apiFetch("/api/tts")
-      .then(async (r) => {
-        const b = await r.json();
-        if (!r.ok) throw new Error(b.error || "本地 WAV 引擎不可用");
-        if (active)
-          setVoices((old) => [
-            ...(b.voices as { id: string; name: string; locale: string }[])
-              .filter((v) => /^en[-_]/i.test(v.locale))
-              .map((v) => ({
-                key: `system:${v.id}`,
-                name: `${v.name} · ${v.locale} · 本地 WAV`,
-                preference: {
-                  voiceURI: v.id,
-                  locale: v.locale,
-                  mode: "system-local" as const,
-                },
-              })),
-            ...old.filter((v) => v.preference.mode === "device-local"),
-          ]);
-      })
-      .catch(() => {
-        if (active)
-          setVoiceError(
-            "本地 WAV 语音暂不可用，可检查设置；不会自动改用在线语音",
+    if (!nativeBuild) {
+      void apiFetch("/api/tts")
+        .then(async (r) => {
+          const b = await r.json();
+          if (!r.ok) throw new Error(b.error || "本地 WAV 引擎不可用");
+          if (active)
+            setVoices((old) => [
+              ...(b.voices as { id: string; name: string; locale: string }[])
+                .filter((v) => /^en[-_]/i.test(v.locale))
+                .map((v) => ({
+                  key: `system:${v.id}`,
+                  name: `${v.name} · ${v.locale} · 本地 WAV`,
+                  preference: {
+                    voiceURI: v.id,
+                    locale: v.locale,
+                    mode: "system-local" as const,
+                  },
+                })),
+              ...old.filter((v) => v.preference.mode === "device-local"),
+            ]);
+        })
+        .catch(() => {
+          if (active)
+            setVoiceError(
+              "本地 WAV 语音暂不可用，可检查设置；不会自动改用在线语音",
+            );
+        });
+      void apiFetch("/api/whisper")
+        .then(async (r) => {
+          const b = await r.json();
+          if (!r.ok) throw new Error();
+          const m = b.models?.find(
+            (m: { name: string; installed: boolean }) =>
+              m.name === state.extension.whisperModel,
           );
-      });
-    void apiFetch("/api/whisper")
-      .then(async (r) => {
-        const b = await r.json();
-        if (!r.ok) throw new Error();
-        const m = b.models?.find(
-          (m: { name: string; installed: boolean }) =>
-            m.name === state.extension.whisperModel,
-        );
-        if (active)
-          setWhisper(
-            m?.installed
-              ? `本地 Whisper ${m.name} 已安装`
-              : `Whisper ${state.extension.whisperModel} 尚未安装，请到口语训练页配置`,
-          );
-      })
-      .catch(() => {
-        if (active) setWhisper("本地 Whisper 未连接，仍可录音、回放和打字对话");
-      });
+          if (active)
+            setWhisper(
+              m?.installed
+                ? `本地 Whisper ${m.name} 已安装`
+                : `Whisper ${state.extension.whisperModel} 尚未安装，请到口语训练页配置`,
+            );
+        })
+        .catch(() => {
+          if (active)
+            setWhisper("本地 Whisper 未连接，仍可录音、回放和打字对话");
+        });
+    }
     return () => {
       active = false;
       stopPronunciation();
@@ -165,7 +173,11 @@ export function SpeakingTeacher() {
       <PageHeading
         eyebrow="SPEAK, REFLECT, TRY AGAIN"
         title="AI 口语老师"
-        description="录音、核对转写，再与老师继续对话。支持自由交流、情景练习与双考试口语陪练。"
+        description={
+          nativeBuild
+            ? "回放录音、手工填写并核对文字，再与老师继续对话。支持自由交流、情景练习与双考试口语陪练。"
+            : "录音、核对转写，再与老师继续对话。支持自由交流、情景练习与双考试口语陪练。"
+        }
       />
       <section className="panel teacher-setup">
         <h2>开始一次练习</h2>
@@ -244,7 +256,13 @@ export function SpeakingTeacher() {
           开始新对话
         </button>
         <p className="small muted">
-          {whisper} · <Link href="/speaking">管理本地模型</Link>
+          {whisper}
+          {!nativeBuild && (
+            <>
+              {" "}
+              · <Link href="/speaking">管理本地模型</Link>
+            </>
+          )}
         </p>
       </section>
       <section className="panel teacher-voice">

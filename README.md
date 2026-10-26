@@ -8,8 +8,8 @@
 
 [下载 Release](https://github.com/Chenwl-sustech/EnglishPilot/releases/latest)
 
-- `EnglishPilot-Source-v0.1.2.zip`：完整源码，含独立 AI 后端。
-- `EnglishPilot-Xcode-Project-v0.1.2.zip`：已内置页面的原生工程包；解压后按文档选择自己的 Apple Team 和 Bundle Identifier，再编译安装。
+- `EnglishPilot-Source-v0.1.3.zip`：完整源码，含独立 AI 后端。
+- `EnglishPilot-Xcode-Project-v0.1.3.zip`：已内置页面的原生工程包；解压后按文档选择自己的 Apple Team 和 Bundle Identifier，再编译安装。
 - `SHA256SUMS.txt`：下载文件校验值。
 
 当前公开 Release 提供可自行签名的工程，**不是免签安装包**。免费 Personal Team 的安装仅适用于自己的已登记设备，签名会到期。面向其他用户的 TestFlight / App Store 分发需要适当的 Apple 开发者资格和签名；本项目没有发布他人的个人签名 Profile。
