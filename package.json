@@ -25,6 +25,7 @@
     "@capacitor/core": "8.5.3",
     "@capacitor/filesystem": "8.1.5",
     "@capacitor/share": "8.0.3",
+    "@supabase/supabase-js": "2.118.0",
     "@upstash/redis": "1.39.0",
     "dexie": "^4.2.0",
     "fflate": "0.8.3",
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@capacitor/cli": "8.5.3",
     "@capacitor/ios": "8.5.3",
+    "@electric-sql/pglite": "0.5.11",
     "@playwright/test": "^1.56.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",

@@ -61,7 +61,7 @@ export class PilotDB extends Dexie {
 }
 export const db = new PilotDB(activeDatabaseName());
 let channel: BroadcastChannel | undefined;
-function announce() {
+export function announce() {
   if (typeof window !== "undefined") {
     window.dispatchEvent(new Event("pilot-updated"));
     channel ??=

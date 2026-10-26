@@ -133,6 +133,83 @@
     }
   },
   {
+    "name": "@supabase/auth-js",
+    "version": "2.118.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_supabase_auth-js_2.118.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_supabase_auth-js_2.118.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@supabase/functions-js",
+    "version": "2.118.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_supabase_functions-js_2.118.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_supabase_functions-js_2.118.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@supabase/phoenix",
+    "version": "0.4.5",
+    "license": "MIT",
+    "notices": [
+      "npm/_supabase_phoenix_0.4.5--LICENSE.md.txt"
+    ],
+    "noticeSources": {
+      "npm/_supabase_phoenix_0.4.5--LICENSE.md.txt": "LICENSE.md"
+    }
+  },
+  {
+    "name": "@supabase/postgrest-js",
+    "version": "2.118.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_supabase_postgrest-js_2.118.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_supabase_postgrest-js_2.118.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@supabase/realtime-js",
+    "version": "2.118.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_supabase_realtime-js_2.118.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_supabase_realtime-js_2.118.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@supabase/storage-js",
+    "version": "2.118.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_supabase_storage-js_2.118.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_supabase_storage-js_2.118.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "@supabase/supabase-js",
+    "version": "2.118.0",
+    "license": "MIT",
+    "notices": [
+      "npm/_supabase_supabase-js_2.118.0--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/_supabase_supabase-js_2.118.0--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
     "name": "@swc/helpers",
     "version": "0.5.23",
     "license": "Apache-2.0",
@@ -515,6 +592,17 @@
     ],
     "noticeSources": {
       "npm/fflate_0.8.3--LICENSE.txt": "LICENSE"
+    }
+  },
+  {
+    "name": "iceberg-js",
+    "version": "0.8.1",
+    "license": "MIT",
+    "notices": [
+      "npm/iceberg-js_0.8.1--LICENSE.txt"
+    ],
+    "noticeSources": {
+      "npm/iceberg-js_0.8.1--LICENSE.txt": "LICENSE"
     }
   },
   {
