@@ -61,6 +61,8 @@ Supabase 默认邮件服务只向项目组织成员邮箱发送，当前额度�
 
 此客户端的找回密码使用**邮件验证码**，不把会话放进 URL。请在 Authentication → Email Templates → Reset Password 模板中加入：
 
+邮件找回入口默认关闭（`NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=0`）。须先配置可编辑的 SMTP / 邮件发送服务和下方验证码模板，并实际验证收信；之后设置 `NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=1` 重新构建。当前私人免费项目尚未完成邮件服务配置，界面会明确显示尚未启用；登录与同步不依赖找回邮件。
+
 ```html
 <h2>重设 EnglishPilot 学习账号密码</h2>
 <p>验证码：{{ .Token }}</p>

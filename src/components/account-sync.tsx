@@ -18,6 +18,8 @@ import { saveExport } from "@/lib/native/files";
 import { today } from "@/lib/engine";
 
 export function AccountSync() {
+  const emailRecoveryAvailable =
+    process.env.NEXT_PUBLIC_SYNC_EMAIL_RECOVERY === "1";
   const sync = useAccountSync(),
     { state, fail, notify } = useStudy();
   const [email, setEmail] = useState(""),
@@ -257,7 +259,7 @@ export function AccountSync() {
             <button
               className="button secondary"
               type="button"
-              disabled={busy || !email}
+              disabled={busy || !email || !emailRecoveryAvailable}
               onClick={() =>
                 void perform(async () => {
                   const { error } =
@@ -271,10 +273,17 @@ export function AccountSync() {
                 })
               }
             >
-              忘记密码／发送验证码
+              {emailRecoveryAvailable
+                ? "忘记密码／发送验证码"
+                : "邮件找回尚未启用"}
             </button>
           </div>
-          {recovery && (
+          {!emailRecoveryAvailable && (
+            <p className="small muted">
+              此个人云项目尚未配置找回密码邮件。如需重设，请使用自己的云项目管理账号处理。
+            </p>
+          )}
+          {recovery && emailRecoveryAvailable && (
             <>
               <label>
                 邮件中的重置验证码
