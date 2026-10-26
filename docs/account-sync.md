@@ -22,7 +22,15 @@
    NEXT_PUBLIC_SYNC_SIGNUP=0
    ```
 
-   Web 部署到现有 Vercel 前端项目后重新构建。安装版需在 `npm run native:build` 前提供相同变量，再按原安装说明编译覆盖安装。也可在设置 → 账号与跨设备同步 → 云服务配置中手动输入 URL 和公开 Key；未配置时不会上传。
+   Web 需部署此仓库的 Next.js 前端并重新构建。完整前端在 Vercel 上保留原有 `ENGLISHPILOT_ACCESS_HASH` 站点访问保护，未配置会返回 503。部署者需自行设置站点入口用户名和密码，将 UTF-8 字符串 `用户名:密码` 的 SHA-256 十六进制值保存为服务端环境变量 `ENGLISHPILOT_ACCESS_HASH`（不要把明文或哈希提交到仓库）。站点入口的访问凭据与学习账号是两道独立验证，不要通过删除保护来公开原来的 AI 接口。现有 `englishpilot` 项目的框架设置需先核实，不应直接覆盖不匹配的项目。
+
+   安装版需在 `npm run native:build` 前将相同的公开变量提供给 shell 环境，再按原安装说明编译覆盖安装。例如：
+
+   ```sh
+   NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLIC_KEY npm run native:build
+   ```
+
+   原生构建会在独立暂存目录运行，原项目的 `.env.local` 不会被复制；因此不要只把变量写入原目录的 `.env.local` 后就假定已生效。也可在设置 → 账号与跨设备同步 → 云服务配置中手动输入 URL 和公开 Key；未配置时不会上传。
 
 5. 私人使用：在 Authentication → Users 中创建个人学习账号，填写邮箱和本人选择的密码，按控制台选项完成邮箱确认；然后关闭项目的公开注册。创建登录凭据与密码步骤由本人操作。**学习账号与 Supabase 控制台管理员账号是两回事。**
 6. 在 iPad 登录学习账号。确认上传范围，首次关联时选择“带入本机学习数据（含录音）”，再点“进入账号空间并启用同步”。原本机空间保留，新的账号副本开始同步。首次也有云端数据时会保守提示冲突。
