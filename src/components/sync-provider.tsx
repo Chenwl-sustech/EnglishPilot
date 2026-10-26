@@ -15,7 +15,7 @@ import {
   activeSpaceKey,
   accountDatabaseName,
 } from "@/lib/sync/space";
-import { syncClient, supabaseCloud } from "@/lib/sync/client";
+import { syncClient, supabaseCloud, offlineIdentity } from "@/lib/sync/client";
 import {
   syncOnce,
   resolveConflict,
@@ -34,6 +34,7 @@ type SyncContext = {
   meta: SyncMeta | null;
   busy: boolean;
   ready: boolean;
+  offlineOwner: string | null;
   run: (choice?: "local" | "cloud" | "recheck") => Promise<void>;
   invalidate: () => void;
 };
@@ -52,6 +53,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     [meta, setMeta] = useState<SyncMeta | null>(null),
     [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
+  const [offlineOwner, setOfflineOwner] = useState<string | null>(null);
   const generation = useRef(0),
     userId = useRef<string | null>(null),
     running = useRef(false),
@@ -61,6 +63,9 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
   }, []);
   useEffect(() => {
     mounted.current = true;
+    let live = true,
+      identityVersion = 0,
+      refreshing = false;
     const config = readSyncConfig();
     setConfig(config);
     if (!config) {
@@ -79,37 +84,83 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
       setReady(true);
       return;
     }
-    const accept = (next: User | null) => {
-      if (!mounted.current) return;
+    const recoverLocalIdentity = async () => {
+      const version = ++identityVersion;
+      try {
+        const identity = await offlineIdentity(config);
+        if (live && version === identityVersion && !userId.current) {
+          setOfflineOwner(identity?.id ?? null);
+          setReady(true);
+        }
+      } catch (e) {
+        if (live && version === identityVersion) {
+          setOfflineOwner(null);
+          setReady(true);
+          setError(e instanceof Error ? e.message : "无法读取本机账号会话");
+        }
+      }
+    };
+    const accept = (next: User | null, signedOut = false) => {
+      if (!live) return;
       if (userId.current !== (next?.id ?? null)) generation.current++;
       userId.current = next?.id ?? null;
       setUser(next);
       setReady(true);
+      if (next || signedOut) {
+        identityVersion++;
+        setOfflineOwner(null);
+      } else void recoverLocalIdentity();
       if (!next) setStatus("local");
     };
     const {
       data: { subscription },
-    } = instance.auth.onAuthStateChange((_event, session) => {
-      accept(session?.user ?? null);
+    } = instance.auth.onAuthStateChange((event, session) => {
+      accept(session?.user ?? null, event === "SIGNED_OUT");
     });
+    void recoverLocalIdentity();
     void instance.auth
       .getSession()
-      .then(({ data, error }) => {
+      .then(({ error }) => {
         if (error) throw error;
         // onAuthStateChange delivers INITIAL_SESSION. Do not let a delayed
         // getSession result undo a more recent sign-in or sign-out event.
-        if (mounted.current) setReady(true);
+        if (live) setReady(true);
       })
       .catch((e) => {
-        if (mounted.current) {
+        if (live) {
           setError(e instanceof Error ? e.message : "账号会话读取失败");
-          setReady(true);
+          void recoverLocalIdentity();
         }
       });
+    const resumeSession = async () => {
+      if (
+        !live ||
+        refreshing ||
+        userId.current ||
+        navigator.onLine === false ||
+        document.visibilityState !== "visible"
+      )
+        return;
+      refreshing = true;
+      try {
+        const { error } = await instance.auth.getSession();
+        if (error) throw error;
+      } catch {
+        if (live) void recoverLocalIdentity();
+      } finally {
+        refreshing = false;
+      }
+    };
+    window.addEventListener("online", resumeSession);
+    document.addEventListener("visibilitychange", resumeSession);
     return () => {
+      live = false;
+      identityVersion++;
       mounted.current = false;
       generation.current++;
       subscription.unsubscribe();
+      window.removeEventListener("online", resumeSession);
+      document.removeEventListener("visibilitychange", resumeSession);
     };
   }, []);
   const run = useCallback(
@@ -218,6 +269,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         meta,
         busy,
         ready,
+        offlineOwner,
         run,
         invalidate,
       }}

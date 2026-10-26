@@ -6,12 +6,43 @@ import { parseSyncConfig, type SyncConfig } from "./config";
 import {
   createSessionStorage,
   type SecureSessionTransport,
+  type SessionStorage,
+  sessionStorageKey,
+  readOfflineIdentity,
+  forgetStoredSession,
 } from "./session-storage";
 import type { CloudStore, CloudHead } from "./engine";
 let cached: { signature: string; client: SupabaseClient } | undefined;
 const secure = registerPlugin<SecureSessionTransport>(
   "EnglishPilotAccountSession",
 );
+function accountSessionStorage(): SessionStorage {
+  if (nativeBuild) {
+    if (
+      Capacitor.getPlatform() !== "ios" ||
+      !Capacitor.isPluginAvailable("EnglishPilotAccountSession")
+    )
+      throw new Error(
+        "此安装版尚未提供账号安全存储，请更新 iOS 安装版，或使用手机浏览器登录",
+      );
+    return createSessionStorage(secure);
+  }
+  return window.localStorage;
+}
+export async function offlineIdentity(
+  config: SyncConfig,
+): Promise<{ id: string } | null> {
+  return readOfflineIdentity(
+    accountSessionStorage(),
+    sessionStorageKey(config.url),
+  );
+}
+export async function forgetOfflineIdentity(config: SyncConfig): Promise<void> {
+  await forgetStoredSession(
+    accountSessionStorage(),
+    sessionStorageKey(config.url),
+  );
+}
 async function boundedFetch(
   input: RequestInfo | URL,
   init?: RequestInit,
@@ -51,11 +82,11 @@ export function syncClient(raw: SyncConfig): SupabaseClient {
     );
   const client = createClient(config.url, config.key, {
     auth: {
-      storageKey: `englishpilot-auth-${new URL(config.url).hostname.split(".")[0]}`,
+      storageKey: sessionStorageKey(config.url),
       detectSessionInUrl: false,
       persistSession: true,
       autoRefreshToken: true,
-      ...(nativeBuild ? { storage: createSessionStorage(secure) } : {}),
+      storage: accountSessionStorage(),
     },
     global: { fetch: boundedFetch },
   });

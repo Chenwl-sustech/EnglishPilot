@@ -11,7 +11,7 @@ import {
   selectSpace,
 } from "@/lib/sync/space";
 import { parseSyncConfig, syncConfigKey } from "@/lib/sync/config";
-import { supabaseCloud } from "@/lib/sync/client";
+import { supabaseCloud, forgetOfflineIdentity } from "@/lib/sync/client";
 import { cloudSnapshot } from "@/lib/sync/engine";
 import { encodeBackup } from "@/lib/backup";
 import { saveExport } from "@/lib/native/files";
@@ -101,7 +101,9 @@ export function AccountSync() {
   }
   const status = {
     local: space
-      ? "未登录当前账号，自动同步已暂停"
+      ? sync.offlineOwner === space.uid
+        ? "离线账号副本可用；恢复联网后续期登录并同步"
+        : "未登录当前账号，自动同步已暂停"
       : "本机空间 · 尚未启用云同步",
     syncing: "正在同步，请保持网络连接…",
     synced: "已同步",
@@ -482,6 +484,22 @@ export function AccountSync() {
           }}
         >
           返回原本机学习空间（保留账号离线副本）
+        </button>
+      )}
+      {!sync.user && sync.offlineOwner && sync.config && (
+        <button
+          className="button secondary"
+          disabled={busy}
+          onClick={() =>
+            void perform(async () => {
+              sync.invalidate();
+              sync.client?.auth.stopAutoRefresh();
+              await forgetOfflineIdentity(sync.config!);
+              selectSpace(null);
+            })
+          }
+        >
+          离线退出此设备账号，返回本机空间
         </button>
       )}
       <p className="small muted">

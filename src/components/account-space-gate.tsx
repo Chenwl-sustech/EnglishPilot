@@ -10,6 +10,7 @@ export function AccountSpaceGate({ children }: { children: React.ReactNode }) {
     sync.ready,
     sync.user?.id ?? null,
     sync.config?.url ?? null,
+    sync.offlineOwner,
   );
   if (access === "loading")
     return (
