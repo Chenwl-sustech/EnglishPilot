@@ -6,6 +6,13 @@
   "functions": { "api/*.js": { "maxDuration": 120 } },
   "headers": [
     {
+      "source": "/reset-password/:path*",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "Referrer-Policy", "value": "no-referrer" }
+      ]
+    },
+    {
       "source": "/sw.js",
       "headers": [
         {

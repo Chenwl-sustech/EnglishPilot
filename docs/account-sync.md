@@ -61,7 +61,13 @@ Supabase 默认邮件服务只向项目组织成员邮箱发送，当前额度�
 
 公开注册需同时在项目 Auth 设置中允许注册、配置 SMTP，并在前端构建时设置 `NEXT_PUBLIC_SYNC_SIGNUP=1`。确认邮件链接完成邮箱验证后，回应用使用邮箱和密码登录。建议开启项目提供的注册保护，避免公开项目被滥用；注册对云服务条款的确认由部署者负责。
 
-此客户端的找回密码使用**邮件验证码**，不把会话放进 URL。邮件找回入口默认关闭（`NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=0`）。须先配置可编辑的 SMTP / 邮件发送服务和下方验证码模板，并实际验证收信；之后设置 `NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=1` 重新构建。当前私人免费项目尚未完成邮件服务配置，界面会明确显示尚未启用；登录与同步不依赖找回邮件。
+邮件找回默认关闭（`NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=0`），部署者可以选择下面一种方式。
+
+手机网页可设置 `NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=link` 后重新执行 `npm run cloud:web:build`，启用“忘记密码／重设密码”及 `/reset-password/` 页面。使用 Supabase 官方 PKCE 邮件链接，不需要修改默认邮件模板。先将 Auth → URL Configuration 的 Site URL 设为实际 HTTPS 网页根地址，并在 Redirect URLs 添加**精确的** `https://你的域名/reset-password/`。默认邮件仍仅面向项目组织成员邮箱；其他邮箱须配置 SMTP。当前个人网页预览采用此方式，实际收信与新密码提交仍须本人完成。
+
+在重设页面请求邮件后，须在**发起请求的同一浏览器**打开邮件链接；必要时把邮件链接复制到该浏览器地址栏，切勿发送到聊天。网页立即清除回调参数，只将临时授权码用于 PKCE 交换，不处理 URL 中的 access token。恢复客户端与学习会话隔离，仅将有期限的 PKCE verifier 保存到自己的本地命名空间，恢复会话只在内存；验证后十分钟内本人输入两次新密码。重设完成返回首页正常登录，不自动启用或上传学习数据。链接过期、使用不同浏览器或刷新已清除链接的重设表单时，重新请求邮件即可。
+
+配置了自有邮件服务及验证码模板的部署，可继续使用**邮件验证码**方式：设置 `NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=1` 重新构建。此方式不把会话放进 URL，须先配置下方模板并实际验证收信。
 
 在 Authentication → Email Templates → Reset Password 模板中加入：
 

@@ -14,6 +14,17 @@ import {
   assembleAccountWeb,
 } from "../scripts/build-account-web.mjs";
 import { nativeBuildEnvironment } from "../scripts/build-native.mjs";
+test("web link recovery is explicitly enabled and default builds leave recovery off", () => {
+  const base = {
+    NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test123456789",
+  };
+  expect(webBuildEnvironment(base).NEXT_PUBLIC_SYNC_EMAIL_RECOVERY).toBe("0");
+  expect(
+    webBuildEnvironment({ ...base, NEXT_PUBLIC_SYNC_EMAIL_RECOVERY: "link" })
+      .NEXT_PUBLIC_SYNC_EMAIL_RECOVERY,
+  ).toBe("link");
+});
 test("static build receives public configuration while private service credentials stay out", () => {
   const env = webBuildEnvironment({
     PATH: "/bin",

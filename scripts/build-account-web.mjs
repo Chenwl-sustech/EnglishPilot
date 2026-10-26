@@ -46,8 +46,11 @@ export function webBuildEnvironment(source = process.env) {
     NEXT_PUBLIC_ENGLISHPILOT_WEB: "1",
     NEXT_PUBLIC_ENGLISHPILOT_ACCOUNT_WEB: "1",
     NEXT_PUBLIC_SYNC_SIGNUP: "0",
-    NEXT_PUBLIC_SYNC_EMAIL_RECOVERY:
-      source.NEXT_PUBLIC_SYNC_EMAIL_RECOVERY === "1" ? "1" : "0",
+    NEXT_PUBLIC_SYNC_EMAIL_RECOVERY: ["1", "link"].includes(
+      source.NEXT_PUBLIC_SYNC_EMAIL_RECOVERY,
+    )
+      ? source.NEXT_PUBLIC_SYNC_EMAIL_RECOVERY
+      : "0",
   };
 }
 async function noLinks(path) {
