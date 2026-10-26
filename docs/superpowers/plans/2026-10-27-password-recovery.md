@@ -1,6 +1,6 @@
 # Web Password Recovery Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Let the owner reset the existing learning password using email and privately submit the new password.
 
@@ -31,8 +31,8 @@
 
 **Interfaces:** `createPasswordRecovery(config, storage, fetcher?, now?)` returns request(email, origin), consume(url, clearUrl), finish(password, confirmation), with only the verified recovery result enabling finish. Page creates it once in a client effect. Login UI links to `/reset-password/` for explicit `link` build mode.
 
-- [ ] Write tests using the real SDK and synthetic fetch/storage: reject unverified updates; request emits PKCE challenge and exact callback; callback cleanup precedes fetch; verify actual update after recovery only; reject wrong browser/type/expired grant/mismatched passwords; no persisted bearer session. Add build link-mode propagation test.
-- [ ] Run `npx vitest run tests/account-password-recovery.test.ts tests/account-web-build.test.ts` and confirm missing implementation/link mode fails.
-- [ ] Implement the flow, static form and gated navigation; no learning provider/database access on the reset page. Add no-referrer and no-store recovery page headers.
-- [ ] Run `npm test`, `npm run typecheck`, static cloud build, credential scans; independently review this delta. Expected: all pass, callback page deployed with recovery form, private gateway stays protected.
-- [ ] Configure exact Supabase callback and deploy; request one recovery email from the page, then hand off new password submission to the owner. Update GitHub and document actual evidence without claiming the password was reset before owner submission.
+- [x] Write tests using the real SDK and synthetic fetch/storage: reject unverified updates; request emits PKCE challenge and exact callback; callback cleanup precedes fetch; verify actual update after recovery only; reject wrong browser/type/expired grant/mismatched passwords; no persisted bearer session. Add build link-mode propagation test.
+- [x] Run `npx vitest run tests/account-password-recovery.test.ts tests/account-web-build.test.ts` and confirm missing implementation/link mode fails.
+- [x] Implement the flow, static form and gated navigation; no learning provider/database access on the reset page. Add no-referrer and no-store recovery page headers.
+- [x] Run `npm test`, `npm run typecheck`, static cloud build, credential scans; independently review this delta. Expected: all pass, callback page deployed with recovery form, private gateway stays protected.
+- [x] Configure exact Supabase callback and deploy; request one recovery email from the page, then hand off new password submission to the owner. Update GitHub and document actual evidence without claiming the password was reset before owner submission.
