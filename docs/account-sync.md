@@ -2,7 +2,7 @@
 
 本功能使用 **Supabase Auth + PostgreSQL + 私有 Storage**，Mac 关机后仍由云服务处理同步。现有 Vercel AI 服务保持独立；学习账号不自动获得任何私人 AI 配对令牌。
 
-当前个人部署的[手机网页预览](https://englishpilot-sync.vercel.app/)已可访问。首次页面展开“已有学习账号？登录并同步到此设备”，使用管理员已创建的学习账号。网页与云服务已部署，登录后的同步和真实双设备验收仍在进行，进度见[验证记录](qa/2026-10-26-account-sync.md)。v0.1.3 安装包尚未包含此功能。
+当前个人部署使用[Netlify 手机网页预览](https://englishpilot-chenwl-sync.netlify.app/)，原 Vercel 默认域名在用户手机网络中无法打开。首次页面展开“已有学习账号？登录并同步到此设备”，使用管理员已创建的学习账号；忘记密码可在[重设页面](https://englishpilot-chenwl-sync.netlify.app/reset-password/)申请邮件。新网址已通过 Mac 直连检查，手机登录、登录后的同步和真实双设备验收仍在进行，进度见[验证记录](qa/2026-10-26-account-sync.md)。v0.1.3 安装包尚未包含此功能。
 
 ## 当前接入范围
 
@@ -62,6 +62,8 @@
 在原有公开 Supabase 构建变量之外，按需要设置 `NEXT_PUBLIC_SYNC_EMAIL_RECOVERY=link`，执行 `npm run cloud:web:netlify`。输出 `.local/account-netlify-deploy`，其中 `public/` 才是发布目录，`functions/` 和 `server/` 是服务器文件；环境文件和私人 AI 凭据不会复制进去。不要把整个目录作为纯静态文件上传。
 
 使用本人 Netlify Free 账号，通过官方 CLI 在输出目录构建 / 部署函数与静态页面。五项服务器环境变量与上方 Vercel 网关一致，另将函数运行时设置为 Node 24（`AWS_LAMBDA_JS_RUNTIME=nodejs24.x`）。不要把这些服务器变量改成 `NEXT_PUBLIC_*`。新网关仍验证 Supabase 会话和批准账号，再由服务器转发至原私人 AI 后端。
+
+新团队的项目可能默认 Private，完成生产部署后还须在 Project configuration → General → Visitor access 中公开正式页面。可保留 Private 并选择 Previews only，使正式网址可访问、预览继续受 Netlify 登录保护。应用自身的 Supabase 身份验证、批准账号限制与私有数据库策略继续生效。参见 [Netlify 项目可见性说明](https://docs.netlify.com/manage/security/secure-access-to-sites/project-visibility/)。
 
 取得自己的 `https://你的站点.netlify.app` 地址后，在 Supabase 的 Redirect URLs 添加精确的 `https://你的站点.netlify.app/reset-password/`，不要使用通配符。原 Vercel 回调可继续保留；新域名的浏览器存储与旧站点分开，须在**新站点的目标浏览器**重新请求恢复邮件，不能继续使用在旧站点 / 其他浏览器发起的 PKCE 邮件。
 

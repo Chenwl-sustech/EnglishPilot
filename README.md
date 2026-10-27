@@ -51,9 +51,9 @@ npm run native:build
 
 此功能尚未包含在 v0.1.3 Release 中。网页目前供云端预览，真实双设备验收尚未完成；现有发布包的使用方式不变。
 
-个人部署的[手机网页预览](https://englishpilot-sync.vercel.app/)已发布，账号由部署者创建，AI 访问额外限制为批准的用户。云数据库和未登录接口保护已验证，实际账号同步与设备验收进度见[验证记录](docs/qa/2026-10-26-account-sync.md)。网页无需 Mac 保持开机，安装版升级仍需按签名与设备流程处理。
+个人部署的[手机网页预览](https://englishpilot-chenwl-sync.netlify.app/)和[密码重设页面](https://englishpilot-chenwl-sync.netlify.app/reset-password/)已发布，账号由部署者创建，AI 访问额外限制为批准的用户。云数据库和未登录接口保护已验证，实际账号同步与设备验收进度见[验证记录](docs/qa/2026-10-26-account-sync.md)。网页无需 Mac 保持开机，安装版升级仍需按签名与设备流程处理。
 
-部分手机网络无法访问 Vercel 默认域名；项目另提供 `npm run cloud:web:netlify` 生成免费备用部署包。备用站点仍需部署者完成平台账号与发布配置，不能把本地打包成功视为手机已可用。
+部分手机网络无法访问原 Vercel 默认域名；上述 Netlify Free 备用站点已发布并完成 Mac 直连检查，手机实际登录仍待验证。自行部署可用 `npm run cloud:web:netlify` 生成部署包，按文档配置自己的平台账号；免费额度不保证永久连续在线。
 
 ## 内容来源
 
