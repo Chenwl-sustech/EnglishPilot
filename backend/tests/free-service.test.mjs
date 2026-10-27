@@ -55,3 +55,30 @@ test('free plan caps cannot be raised and bootstrap is not a client API',async()
  assert.equal((await app.fetch(f.req('/api/bootstrap','POST'))).status,404);
  assert.equal((await app.fetch(f.req('/api/ai-usage','POST',{dailyCalls:0,dailyTokens:0,maxOutputTokens:1024}))).status,200);
 });
+
+test('a separately paired device is authorized without replacing the existing gateway credential',async()=>{
+ const f=fixture();f.env.BACKEND_DEVICE_TOKEN='fixture-paired-device-01234567890123456789';
+ const app=createFreeService({env:f.env,fetcher:f.fetcher});
+ const device=f.req('/api/configuration');device.headers.set('Authorization','Bearer '+f.env.BACKEND_DEVICE_TOKEN);
+ const status=await app.fetch(device);assert.equal(status.status,200);
+ const body=await status.text();assert.ok(!body.includes(f.env.BACKEND_DEVICE_TOKEN));assert.ok(!body.includes(f.env.BACKEND_ACCESS_TOKEN));
+ assert.equal((await app.fetch(f.req('/api/configuration'))).status,200);
+ const browser=new Request(device);browser.headers.set('Origin','https://evil.test');assert.equal((await app.fetch(browser)).status,403);
+ for(const token of ['wrong-token','short','fixture-paired-device-01234567890123456788']){
+  const invalid=f.req('/api/configuration');invalid.headers.set('Authorization','Bearer '+token);assert.equal((await app.fetch(invalid)).status,401);
+ }
+ for(const token of ['short','device token with invalid whitespace','x'.repeat(4097)]){
+  f.env.BACKEND_DEVICE_TOKEN=token;const invalid=f.req('/api/configuration');invalid.headers.set('Authorization','Bearer '+token);assert.equal((await app.fetch(invalid)).status,401);
+ }
+ assert.equal(f.sent.length,0);
+});
+
+test('paired device and gateway share the existing quota rather than separate allowances',async()=>{
+ const f=fixture();f.env.BACKEND_DEVICE_TOKEN='fixture-paired-device-01234567890123456789';
+ for(const [index,token] of [f.env.BACKEND_ACCESS_TOKEN,f.env.BACKEND_DEVICE_TOKEN,f.env.BACKEND_DEVICE_TOKEN].entries()){
+  const request=f.req('/api/teacher','POST',f.teacher());request.headers.set('Authorization','Bearer '+token);
+  const response=await createFreeService({env:f.env,fetcher:f.fetcher}).fetch(request);assert.equal(response.status,index<2?200:429);
+ }
+ assert.equal(f.calls(),2);
+ const quota=await(await createFreeService({env:f.env,fetcher:f.fetcher}).fetch(f.req('/api/ai-usage'))).json();assert.equal(quota.calls.used,2);
+});

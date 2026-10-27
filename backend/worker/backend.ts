@@ -34,7 +34,14 @@ async function matches(value: string, expected: string | undefined) {
 const json = (body: unknown, status = 200) => Response.json(body, { status, headers: { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } });
 
 export async function accessResponse(request: Request, env: Record<string, any>) {
-  if (!await matches(request.headers.get("Authorization") ?? "", `Bearer ${env.BACKEND_ACCESS_TOKEN ?? ""}`) || !env.BACKEND_ACCESS_TOKEN)
+  const authorization = request.headers.get("Authorization") ?? "";
+  const deviceToken = env.BACKEND_DEVICE_TOKEN;
+  const validDeviceToken = typeof deviceToken === "string" && deviceToken.length >= 32 && deviceToken.length <= 4096 && !/\s/.test(deviceToken);
+  const [primary, device] = await Promise.all([
+    env.BACKEND_ACCESS_TOKEN ? matches(authorization, `Bearer ${env.BACKEND_ACCESS_TOKEN}`) : false,
+    validDeviceToken ? matches(authorization, `Bearer ${deviceToken}`) : false,
+  ]);
+  if (!primary && !device)
     return json({ error: "设备连接未获授权，请检查安装版连接配置。" }, 401);
   if (request.headers.has("Origin")) return json({ error: "此接口仅接受已配对安装版请求。" }, 403);
   return null;

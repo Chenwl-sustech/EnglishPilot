@@ -55,6 +55,24 @@ async function boundedText(response, max = 2 * 1024 * 1024) {
   }
   return new TextDecoder("utf-8", { fatal: true }).decode(result);
 }
+async function matchesDeviceCredential(authorization, token) {
+  if (
+    typeof token !== "string" ||
+    token.length < 32 ||
+    token.length > 4096 ||
+    /\s/.test(token)
+  )
+    return false;
+  const hash = (value) =>
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  const [actual, expected] = await Promise.all([
+    hash(authorization),
+    hash(`Bearer ${token}`),
+  ]);
+  const a = new Uint8Array(actual),
+    b = new Uint8Array(expected);
+  return a.reduce((diff, byte, i) => diff | (byte ^ b[i]), 0) === 0;
+}
 /** A separate, account-authorized gateway. Existing paired-device backend stays private. */
 /** @param {Request} request @param {Record<string, string | undefined>} env @param {typeof fetch} fetcher */
 export async function accountWebResponse(
@@ -101,12 +119,19 @@ export async function accountWebResponse(
   const authorization = request.headers.get("authorization") || "";
   if (!/^Bearer [^\s]{1,8192}$/.test(authorization))
     return json({ error: "请先登录学习账号" }, 401);
+  const device = await matchesDeviceCredential(
+    authorization,
+    env.NATIVE_DEVICE_TOKEN,
+  );
+  if (device && request.headers.has("origin"))
+    return json({ error: "设备连接只支持已配对安装版" }, 403);
   let body;
   try {
     if (method === "POST") {
       if (!request.headers.get("content-type")?.includes("application/json"))
         return json({ error: "只接受 JSON 文字请求" }, 415);
       body = await boundedText(request, 200000);
+      if (url.pathname === "/api/configuration" && body === "") body = "{}";
       const value = JSON.parse(body);
       if (!value || typeof value !== "object" || Array.isArray(value))
         return json({ error: "请求格式不正确" }, 400);
@@ -115,19 +140,21 @@ export async function accountWebResponse(
     return json({ error: "请求过大或 JSON 无效" }, 413);
   }
   try {
-    const auth = await fetcher(supabase + "/auth/v1/user", {
-      method: "GET",
-      headers: {
-        apikey: env.SUPABASE_PUBLISHABLE_KEY,
-        Authorization: authorization,
-      },
-      redirect: "error",
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!auth.ok) return json({ error: "登录已过期，请重新登录" }, 401);
-    const user = JSON.parse(await boundedText(auth, 524288));
-    if (!users.includes(user.id) || user.is_anonymous === true)
-      return json({ error: "此学习账号尚未获准使用私人 AI 服务" }, 403);
+    if (!device) {
+      const auth = await fetcher(supabase + "/auth/v1/user", {
+        method: "GET",
+        headers: {
+          apikey: env.SUPABASE_PUBLISHABLE_KEY,
+          Authorization: authorization,
+        },
+        redirect: "error",
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!auth.ok) return json({ error: "登录已过期，请重新登录" }, 401);
+      const user = JSON.parse(await boundedText(auth, 524288));
+      if (!users.includes(user.id) || user.is_anonymous === true)
+        return json({ error: "此学习账号尚未获准使用私人 AI 服务" }, 403);
+    }
     const upstream = await fetcher(backend + url.pathname, {
       method,
       headers: {
@@ -147,10 +174,12 @@ export async function accountWebResponse(
         .includes("application/json")
     )
       throw Error();
-    const text = (await boundedText(upstream)).replaceAll(
+    let text = (await boundedText(upstream)).replaceAll(
       env.AI_BACKEND_TOKEN,
       "[redacted]",
     );
+    if (typeof env.NATIVE_DEVICE_TOKEN === "string" && env.NATIVE_DEVICE_TOKEN)
+      text = text.replaceAll(env.NATIVE_DEVICE_TOKEN, "[redacted]");
     const value = JSON.parse(text);
     if (!value || typeof value !== "object" || Array.isArray(value))
       throw Error();

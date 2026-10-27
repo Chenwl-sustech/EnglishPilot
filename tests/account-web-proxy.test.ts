@@ -117,3 +117,94 @@ test("invalid sessions and upstream HTML cannot become a successful AI reply", a
   );
   expect(response.status).toBe(502);
 });
+
+test("paired native device reaches the existing backend without forwarding its own credential", async () => {
+  const deviceToken = "fixture-native-device-token-0123456789abcdef";
+  const privateEnv = { ...env, NATIVE_DEVICE_TOKEN: deviceToken };
+  const calls: Request[] = [];
+  const fetcher: typeof fetch = async (input, init) => {
+    const r = new Request(input, init);
+    calls.push(r);
+    return Response.json({
+      reply: "Hello",
+      debug: `${env.AI_BACKEND_TOKEN} ${deviceToken}`,
+    });
+  };
+  const native = request("/api/teacher", deviceToken);
+  native.headers.delete("Origin");
+  const response = await accountWebResponse(native, privateEnv, fetcher);
+  expect(response.status).toBe(200);
+  expect(calls).toHaveLength(1);
+  expect(calls[0].url).toBe("https://fixture.vercel.app/api/teacher");
+  expect(calls[0].headers.get("authorization")).toBe(
+    `Bearer ${env.AI_BACKEND_TOKEN}`,
+  );
+  expect(calls[0].headers.get("cookie")).toBeNull();
+  const text = await response.text();
+  expect(text).not.toContain(deviceToken);
+  expect(text).not.toContain(env.AI_BACKEND_TOKEN);
+});
+
+test("device token cannot authorize browser-origin requests or malformed device configuration", async () => {
+  const token = "fixture-native-device-token-0123456789abcdef";
+  const privateEnv = { ...env, NATIVE_DEVICE_TOKEN: token };
+  let backendCalls = 0;
+  const rejectUser: typeof fetch = async (input) => {
+    if (String(input).startsWith(env.AI_BACKEND_ORIGIN)) backendCalls++;
+    return Response.json({ error: "invalid" }, { status: 401 });
+  };
+  expect(
+    (
+      await accountWebResponse(
+        request("/api/teacher", token),
+        privateEnv,
+        rejectUser,
+      )
+    ).status,
+  ).toBe(403);
+  for (const invalid of [
+    "short",
+    "invalid token with whitespace",
+    "x".repeat(4097),
+  ]) {
+    const native = request("/api/teacher", invalid);
+    native.headers.delete("Origin");
+    expect(
+      (
+        await accountWebResponse(
+          native,
+          { ...env, NATIVE_DEVICE_TOKEN: invalid },
+          rejectUser,
+        )
+      ).status,
+    ).toBe(401);
+  }
+  expect(backendCalls).toBe(0);
+});
+
+test("paired native configuration check accepts its empty POST while other empty POSTs are rejected", async () => {
+  const token = "fixture-native-device-token-0123456789abcdef";
+  const privateEnv = { ...env, NATIVE_DEVICE_TOKEN: token };
+  const sent: Request[] = [];
+  const fetcher: typeof fetch = async (input, init) => {
+    sent.push(new Request(input, init));
+    return Response.json({ ok: true });
+  };
+  const empty = (path: string) =>
+    new Request(`https://app.test${path}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+  expect(
+    (await accountWebResponse(empty("/api/configuration"), privateEnv, fetcher))
+      .status,
+  ).toBe(200);
+  expect(await sent[0].text()).toBe("{}");
+  expect(
+    (await accountWebResponse(empty("/api/teacher"), privateEnv, fetcher))
+      .status,
+  ).toBe(413);
+});

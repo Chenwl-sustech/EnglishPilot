@@ -2,6 +2,8 @@
 
 The independent service is in `backend/`. It does not depend on keeping a Mac on. The public repository has no shared AI access credential.
 
+An optional `BACKEND_DEVICE_TOKEN` can authorize a separately paired installation alongside `BACKEND_ACCESS_TOKEN`. Use 32–4096 characters without whitespace and store it as a production Secret. Both credentials share the existing quota and receipt store. This is useful when the original Secret cannot be read back; adding a device credential does not require replacing the existing gateway credential. Remove the optional variable and redeploy to revoke that device's access. Never place provider or database credentials in a pairing file.
+
 1. Use your own Vercel Hobby account for personal, non-commercial use and an account-owned Upstash Redis Free database. Existing Free databases may be reused with a separate stable key prefix. Avoid anonymous databases that expire before being claimed.
 2. Install Node 24, enter `backend/`, run `npm ci`, `npm run build`, and `npm test`.
 3. Link a separate Vercel project with the official Vercel CLI, then configure production environment variables listed in `.env.example`.
