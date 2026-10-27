@@ -109,18 +109,24 @@ export function ListeningImportPanel({
         官方目录为公开样题和教学示例，按来源条款仅供个人学习。导入的音频先保存在本设备；启用账号同步后会同步到私有云空间。每段音频上限
         128 MB、2 小时。
       </p>
-      {nativeBuild && <p className="small muted">安装版暂不支持自动下载官方素材。请从下方官方来源保存音频，再通过“个人音频与素材清单”导入设备文件。</p>}
-      {!nativeBuild && <div className="actions">
-        <button
-          className="button primary"
-          disabled={busy || disabled}
-          onClick={() =>
-            router.push(`/import-listening?run=${crypto.randomUUID()}`)
-          }
-        >
-          批量导入首批官方素材
-        </button>
-      </div>}
+      {nativeBuild && (
+        <p className="small muted">
+          安装版暂不支持自动下载官方素材。请从下方官方来源保存音频，再通过“个人音频与素材清单”导入设备文件。
+        </p>
+      )}
+      {!nativeBuild && (
+        <div className="actions">
+          <button
+            className="button primary"
+            disabled={busy || disabled}
+            onClick={() =>
+              router.push(`/import-listening?run=${crypto.randomUUID()}`)
+            }
+          >
+            批量导入首批官方素材
+          </button>
+        </div>
+      )}
       <details>
         <summary>官方样题目录 · IELTS / TOEFL 2026</summary>
         <div className="material-source-grid">
@@ -157,13 +163,15 @@ export function ListeningImportPanel({
                   使用条款
                 </a>
               </div>
-              {!nativeBuild && <button
-                className="button secondary"
-                disabled={busy || disabled}
-                onClick={() => void preview(s.id)}
-              >
-                预览 {s.title}
-              </button>}
+              {!nativeBuild && (
+                <button
+                  className="button secondary"
+                  disabled={busy || disabled}
+                  onClick={() => void preview(s.id)}
+                >
+                  预览 {s.title}
+                </button>
+              )}
             </article>
           ))}
         </div>
@@ -206,6 +214,9 @@ export function ListeningImportPanel({
           素材清单 JSON
           <textarea
             rows={8}
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck={false}
             value={raw}
             disabled={busy || disabled}
             onChange={(e) => {

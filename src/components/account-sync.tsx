@@ -13,6 +13,7 @@ import {
 import { parseSyncConfig, syncConfigKey } from "@/lib/sync/config";
 import { supabaseCloud, forgetOfflineIdentity } from "@/lib/sync/client";
 import { cloudSnapshot } from "@/lib/sync/engine";
+import { conflictAreas } from "@/lib/sync/conflict-labels";
 import { encodeBackup } from "@/lib/backup";
 import { saveExport } from "@/lib/native/files";
 import { today } from "@/lib/engine";
@@ -428,7 +429,8 @@ export function AccountSync() {
                     同一内容在两端被修改，系统保留当前本机与云端版本。建议先分别导出两份完整备份，再选择本轮使用哪一份。
                   </p>
                   <p className="small">
-                    {sync.meta.conflict.paths.slice(0, 8).join("；")}
+                    需要选择版本的内容：
+                    {conflictAreas(sync.meta.conflict.paths).join("、")}
                   </p>
                   <label className="check-row">
                     <input
