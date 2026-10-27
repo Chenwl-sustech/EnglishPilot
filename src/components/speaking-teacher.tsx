@@ -2,6 +2,7 @@
 import { apiFetch } from "@/lib/native/api";
 import { teacherDraftCacheKey } from "@/lib/teacher-draft-cache";
 import { nativeBuild } from "@/lib/native/runtime";
+import { isHostedWebClient } from "@/lib/deployment";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -32,6 +33,7 @@ import { PageHeading } from "./exercises";
 import { TeacherComposer } from "./teacher-composer";
 import { TeacherAudio } from "./teacher-recorder";
 
+const remoteClient = nativeBuild || isHostedWebClient;
 const modes = {
   free: "自由聊天",
   scenario: "情景对话",
@@ -58,8 +60,8 @@ export function SpeakingTeacher() {
     [voiceError, setVoiceError] = useState(""),
     [autoVoice, setAutoVoice] = useState(false),
     [whisper, setWhisper] = useState(
-      nativeBuild
-        ? "可直接打字，或回放录音后手工填写回答。朗读使用设备本地声音；录音不上传。"
+      remoteClient
+        ? "可直接打字，或回放录音后手工填写回答。朗读使用设备本地声音。AI 对话只发送文字；启用账号同步后录音会同步至私有云空间。"
         : "正在检查本地 Whisper…",
     );
   const sessions = state.extension.teacherSessions,
@@ -96,7 +98,7 @@ export function SpeakingTeacher() {
     };
     refreshDevice();
     window.speechSynthesis?.addEventListener("voiceschanged", refreshDevice);
-    if (!nativeBuild) {
+    if (!remoteClient) {
       void apiFetch("/api/tts")
         .then(async (r) => {
           const b = await r.json();
@@ -175,7 +177,7 @@ export function SpeakingTeacher() {
         eyebrow="SPEAK, REFLECT, TRY AGAIN"
         title="AI 口语老师"
         description={
-          nativeBuild
+          remoteClient
             ? "回放录音、手工填写并核对文字，再与老师继续对话。支持自由交流、情景练习与双考试口语陪练。"
             : "录音、核对转写，再与老师继续对话。支持自由交流、情景练习与双考试口语陪练。"
         }
@@ -258,7 +260,7 @@ export function SpeakingTeacher() {
         </button>
         <p className="small muted">
           {whisper}
-          {!nativeBuild && (
+          {!remoteClient && (
             <>
               {" "}
               · <Link href="/speaking">管理本地模型</Link>

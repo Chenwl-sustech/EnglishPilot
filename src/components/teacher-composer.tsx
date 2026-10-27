@@ -227,7 +227,7 @@ export function TeacherComposer({
       </div>
       <p className="small muted">
         点击发送时，仅把核对后的文字及本次对话上下文交给已配置的
-        AI；录音留在本机。可直接打字练习，打字不计为录音时长。
+        AI；本次请求不发送录音。启用账号同步后，录音会同步至私有云空间。可直接打字练习，打字不计为录音时长。
       </p>
       {error && <p role="alert">{error}</p>}
     </section>

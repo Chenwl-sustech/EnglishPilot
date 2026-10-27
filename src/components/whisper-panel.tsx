@@ -11,6 +11,7 @@ import { speakingPrompts } from "@/lib/content";
 import { alignDictation } from "@/lib/listening";
 import { isHostedWebClient } from "@/lib/deployment";
 import { nativeBuild } from "@/lib/native/runtime";
+const remoteClient = nativeBuild || isHostedWebClient;
 type Model = {
   name: string;
   size: number;
@@ -79,7 +80,7 @@ export function WhisperPanel() {
     }
   }
   useEffect(() => {
-    if (!nativeBuild) void refresh();
+    if (!remoteClient) void refresh();
   }, []);
   useEffect(() => {
     let alive = true;
@@ -226,18 +227,18 @@ export function WhisperPanel() {
   return (
     <section className="panel whisper-panel" id="whisper">
       <div className="section-line">
-        <h2>{nativeBuild ? "录音回放与文字自评" : "本地 Whisper · 口语与跟读分析"}</h2>
-        <span className="tag">{nativeBuild ? "录音保存在设备" : "可选本地服务"}</span>
+        <h2>{remoteClient ? "录音回放与文字自评" : "本地 Whisper · 口语与跟读分析"}</h2>
+        <span className="tag">{remoteClient ? "录音先保存在设备" : "可选本地服务"}</span>
       </div>
       <p className="small muted">
-        {nativeBuild ? "安装版暂不提供设备本地转写。请回放录音后手工填写回答，保存文字后可请求 AI 语言反馈；录音不会上传。" : <>公开源码包未附带 Whisper 服务，可另行配置兼容的本机 127.0.0.1:8765 服务。未配置时仍可录音、回放及手工自评。</>}
+        {remoteClient ? <>{nativeBuild ? "安装版" : "网页版"}暂不提供设备本地转写。请回放录音后手工填写回答，AI 语言反馈只发送文字。启用账号同步后，录音会同步至私有云空间。</> : <>公开源码包未附带 Whisper 服务，可另行配置兼容的本机 127.0.0.1:8765 服务。未配置时仍可录音、回放及手工自评。</>}
       </p>
-      {!nativeBuild && <button className="button secondary" onClick={() => void refresh()}>
+      {!remoteClient && <button className="button secondary" onClick={() => void refresh()}>
         刷新本地模型状态
       </button>}
       {error && <p role="alert">{error}</p>}
       <div className="form-grid">
-        {!nativeBuild && <label>
+        {!remoteClient && <label>
           模型
           <select
             aria-label="Whisper 模型"
@@ -284,7 +285,7 @@ export function WhisperPanel() {
           />
         </label>
       </div>
-      {!nativeBuild && selected && (
+      {!remoteClient && selected && (
         <>
           <p className="small">
             {selected.name} · {(selected.size / 1e6).toFixed(1)} MB ·{" "}
@@ -311,7 +312,7 @@ export function WhisperPanel() {
           )}
         </>
       )}
-      {!nativeBuild && <button
+      {!remoteClient && <button
         className="button primary"
         disabled={
           busy ||

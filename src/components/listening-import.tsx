@@ -106,7 +106,7 @@ export function ListeningImportPanel({
     <section className="panel listening-import">
       <h3>导入听力素材</h3>
       <p className="small muted">
-        官方目录为公开样题和教学示例，按来源条款仅供个人学习。下载后本机保存原音；个人文件不会上传。每段音频上限
+        官方目录为公开样题和教学示例，按来源条款仅供个人学习。导入的音频先保存在本设备；启用账号同步后会同步到私有云空间。每段音频上限
         128 MB、2 小时。
       </p>
       {nativeBuild && <p className="small muted">安装版暂不支持自动下载官方素材。请从下方官方来源保存音频，再通过“个人音频与素材清单”导入设备文件。</p>}

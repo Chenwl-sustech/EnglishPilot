@@ -146,7 +146,7 @@ export function AiFeedback({
       {!config?.local && (
         <p className="small muted">
           点击后会把当前文本及前一篇文本（如有）发送给配置的 AI
-          服务；本地录音不上传。需要完全本地时，请配置本机兼容 Responses API
+          服务；本次 AI 分析不发送录音。需要完全本地时，请配置本机兼容 Responses API
           的服务。
         </p>
       )}
