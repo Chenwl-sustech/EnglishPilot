@@ -36,3 +36,10 @@
 - [x] Implement the flow, static form and gated navigation; no learning provider/database access on the reset page. Add no-referrer and no-store recovery page headers.
 - [x] Run `npm test`, `npm run typecheck`, static cloud build, credential scans; independently review this delta. Expected: all pass, callback page deployed with recovery form, private gateway stays protected.
 - [x] Configure exact Supabase callback and deploy; request one recovery email from the page, then hand off new password submission to the owner. Update GitHub and document actual evidence without claiming the password was reset before owner submission.
+
+### Task 2: Observed email rate-limit failure
+
+- [x] Inspect hosted Auth logs using only timestamps, paths, status codes and error codes; distinguish the confirmed `over_email_send_rate_limit` from network or redirect errors. Do not send additional emails for diagnostics.
+- [x] Reproduce the generic-error failure with the real SDK and synthetic rate-limit responses. Add safe guidance and a 60-second request interval after success / HTTP 429, without claiming hourly quota has reset. Preserve all PKCE and credential isolation rules.
+- [x] Run recovery regressions, the full 92-test application suite, TypeScript and a fresh static cloud build.
+- [x] Publish the updated Netlify page and verify headers / anonymous gateway protection; update GitHub with actual evidence. Owner still completes actual delivery, password submission and login.

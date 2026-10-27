@@ -1,7 +1,10 @@
 import { expect, test } from "vitest";
 import { createPasswordRecovery } from "../src/lib/sync/password-recovery";
 
-function fixture(store = new Map<string, string>()) {
+function fixture(
+  store = new Map<string, string>(),
+  recoverReply = () => Response.json({}),
+) {
   const storage = {
     getItem: (key: string) => store.get(key) ?? null,
     setItem: (key: string, value: string) => {
@@ -29,7 +32,7 @@ function fixture(store = new Map<string, string>()) {
       method = init?.method ?? "GET",
       body = JSON.parse(String(init?.body ?? "{}"));
     calls.push({ url, body, method });
-    if (url.pathname.endsWith("/recover")) return Response.json({});
+    if (url.pathname.endsWith("/recover")) return recoverReply();
     if (url.pathname.endsWith("/token")) {
       beforeExchange();
       expect(url.searchParams.get("grant_type")).toBe("pkce");
@@ -63,8 +66,8 @@ function fixture(store = new Map<string, string>()) {
     setBeforeExchange: (fn: () => void) => {
       beforeExchange = fn;
     },
-    advance: () => {
-      now += 600001;
+    advance: (milliseconds = 600001) => {
+      now += milliseconds;
     },
   };
 }
@@ -172,3 +175,76 @@ test("verified recovery grants expire without changing the password", async () =
   ).rejects.toThrow();
   expect(f.calls.filter((c) => c.method === "PUT")).toHaveLength(0);
 });
+
+test("mail rate limits explain the failure and stop repeated requests for a minute", async () => {
+  const f = fixture(new Map(), () =>
+    Response.json(
+      { code: "over_email_send_rate_limit", msg: "private upstream detail" },
+      { status: 429, headers: { "x-supabase-api-version": "2024-01-01" } },
+    ),
+  );
+  await expect(
+    f.flow.request("learner@example.com", "https://app.example.com"),
+  ).rejects.toThrow(/邮件发送.*频率上限/);
+  expect(f.flow.retryAfterSeconds()).toBe(60);
+  await expect(
+    f.flow.request("learner@example.com", "https://app.example.com"),
+  ).rejects.toThrow(/等待/);
+  expect(
+    f.calls.filter((c) => c.url.pathname.endsWith("/recover")),
+  ).toHaveLength(1);
+  f.advance(60000);
+  expect(f.flow.retryAfterSeconds()).toBe(0);
+  await expect(
+    f.flow.request("learner@example.com", "https://app.example.com"),
+  ).rejects.toThrow(/邮件发送.*频率上限/);
+  expect(
+    f.calls.filter((c) => c.url.pathname.endsWith("/recover")),
+  ).toHaveLength(2);
+  await expect(
+    f.flow.finish("new-private-password", "new-private-password"),
+  ).rejects.toThrow();
+  expect(f.calls.filter((c) => c.method === "PUT")).toHaveLength(0);
+});
+
+test("successful mail requests also enforce an interval without claiming delivery", async () => {
+  const f = fixture();
+  await f.flow.request("learner@example.com", "https://app.example.com");
+  expect(f.flow.retryAfterSeconds()).toBe(60);
+  f.advance(1001);
+  expect(f.flow.retryAfterSeconds()).toBe(59);
+  await expect(
+    f.flow.request("learner@example.com", "https://app.example.com"),
+  ).rejects.toThrow(/等待/);
+  expect(
+    f.calls.filter((c) => c.url.pathname.endsWith("/recover")),
+  ).toHaveLength(1);
+});
+
+test.each([
+  [403, "email_address_not_authorized", /项目成员邮箱/],
+  [429, "over_request_rate_limit", /请求过于频繁/],
+  [400, "unexpected_failure", /重设邮件请求失败/],
+])(
+  "mail errors use safe guidance for HTTP %s / %s",
+  async (status, code, message) => {
+    const f = fixture(new Map(), () =>
+      Response.json(
+        { code, msg: "private upstream detail" },
+        {
+          status,
+          headers: { "x-supabase-api-version": "2024-01-01" },
+        },
+      ),
+    );
+    let caught: unknown;
+    try {
+      await f.flow.request("learner@example.com", "https://app.example.com");
+    } catch (error) {
+      caught = error;
+    }
+    expect(caught).toBeInstanceOf(Error);
+    expect((caught as Error).message).toMatch(message);
+    expect((caught as Error).message).not.toContain("private upstream detail");
+  },
+);

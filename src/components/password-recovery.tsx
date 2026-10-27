@@ -14,7 +14,16 @@ export function PasswordRecovery() {
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [busy, setBusy] = useState(false);
+  const [retrySeconds, setRetrySeconds] = useState(0);
   const [message, setMessage] = useState("");
+  useEffect(() => {
+    if (phase !== "request") return;
+    const timer = window.setInterval(
+      () => setRetrySeconds(flow.current?.retryAfterSeconds() ?? 0),
+      1000,
+    );
+    return () => window.clearInterval(timer);
+  }, [phase]);
   useEffect(() => {
     if (started.current) return;
     started.current = true;
@@ -62,6 +71,7 @@ export function PasswordRecovery() {
         error instanceof Error ? error.message : "暂时无法连接重设服务，请重试",
       );
     } finally {
+      setRetrySeconds(flow.current?.retryAfterSeconds() ?? 0);
       setBusy(false);
     }
   }
@@ -100,11 +110,20 @@ export function PasswordRecovery() {
                 disabled={busy}
               />
             </label>
-            <button type="submit" className="button primary" disabled={busy}>
-              {busy ? "正在请求…" : "发送密码重设邮件"}
+            <button
+              type="submit"
+              className="button primary"
+              disabled={busy || retrySeconds > 0}
+            >
+              {busy
+                ? "正在请求…"
+                : retrySeconds > 0
+                  ? `请等待 ${retrySeconds} 秒`
+                  : "发送密码重设邮件"}
             </button>
             <p className="small muted">
               个人免费云项目的默认邮件仅面向项目成员邮箱，并有发送频率限制。
+              请勿连续发送；更换浏览器或重新发送后，须使用相应请求的最新邮件。
             </p>
           </form>
         )}

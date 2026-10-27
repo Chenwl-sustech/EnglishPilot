@@ -59,6 +59,9 @@ export function createPasswordRecovery(
     },
   });
   let grant: { uid: string; expires: number } | null = null;
+  let requestNotBefore = 0;
+  const retryAfterSeconds = () =>
+    Math.max(0, Math.ceil((requestNotBefore - now()) / 1000));
   async function clearSession() {
     grant = null;
     try {
@@ -69,6 +72,7 @@ export function createPasswordRecovery(
     memory.clear();
   }
   return {
+    retryAfterSeconds,
     async request(email: string, origin: string) {
       const address = email.trim(),
         target = new URL(origin);
@@ -83,14 +87,32 @@ export function createPasswordRecovery(
         target.hash
       )
         throw Error("请在 HTTPS 学习网页请求重设邮件");
+      if (retryAfterSeconds())
+        throw Error(`请等待 ${retryAfterSeconds()} 秒后再请求重设邮件`);
       await clearSession();
       const { error } = await client.auth.resetPasswordForEmail(address, {
         redirectTo: target.origin + "/reset-password/",
       });
-      if (error)
-        throw Error(
-          "重设邮件请求失败。请稍后重试，或联系部署者检查邮件发送限制。",
-        );
+      if (error) {
+        if (error.status === 429) requestNotBefore = now() + 60000;
+        if (error.code === "over_email_send_rate_limit")
+          throw Error(
+            "邮件发送已达云服务频率上限。请先查看收件箱和垃圾邮件中的最新重设邮件，等待额度恢复后再申请；倒计时仅为请求间隔，不代表云端额度已恢复。",
+          );
+        if (error.code === "over_request_rate_limit")
+          throw Error("请求过于频繁，请等待片刻后再试，不要连续发送邮件");
+        if (error.code === "email_address_not_authorized")
+          throw Error(
+            "此云项目的默认邮件仅支持项目成员邮箱。请使用部署者已创建的学习账号邮箱；其他邮箱需由部署者配置邮件服务。",
+          );
+        if (
+          error.name === "AuthRetryableFetchError" ||
+          error.code === "request_timeout"
+        )
+          throw Error("暂时无法连接账号云服务，请检查网络后再试");
+        throw Error("重设邮件请求失败。请稍后重试，或联系部署者检查邮件服务。");
+      }
+      requestNotBefore = now() + 60000;
     },
     async consume(
       rawUrl: string,
