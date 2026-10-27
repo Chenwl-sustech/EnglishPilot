@@ -1,5 +1,7 @@
 "use client";
 import { apiFetch } from "@/lib/native/api";
+import { nativeBuild } from "@/lib/native/runtime";
+import { isHostedWebClient } from "@/lib/deployment";
 
 import { useEffect, useRef, useState } from "react";
 import { ZodError } from "zod";
@@ -15,6 +17,7 @@ import {
 } from "@/lib/listening-timeline";
 import { useStudy } from "./study-context";
 
+const remoteClient = nativeBuild || isHostedWebClient;
 const message = (e: unknown) =>
   e instanceof ZodError
     ? e.issues
@@ -42,7 +45,7 @@ export function ListeningTimelineEditor({
   const controller = useRef<AbortController | null>(null);
   useEffect(() => () => controller.current?.abort(), []);
   async function generate() {
-    if (busy || disabled) return;
+    if (remoteClient || busy || disabled) return;
     const operation = new AbortController();
     controller.current = operation;
     const signal = AbortSignal.any([
@@ -120,7 +123,9 @@ export function ListeningTimelineEditor({
     <section className="panel timeline-editor" aria-label="本地逐句时间轴">
       <h3>逐句时间轴</h3>
       <p className="small muted">
-        使用本机Whisper的词级时间戳与已保存原文匹配，不上传外网。草稿不会替换原文或已有时间轴；识别结果可能有误，确认前请回听校对。
+        {remoteClient
+          ? "此设备不提供 Whisper 自动对齐。请在下方“编辑原文、题目与时间轴”中手工标注起止秒数，并回听校对；已有时间轴和草稿仍可查看。"
+          : "使用本机Whisper的词级时间戳与已保存原文匹配；本次转写不发送到外网。草稿不会替换原文或已有时间轴；识别结果可能有误，确认前请回听校对。"}
       </p>
       {m.timelineProvenance && (
         <p className="small">
@@ -131,7 +136,7 @@ export function ListeningTimelineEditor({
           · {m.segments.length} 个片段
         </p>
       )}
-      <div className="actions">
+      {!remoteClient && <div className="actions">
         <label>
           时间轴本地模型
           <select
@@ -161,7 +166,7 @@ export function ListeningTimelineEditor({
             取消生成
           </button>
         )}
-      </div>
+      </div>}
       {busy && <p role="status">正在本地转写并匹配原文，请保持页面打开…</p>}
       {error && <p role="alert">{error}</p>}
       {m.timelineDraft && (

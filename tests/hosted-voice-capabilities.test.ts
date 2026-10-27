@@ -4,6 +4,8 @@ import { expect, test, vi } from "vitest";
 import { defaultState } from "../src/lib/engine";
 import { SpeakingTeacher } from "../src/components/speaking-teacher";
 import { WhisperPanel } from "../src/components/whisper-panel";
+import { ListeningTimelineEditor } from "../src/components/listening-timeline-editor";
+import { syntheticListeningMaterial } from "./fixtures/listening-material";
 
 vi.mock("../src/lib/native/runtime", () => ({ nativeBuild: false }));
 vi.mock("../src/lib/deployment", () => ({ isHostedWebClient: true }));
@@ -35,4 +37,17 @@ test("hosted recording review offers saved audio and manual notes without unavai
   expect(html).not.toContain("刷新本地模型状态");
   expect(html).not.toContain("本地转写所选录音");
   expect(html).not.toContain("127.0.0.1:8765");
+});
+
+test("hosted timeline review does not offer desktop-only speech alignment", () => {
+  const html = renderToStaticMarkup(createElement(ListeningTimelineEditor, {
+    material: syntheticListeningMaterial,
+    disabled: false,
+    onBusyChange: vi.fn(),
+    onPreview: vi.fn(),
+  }));
+  expect(html).toContain("逐句时间轴");
+  expect(html).toContain("手工");
+  expect(html).not.toContain("本地生成时间轴草稿");
+  expect(html).not.toContain("时间轴本地模型");
 });

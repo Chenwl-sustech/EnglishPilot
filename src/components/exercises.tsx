@@ -1288,7 +1288,7 @@ function Recorder({ index }: { index: number }) {
       });
       await update((s) => s);
       setPending(null);
-      notify("口语录音已保存在本设备，未上传、未评分");
+      notify("口语录音已保存在本设备，未评分；启用账号同步后会同步至私有云空间");
     } catch (e) {
       fail(e);
     } finally {
@@ -1376,7 +1376,7 @@ function Recorder({ index }: { index: number }) {
           </div>
         )}
         <p className="small muted">
-          录音仅保存在本设备。设置页的完整备份包含音频，JSON备份不包含音频；也可单独下载。离开页面会关闭麦克风。
+          录音先保存在本设备；启用账号同步后会同步至私有云空间。设置页的完整备份包含音频，JSON备份不包含音频；也可单独下载。离开页面会关闭麦克风。
         </p>
       </div>
       <aside className="panel">

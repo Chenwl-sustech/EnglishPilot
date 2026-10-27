@@ -2,7 +2,7 @@
 
 本功能使用 **Supabase Auth + PostgreSQL + 私有 Storage**，Mac 关机后仍由云服务处理同步。现有 Vercel AI 服务保持独立；学习账号不自动获得任何私人 AI 配对令牌。
 
-当前个人部署使用[Netlify 手机网页预览](https://englishpilot-chenwl-sync.netlify.app/)，原 Vercel 默认域名在用户手机网络中无法打开。首次页面展开“已有学习账号？登录并同步到此设备”，使用管理员已创建的学习账号；忘记密码可在[重设页面](https://englishpilot-chenwl-sync.netlify.app/reset-password/)申请邮件。Mac 已通过实际账号登录、写作评价和 AI 文字对话；iPad 测试预览已安装，双设备同步仍在验收，进度见[验证记录](qa/2026-10-26-account-sync.md)。v0.1.3 安装包尚未包含此功能。
+当前个人部署使用[Netlify 手机网页预览](https://englishpilot-chenwl-sync.netlify.app/)，原 Vercel 默认域名在用户手机网络中无法打开。首次页面展开“已有学习账号？登录并同步到此设备”，使用管理员已创建的学习账号；忘记密码可在[重设页面](https://englishpilot-chenwl-sync.netlify.app/reset-password/)申请邮件。Mac 已通过实际账号登录、写作评价和 AI 文字对话；与 iPad 测试安装版已验证双向草稿及 Mac → iPad 的合成音频完整传输。离线与冲突等剩余验收见[验证记录](qa/2026-10-26-account-sync.md)。v0.1.3 安装包尚未包含此功能。
 
 ## 当前接入范围
 
