@@ -14,6 +14,7 @@ import { PlanFields } from "./plan-fields";
 import { profileSchema, type Profile } from "@/lib/model";
 import { today, updateSettings, grade } from "@/lib/engine";
 import { assessmentQuestions } from "@/lib/content";
+import { AccountSync } from "./account-sync";
 export function Assessment({
   initial = false,
   onFinish,
@@ -203,6 +204,10 @@ export function Onboarding() {
         </span>
         EnglishPilot <span className="beta">PERSONAL LEARNING SPACE</span>
       </div>
+      <details className="panel" style={{ marginBottom: 24 }}>
+        <summary>已有学习账号？登录并同步到此设备</summary>
+        <AccountSync />
+      </details>
       {stage === 1 ? (
         <Assessment initial />
       ) : (

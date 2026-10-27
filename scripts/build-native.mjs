@@ -14,9 +14,36 @@ import {
 import { join, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { isAllowedSourcePath } from "./package-mobile.mjs";
+import { parsePublicSyncConfig } from "../src/lib/sync/public-config.mjs";
 
 const require = createRequire(import.meta.url);
 const config = `export default { output: "export", trailingSlash: true, poweredByHeader: false, images: { unoptimized: true } };\n`;
+
+/** @param {Record<string,string|undefined>} source */
+export function nativeBuildEnvironment(source = process.env) {
+  const sync =
+    source.NEXT_PUBLIC_SUPABASE_URL ||
+    source.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+      ? parsePublicSyncConfig({
+          url: source.NEXT_PUBLIC_SUPABASE_URL ?? "",
+          key: source.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
+        })
+      : null;
+  return {
+    ...source,
+    ...(sync
+      ? {
+          NEXT_PUBLIC_SUPABASE_URL: sync.url,
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sync.key,
+        }
+      : {}),
+    NEXT_TELEMETRY_DISABLED: "1",
+    ENGLISHPILOT_PACKAGE: "0",
+    NEXT_PUBLIC_ENGLISHPILOT_NATIVE: "1",
+    NEXT_PUBLIC_ENGLISHPILOT_WEB: "1",
+    NEXT_PUBLIC_ENGLISHPILOT_ACCOUNT_WEB: "0",
+  };
+}
 
 export async function stageNativeApp(root, destination) {
   root = resolve(root);
@@ -94,6 +121,7 @@ function run(command, args, options) {
 }
 
 export async function buildNativeApp(root = process.cwd()) {
+  const environment = nativeBuildEnvironment();
   root = resolve(root);
   const local = join(root, ".local");
   await mkdir(local, { recursive: true });
@@ -110,13 +138,7 @@ export async function buildNativeApp(root = process.cwd()) {
     [require.resolve("next/dist/bin/next"), "build", "--webpack"],
     {
       cwd: stage,
-      env: {
-        ...process.env,
-        NEXT_TELEMETRY_DISABLED: "1",
-        ENGLISHPILOT_PACKAGE: "0",
-        NEXT_PUBLIC_ENGLISHPILOT_NATIVE: "1",
-        NEXT_PUBLIC_ENGLISHPILOT_WEB: "1",
-      },
+      env: environment,
     },
   );
   const target = join(local, "native-web");

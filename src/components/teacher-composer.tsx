@@ -3,6 +3,7 @@ import { apiFetch } from "@/lib/native/api";
 
 import { useEffect, useRef, useState } from "react";
 import { db } from "@/lib/db";
+import { teacherDraftCacheKey } from "@/lib/teacher-draft-cache";
 import { setTeacherDraft } from "@/lib/teacher";
 import type { TeacherSession } from "@/lib/teacher-model";
 import { speechAnalysisSchema } from "@/lib/adaptive-model";
@@ -31,7 +32,7 @@ export function TeacherComposer({
 }) {
   const { state, update } = useStudy(),
     draft = session.draft,
-    key = `teacher-draft:${session.id}:${draft.id}`;
+    key = teacherDraftCacheKey(db.name, session.id, draft.id);
   const [text, setText] = useState(() => cached(key) ?? draft.text),
     [error, setError] = useState(""),
     [transcribing, setTranscribing] = useState(false),
@@ -178,20 +179,27 @@ export function TeacherComposer({
             id={draft.recordingId}
             version={draft.audioRevision}
           />
-          {!nativeBuild && <button
-            className="button secondary"
-            disabled={
-              isHostedWebClient || disabled || capturing || transcribing
-            }
-            onClick={() => void transcribe()}
-          >
-            {isHostedWebClient
-              ? "网页版暂不支持本地转写"
-              : transcribing
-                ? "本地转写中…"
-                : "本地转写此录音"}
-          </button>}
-          {nativeBuild && <p className="small muted">请回放录音并填写下方文字。安装版暂不提供本地转写，AI 只接收你确认发送的文字。</p>}
+          {!nativeBuild && (
+            <button
+              className="button secondary"
+              disabled={
+                isHostedWebClient || disabled || capturing || transcribing
+              }
+              onClick={() => void transcribe()}
+            >
+              {isHostedWebClient
+                ? "网页版暂不支持本地转写"
+                : transcribing
+                  ? "本地转写中…"
+                  : "本地转写此录音"}
+            </button>
+          )}
+          {nativeBuild && (
+            <p className="small muted">
+              请回放录音并填写下方文字。安装版暂不提供本地转写，AI
+              只接收你确认发送的文字。
+            </p>
+          )}
         </>
       )}
       <label>
@@ -219,7 +227,7 @@ export function TeacherComposer({
       </div>
       <p className="small muted">
         点击发送时，仅把核对后的文字及本次对话上下文交给已配置的
-        AI；录音留在本机。可直接打字练习，打字不计为录音时长。
+        AI；本次请求不发送录音。启用账号同步后，录音会同步至私有云空间。可直接打字练习，打字不计为录音时长。
       </p>
       {error && <p role="alert">{error}</p>}
     </section>

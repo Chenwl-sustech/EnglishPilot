@@ -46,6 +46,55 @@ class EnglishPilotViewController: CAPBridgeViewController {
     override func router() -> Router { EnglishPilotRouter() }
     override func capacitorDidLoad() {
         bridge?.registerPluginInstance(EnglishPilotAiPlugin())
+        bridge?.registerPluginInstance(EnglishPilotAccountSessionPlugin())
+    }
+}
+
+@objc(EnglishPilotAccountSessionPlugin)
+class EnglishPilotAccountSessionPlugin: CAPPlugin, CAPBridgedPlugin {
+    let identifier = "EnglishPilotAccountSessionPlugin"
+    let jsName = "EnglishPilotAccountSession"
+    let pluginMethods: [CAPPluginMethod] = [
+        CAPPluginMethod(name: "get", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "set", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "remove", returnType: CAPPluginReturnPromise)
+    ]
+    private func query(_ call: CAPPluginCall) -> [String: Any]? {
+        guard let page = bridge?.webView?.url, page.scheme == "capacitor", page.host == "localhost",
+              let key = call.getString("key"), key.range(of: "^englishpilot-auth-[a-z0-9-]{1,100}$", options: .regularExpression) != nil else {
+            call.reject("账号会话存储请求无效。")
+            return nil
+        }
+        return [kSecClass as String: kSecClassGenericPassword,
+                kSecAttrService as String: "com.englishpilot.account-sync",
+                kSecAttrAccount as String: key]
+    }
+    @objc func get(_ call: CAPPluginCall) {
+        guard var fields = query(call) else { return }
+        fields[kSecReturnData as String] = true
+        fields[kSecMatchLimit as String] = kSecMatchLimitOne
+        var item: CFTypeRef?
+        let status = SecItemCopyMatching(fields as CFDictionary, &item)
+        if status == errSecItemNotFound { call.resolve(["value": NSNull()]); return }
+        guard status == errSecSuccess, let data = item as? Data,
+              let value = String(data: data, encoding: .utf8) else { call.reject("无法读取账号会话，请解锁设备后重试。"); return }
+        call.resolve(["value": value])
+    }
+    @objc func set(_ call: CAPPluginCall) {
+        guard let fields = query(call) else { return }
+        guard let value = call.getString("value"), value.utf8.count <= 524288 else { call.reject("账号会话过大或无效。"); return }
+        let data: [String: Any] = [kSecValueData as String: Data(value.utf8),
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly]
+        var status = SecItemUpdate(fields as CFDictionary, data as CFDictionary)
+        if status == errSecItemNotFound { status = SecItemAdd(fields.merging(data, uniquingKeysWith: { _, new in new }) as CFDictionary, nil) }
+        guard status == errSecSuccess else { call.reject("无法安全保存账号会话，请解锁设备后重试。"); return }
+        call.resolve()
+    }
+    @objc func remove(_ call: CAPPluginCall) {
+        guard let fields = query(call) else { return }
+        let status = SecItemDelete(fields as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else { call.reject("无法移除账号会话，请解锁设备后重试。"); return }
+        call.resolve()
     }
 }
 

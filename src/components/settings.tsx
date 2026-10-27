@@ -11,6 +11,7 @@ import { BackupSettings } from "./backup-settings";
 import { ServiceSettings } from "./service-settings";
 import { AiUsageSettings } from "./ai-usage-settings";
 import { PwaSettings } from "./pwa-settings";
+import { AccountSync } from "./account-sync";
 import { nativeBuild } from "@/lib/native/runtime";
 export function Settings() {
   const { state, update, notify, fail } = useStudy();
@@ -295,6 +296,7 @@ export function Settings() {
         </div>
       </form>
       <PwaSettings />
+      <AccountSync />
       <ServiceSettings />
       <AiUsageSettings />
       <BackupSettings

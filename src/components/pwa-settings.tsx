@@ -12,7 +12,7 @@ export function PwaSettings() {
     <section className="panel" aria-label="安装版与离线资源">
       <h2>安装版与离线资源</h2>
       <p data-testid="native-resources-status">学习界面与内置题库已随应用提供，无需联网下载应用页面。</p>
-      <p>学习记录与录音保存在此应用中。换设备前请导出完整备份；卸载应用可能删除本地记录。在线 AI 和素材服务需要单独连接后端。</p>
+      <p>学习记录与录音先保存在此应用中。可在下方启用账号同步；换设备前仍建议导出完整备份。卸载应用可能删除尚未同步的本地记录。</p>
     </section>
   );
   async function retain() {
@@ -88,8 +88,7 @@ export function PwaSettings() {
       </ol>
       <p className="small muted">
         首次联网且显示“离线资源已就绪”后，可断网使用已保存的课程、词汇复习、小测与记录。AI
-        和素材下载需要网络。录音和导入音频保存在当前设备；电脑与手机不会自动同步。换设备请导出并导入完整备份，勿只保留
-        JSON。
+        和素材下载需要网络。启用下方账号同步后，可与其他已登录设备同步学习记录和音频。尚未启用时数据仅在当前设备；换设备请导出完整备份，勿只保留 JSON。
       </p>
     </section>
   );

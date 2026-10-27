@@ -48,3 +48,6 @@ models/
 
 artifacts/
 LICENSES/npm/.cache/
+
+# Local Netlify folder
+.netlify

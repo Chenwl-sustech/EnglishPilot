@@ -1,0 +1,28 @@
+[build]
+  publish = "public"
+  functions = "functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+
+[[headers]]
+  for = "/reset-password*"
+  [headers.values]
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "/offline-assets.json"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"

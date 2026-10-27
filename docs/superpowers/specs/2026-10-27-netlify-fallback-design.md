@@ -1,0 +1,11 @@
+# Free alternate mobile deployment
+
+The owner's phone cannot reach the Vercel production domain on Wi-Fi or cellular, and owns no custom domain. Direct Mac checks also time out on that domain, while Supabase returns its expected unauthenticated 401 and an official Netlify demo returns 200. Owner confirmed the demo loads on the phone and requested the free alternative. These observations support trying Netlify, without guaranteeing every future network route.
+
+Reuse the validated static account web build, same Supabase project and approved account, same private AI backend and quota ledger. Add an isolated Netlify deployment directory and modern Request/Response function mapped to exactly the four existing AI paths. Reuse the shared authorization proxy without changing its Vercel behavior. Set a 55-second overall network deadline for Netlify's 60-second synchronous limit. Do not retry AI, copy secrets into public files, read administrator credentials, replace the original installation or upload learning data.
+
+Alternatives: custom domain is unavailable and would add cost; changing only Vercel aliases retains the unreachable domain family; a static-only mirror cannot provide the authenticated AI gateway. Netlify Free was chosen by the implementer within the user's free-hosting scope and phone reachability evidence. It has finite credits, and model fees remain separate.
+
+Create a guarded `.local/account-netlify-deploy` containing public assets, shared server code, one Netlify function, package metadata and netlify.toml. Preserve CLI state on rebuild, reject symlinks and unrecognized output directories. Only public HTML/assets enter the publish directory. Use no-referrer globally and no-store for recovery, SW and offline inventory. Configure the new exact callback only once the owned site URL exists. The owner must perform account creation/terms/new login consent; prepare and review before that handoff. Do not send another recovery email automatically; request must originate in the browser that will complete it.
+
+Validate assembly/entry/deadline with real code and synthetic external HTTP, full suite/typecheck, private-value scan and local Netlify bundling. After account authorization, set five server-only environment values, publish, verify actual routes/headers and ask owner to check phone access and privately reset/login.

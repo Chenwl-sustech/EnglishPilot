@@ -9,6 +9,8 @@ import { ListeningBatchImport } from "../src/components/listening-batch-import";
 import { ListeningLab } from "../src/components/listening-lab";
 import { SpeakingTeacher } from "../src/components/speaking-teacher";
 import { CalendarPage } from "../src/components/calendar-page";
+import { ListeningTimelineEditor } from "../src/components/listening-timeline-editor";
+import { syntheticListeningMaterial } from "./fixtures/listening-material";
 
 vi.mock("../src/lib/native/runtime", () => ({ nativeBuild: true }));
 vi.mock("../src/components/study-context", () => ({
@@ -86,4 +88,16 @@ test("native AI teacher describes manual text and device speech without desktop 
   expect(html).not.toContain("正在检查本地 Whisper");
   expect(html).toContain("手工填写");
   expect(html).toContain("设备本地");
+});
+
+test("native timeline review keeps manual editing without an unavailable desktop service", () => {
+  const html = render(ListeningTimelineEditor, {
+    material: syntheticListeningMaterial,
+    disabled: false,
+    onBusyChange: vi.fn(),
+    onPreview: vi.fn(),
+  });
+  expect(html).toContain("手工");
+  expect(html).not.toContain("本地生成时间轴草稿");
+  expect(html).not.toContain("时间轴本地模型");
 });
