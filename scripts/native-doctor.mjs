@@ -28,7 +28,7 @@ console.log(
       harmony: {
         compilerFound: !!hvigor,
         requirement:
-          "DevEco Studio with HarmonyOS 5.0.0(12) SDK; set ENGLISHPILOT_HVIGOR to its hvigorw.js if installed elsewhere",
+          "DevEco Studio with its bundled HarmonyOS SDK (verified with DevEco 26); minimum app API 12. Set ENGLISHPILOT_HVIGOR to its hvigorw.js if installed elsewhere",
       },
       signingVerified: false,
     },

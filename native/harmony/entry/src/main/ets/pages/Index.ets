@@ -19,7 +19,9 @@ struct Index {
 
   aboutToAppear(): void {
     try {
-      const manager = this.getUIContext().getHostContext()!.resourceManager;
+      const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      webview.WebviewController.setWebDebuggingAccess(context.applicationInfo.debug);
+      const manager = context.resourceManager;
       const data = manager.getRawFileContentSync('web/native-resources.json');
       this.manifest = JSON.parse(new util.TextDecoder('utf-8').decodeToString(data)) as ResourceManifest;
       if (this.manifest.version !== 1 || this.manifest.origin !== APP_ORIGIN) throw new Error('Invalid resource manifest');
@@ -29,6 +31,16 @@ struct Index {
   aboutToDisappear(): void {
     this.files.dispose();
     try { this.controller.deleteJavaScriptRegister('EnglishPilotBridge'); } catch {}
+  }
+
+  onBackPress(): boolean {
+    try {
+      if (this.controller.accessBackward()) {
+        this.controller.backward();
+        return true;
+      }
+    } catch {}
+    return false;
   }
 
   private resource(url: string): WebResourceResponse {

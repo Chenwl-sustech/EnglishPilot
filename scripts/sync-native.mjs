@@ -55,6 +55,15 @@ await cp(
   join(root, "src/lib/native/resource-path.ts"),
   join(root, "native/harmony/entry/src/main/ets/ResourcePath.ets"),
 );
+for (const [sourceName, targetName] of [
+  ["harmony-policy.ts", "HarmonyPolicy.ets"],
+  ["harmony-session-chunks.ts", "SessionChunks.ets"],
+]) {
+  await cp(
+    join(root, "src/lib/native", sourceName),
+    join(root, "native/harmony/entry/src/main/ets", targetName),
+  );
+}
 for (const directory of [
   "native/harmony/AppScope/resources/base/media",
   "native/harmony/entry/src/main/resources/base/media",

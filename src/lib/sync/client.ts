@@ -1,6 +1,9 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { nativeBuild } from "../native/runtime";
+import { harmonyBridge } from "../native/harmony-rpc";
+import { harmonyFetch } from "../native/harmony-http";
+import { harmonySessionStorage } from "../native/harmony-session";
 import { documentSchema, sha256, type SyncDocument } from "./document";
 import { parseSyncConfig, type SyncConfig } from "./config";
 import {
@@ -18,12 +21,13 @@ const secure = registerPlugin<SecureSessionTransport>(
 );
 function accountSessionStorage(): SessionStorage {
   if (nativeBuild) {
+    if (harmonyBridge()) return harmonySessionStorage();
     if (
       Capacitor.getPlatform() !== "ios" ||
       !Capacitor.isPluginAvailable("EnglishPilotAccountSession")
     )
       throw new Error(
-        "此安装版尚未提供账号安全存储，请更新 iOS 安装版，或使用手机浏览器登录",
+        "此安装版尚未提供账号安全存储，请更新安装版，或使用手机浏览器登录",
       );
     return createSessionStorage(secure);
   }
@@ -57,7 +61,8 @@ async function boundedFetch(
     45000,
   );
   try {
-    return await fetch(input, {
+    const fetcher = nativeBuild && harmonyBridge() ? harmonyFetch : fetch;
+    return await fetcher(input, {
       ...init,
       signal: controller.signal,
       redirect: "error",
@@ -72,14 +77,6 @@ export function syncClient(raw: SyncConfig): SupabaseClient {
     signature = JSON.stringify(config);
   if (cached?.signature === signature) return cached.client;
   if (cached) throw new Error("云服务配置已变化，请重新加载页面");
-  if (
-    nativeBuild &&
-    (Capacitor.getPlatform() !== "ios" ||
-      !Capacitor.isPluginAvailable("EnglishPilotAccountSession"))
-  )
-    throw new Error(
-      "此安装版尚未提供账号安全存储，请更新 iOS 安装版，或使用手机浏览器登录",
-    );
   const client = createClient(config.url, config.key, {
     auth: {
       storageKey: sessionStorageKey(config.url),

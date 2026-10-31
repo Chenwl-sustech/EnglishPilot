@@ -131,8 +131,7 @@ export function AccountSync() {
         <Cloud size={26} />
       </div>
       <p>
-        iPhone、iPad
-        和鸿蒙手机浏览器登录同一学习账号，联网后同步目标、词库、练习记录、作文草稿、对话和录音。断网仍可使用当前设备保存的内容；应用回到前台或恢复联网后再同步。
+        iPhone、iPad、鸿蒙安装版和手机浏览器登录同一学习账号，联网后同步目标、词库、练习记录、作文草稿、对话和录音。断网仍可使用当前设备保存的内容；应用回到前台或恢复联网后再同步。
       </p>
       <p role="status" data-testid="account-sync-status">
         {status}
@@ -526,7 +525,7 @@ export function AccountSync() {
       )}
       <p className="small muted">
         云同步需联网，应用关闭后不会持续后台同步。免费云服务有容量和休眠限制；离线改动会保留在本机，建议继续定期导出完整备份。AI
-        服务的设备配对与额度另行配置。
+        服务的连接与额度另行配置。
       </p>
     </section>
   );

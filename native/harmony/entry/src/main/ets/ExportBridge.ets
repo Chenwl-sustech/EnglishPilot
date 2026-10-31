@@ -2,15 +2,20 @@ import { common } from '@kit.AbilityKit';
 import { fileIo as fs, picker } from '@kit.CoreFileKit';
 import { util } from '@kit.ArkTS';
 import { webview } from '@kit.ArkWeb';
+import { NetworkBridge } from './NetworkBridge';
+import { SessionVault } from './SessionVault';
 
 interface ExportSession { path: string; name: string; expected: number; written: number; }
 interface BridgeRequest { id: string; method: string; args: Array<string | number>; }
-interface BridgeReply { id: string; result: string | boolean; error?: string; }
+interface BridgeReply { id: string; result: string | boolean | null; error?: string; }
 
 export class ExportBridge {
   private sessions: Map<string, ExportSession> = new Map();
   private controller: webview.WebviewController;
   private context: () => common.UIAbilityContext;
+  private network: NetworkBridge = new NetworkBridge();
+  private vault: SessionVault = new SessionVault();
+  private pending: Set<string> = new Set();
 
   constructor(controller: webview.WebviewController, context: () => common.UIAbilityContext) {
     this.controller = controller;
@@ -18,15 +23,22 @@ export class ExportBridge {
   }
 
   postMessage(raw: string): void {
-    if (raw.length > 300000 || !this.controller.getUrl().startsWith('https://englishpilot.local/')) return;
+    if (typeof raw !== 'string' || raw.length > 9 * 1024 * 1024 || !this.controller.getUrl().startsWith('https://englishpilot.local/')) return;
     let request: BridgeRequest;
     try { request = JSON.parse(raw) as BridgeRequest; } catch { return; }
-    if (!request || typeof request.id !== 'string' || !/^[a-zA-Z0-9-]{1,100}$/.test(request.id) || !Array.isArray(request.args)) return;
-    this.execute(request).then((result: string | boolean) => {
+    if (!request || typeof request.id !== 'string' || !/^[a-zA-Z0-9-]{1,100}$/.test(request.id) || !Array.isArray(request.args) || request.args.length > 3 || this.pending.has(request.id)) return;
+    if (this.pending.size >= 32 || (request.method !== 'http' && raw.length > 300000)) {
+      this.reply({ id: request.id, result: false, error: '设备请求过多或内容过大，请稍后重试。' });
+      return;
+    }
+    this.pending.add(request.id);
+    this.execute(request).then((result: string | boolean | null) => {
       this.reply({ id: request.id, result });
     }).catch(() => {
-      this.reply({ id: request.id, result: false, error: '设备文件操作失败，请检查可用空间并重新导出；原数据未更改。' });
-    });
+      const online = request.method === 'http';
+      const account = request.method.startsWith('session:');
+      this.reply({ id: request.id, result: false, error: online ? '在线连接失败，请检查网络后重试；已保存内容仍保留。' : account ? '账号安全存储不可用，请解锁设备后重试；不会改用明文保存。' : '设备文件操作失败，请检查可用空间并重新导出；原数据未更改。' });
+    }).finally(() => { this.pending.delete(request.id); });
   }
 
   private reply(reply: BridgeReply): void {
@@ -35,7 +47,12 @@ export class ExportBridge {
     this.controller.runJavaScript(`window.dispatchEvent(new CustomEvent('englishpilot-native-reply',{detail:${data}}))`).catch(() => {});
   }
 
-  private async execute(request: BridgeRequest): Promise<string | boolean> {
+  private async execute(request: BridgeRequest): Promise<string | boolean | null> {
+    if (request.method === 'http') return this.network.request(request.id, request.args[0] as string);
+    if (request.method === 'http:cancel') { this.network.cancel(request.args[0] as string); return true; }
+    if (request.method === 'session:get') return this.vault.get(request.args[0] as string);
+    if (request.method === 'session:set') { await this.vault.set(request.args[0] as string, request.args[1] as string); return true; }
+    if (request.method === 'session:remove') { await this.vault.remove(request.args[0] as string); return true; }
     if (request.method === 'begin') {
       const name = request.args[0] as string, expected = request.args[1] as number;
       if (typeof name !== 'string' || !/^[a-zA-Z0-9_-]+\.(epbackup|json)$/.test(name) || !Number.isInteger(expected) || expected <= 0 || expected > 512 * 1024 * 1024 || this.sessions.size >= 2) throw new Error('Invalid export');
@@ -87,6 +104,7 @@ export class ExportBridge {
   }
 
   dispose(): void {
+    this.network.dispose();
     this.sessions.forEach((session: ExportSession) => { try { fs.unlinkSync(session.path); } catch {} });
     this.sessions.clear();
   }
