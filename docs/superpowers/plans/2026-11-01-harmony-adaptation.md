@@ -57,10 +57,19 @@ Files: `src/lib/native/harmony-{rpc,http,session,policy}.ts`, `native/harmony/en
 ### 4. Delivery
 
 - [x] Run unit/release checks, typecheck, a real Harmony debug build and applicable native integration tests.
-- [ ] Review the complete diff and artifact for credentials and unintended changes.
-- [ ] Save the HAP, checksums, build instructions, acceptance report and any outstanding real-device requirements.
-- [ ] Commit and publish the Harmony branch/update to the user's GitHub under the existing publication authorization.
+- [x] Review the complete diff and artifact for credentials and unintended changes.
+- [x] Save the HAP, checksums, build instructions, acceptance report and any outstanding real-device requirements.
+- [x] Commit and publish the Harmony branch/update to the user's GitHub under the existing publication authorization.
 
 ## Acceptance limits
 
 2026-11-01: Shared offline UI, core learning flows, native session/HTTPS, recording and backup verified. Real account login/sync/AI, system English synthesis and signed physical installation remain pending; see the dated QA report. Page smoke coverage does not imply every lesson was answered.
+
+## Delivery — 2026-11-02
+
+- Code and reviewed lifecycle fix: `0d875c01fe7536a339b2ea393f86730dda515e01`.
+- [Draft PR #2](https://github.com/Chenwl-sustech/EnglishPilot/pull/2), based on `feature/account-sync`.
+- [Unsigned HAP preview, ZIP and SHA-256 checksums](https://github.com/Chenwl-sustech/EnglishPilot/releases/tag/harmony-preview-2026-11-02).
+- Remote asset SHA-256 digests match local files. Final HAP installation, native bridges (5), document cleanup and application checks (23) passed.
+- No CI checks are configured for this head; reported checks were run locally.
+- Real authenticated cloud flows, successful system English synthesis and physical-device signing/acceptance remain open; the draft and prerelease labels reflect these limits.
