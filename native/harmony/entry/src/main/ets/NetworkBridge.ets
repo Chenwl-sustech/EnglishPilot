@@ -79,9 +79,11 @@ export class NetworkBridge {
     try { session.cancel(); } catch {}
   }
 
-  dispose(): void {
+  dispose(): number {
+    const count = this.requests.size;
     this.closed = true;
     this.requests.forEach((session: rcp.Session) => { try { session.cancel(); session.close(); } catch {} });
     this.requests.clear();
+    return count;
   }
 }

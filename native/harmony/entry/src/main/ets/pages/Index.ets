@@ -117,6 +117,11 @@ struct Index {
           .javaScriptAccess(true)
           .domStorageAccess(true)
           .databaseAccess(true)
+          .onPageBegin(() => {
+            this.cancelDialog?.();
+            this.promptDialog?.close();
+            this.files.resetDocument();
+          })
           .fileAccess(false)
           .mixedMode(MixedMode.None)
           .javaScriptProxy({

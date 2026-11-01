@@ -49,7 +49,18 @@ export function createHarmonyRpc(
       item.finish(null, detail.result);
     else item.finish(new Error("设备返回了无效响应，请重试"));
   };
+  // A page may return from the back-forward cache. Cancel its outstanding
+  // work on departure without permanently closing the reusable channel.
+  const pagehide = () => {
+    for (const item of pending.values())
+      item.finish(
+        new DOMException("页面已离开", "AbortError"),
+        undefined,
+        true,
+      );
+  };
   events.addEventListener("englishpilot-native-reply", reply);
+  events.addEventListener("pagehide", pagehide);
   return {
     async call(method, args, signal) {
       if (closed) throw new Error("设备接口已关闭");
@@ -116,6 +127,7 @@ export function createHarmonyRpc(
       if (closed) return;
       closed = true;
       events.removeEventListener("englishpilot-native-reply", reply);
+      events.removeEventListener("pagehide", pagehide);
       for (const item of pending.values())
         item.finish(new Error("设备接口已关闭"), undefined, true);
     },

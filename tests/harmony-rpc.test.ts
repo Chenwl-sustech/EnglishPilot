@@ -19,7 +19,7 @@ function fixture(timeout = 1000) {
         detail: { id, ...fields },
       }),
     );
-  return { rpc, sent, reply };
+  return { rpc, sent, reply, events };
 }
 
 test("Harmony RPC correlates out-of-order native replies and propagates native errors", async () => {
@@ -91,4 +91,22 @@ test("stopping Harmony synthesis cancels the native job and discards late audio"
   expect(f.sent[1]).toMatchObject({ method: "speech:cancel", args: [id] });
   f.reply(id, { result: "late audio" });
   f.rpc.dispose();
+});
+
+test("document pagehide cancels native work and permits requests after BFCache restoration", async () => {
+  const f = fixture();
+  const pending = f.rpc.call("http", ["{}"]);
+  const rejected = expect(pending).rejects.toThrow();
+  const oldId = f.sent[0].id;
+  f.events.dispatchEvent(new Event("pagehide"));
+  expect(f.sent[1]).toMatchObject({ method: "http:cancel", args: [oldId] });
+  await rejected;
+  f.events.dispatchEvent(new Event("pageshow"));
+  const next = f.rpc.call("session:get", ["restored"]);
+  f.reply(f.sent.at(-1)!.id, { result: "new session" });
+  expect(await next).toBe("new session");
+  f.rpc.dispose();
+  const count = f.sent.length;
+  f.events.dispatchEvent(new Event("pagehide"));
+  expect(f.sent).toHaveLength(count);
 });

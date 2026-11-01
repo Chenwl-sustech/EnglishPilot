@@ -41,6 +41,8 @@ Mac 本次环境可先执行 `source ~/.config/englishpilot/harmony-env.zsh`；�
 ```sh
 node tests-harmony/native-bridges.mjs
 node tests-harmony/app-acceptance.mjs
+node tests-harmony/navigation-cleanup.mjs
+node tests-harmony/backup-cancel.mjs
 node tests-harmony/system-back.mjs
 node tests-harmony/dialogs.mjs
 node tests-harmony/mock-exam.mjs

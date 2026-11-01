@@ -5,6 +5,7 @@ import { webview } from '@kit.ArkWeb';
 import { NetworkBridge } from './NetworkBridge';
 import { SessionVault } from './SessionVault';
 import { SpeechBridge } from './SpeechBridge';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 
 interface ExportSession { path: string; name: string; expected: number; written: number; }
 interface BridgeRequest { id: string; method: string; args: Array<string | number>; }
@@ -18,6 +19,7 @@ export class ExportBridge {
   private vault: SessionVault = new SessionVault();
   private speech: SpeechBridge = new SpeechBridge();
   private pending: Set<string> = new Set();
+  private generation: number = 0;
 
   constructor(controller: webview.WebviewController, context: () => common.UIAbilityContext) {
     this.controller = controller;
@@ -34,13 +36,16 @@ export class ExportBridge {
       return;
     }
     this.pending.add(request.id);
+    const generation = this.generation;
     this.execute(request).then((result: string | boolean | null) => {
+      if (generation !== this.generation) return;
       this.reply({ id: request.id, result });
     }).catch(() => {
+      if (generation !== this.generation) return;
       const online = request.method === 'http';
       const account = request.method.startsWith('session:');
       this.reply({ id: request.id, result: false, error: request.method.startsWith('speech:') ? '鸿蒙本地语音暂不可用，请在设置页下载英语声音后重试；朗读文本未上传。' : online ? '在线连接失败，请检查网络后重试；已保存内容仍保留。' : account ? '账号安全存储不可用，请解锁设备后重试；不会改用明文保存。' : '设备文件操作失败，请检查可用空间并重新导出；原数据未更改。' });
-    }).finally(() => { this.pending.delete(request.id); });
+    }).finally(() => { if (generation === this.generation) this.pending.delete(request.id); });
   }
 
   private reply(reply: BridgeReply): void {
@@ -109,9 +114,19 @@ export class ExportBridge {
     throw new Error('Unknown operation');
   }
 
+  /** A Web document reload does not destroy its ArkUI host or proxy object. */
+  resetDocument(): void {
+    this.dispose();
+    this.network = new NetworkBridge();
+    this.speech = new SpeechBridge();
+  }
+
   dispose(): void {
+    this.generation++;
+    this.pending.clear();
     this.speech.dispose();
-    this.network.dispose();
+    const canceled = this.network.dispose();
+    if (canceled) hilog.info(0x0001, 'EnglishPilotLifecycle', 'Document cleanup: cancelled %{public}d HTTP requests', canceled);
     this.sessions.forEach((session: ExportSession) => { try { fs.unlinkSync(session.path); } catch {} });
     this.sessions.clear();
   }
