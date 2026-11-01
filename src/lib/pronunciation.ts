@@ -8,6 +8,11 @@ import {
 import { LocalWavEngine } from "./local-wav-player";
 import { nativeBuild } from "./native/runtime";
 import { localEnglishVoices, waitForLocalEnglishVoices } from "./device-voices";
+import { harmonyBridge } from "./native/harmony-rpc";
+import {
+  HarmonySpeechEngine,
+  harmonyEnglishVoices,
+} from "./native/harmony-speech";
 let active: ListeningPlaybackEngine | null = null;
 let pending: AbortController | null = null;
 export function stopPronunciation() {
@@ -54,7 +59,16 @@ export function speak(
         if (pending === request) pending = null;
       });
   };
-  if (preference?.mode === "system-local" && !nativeBuild) {
+  if (nativeBuild && harmonyBridge()) {
+    void harmonyEnglishVoices()
+      .then((voices) => {
+        if (request.signal.aborted) return;
+        if (!voices.length)
+          throw new Error("请在设置页下载鸿蒙本地英语声音后重试");
+        play(new HarmonySpeechEngine(), voices[0].voiceURI);
+      })
+      .catch(report);
+  } else if (preference?.mode === "system-local" && !nativeBuild) {
     if (!preference.voiceURI) {
       report(new Error("请先在设置页选择实际已安装的本地 WAV 声音"));
       return;

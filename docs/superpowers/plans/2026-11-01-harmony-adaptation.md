@@ -31,32 +31,36 @@
 ### 1. Compile the actual application
 
 - [x] Reproduce `00303313` and compare with the official SDK 26 template.
-- [ ] Remove the incompatible compile SDK override; align build model and resolve compiler-reported ArkTS incompatibilities.
-- [ ] Build bundled pages, synchronize resources, compile a debug HAP and install on the emulator.
-- [ ] Enable ArkWeb remote debugging only for debuggable applications to support actual application integration tests.
+- [x] Remove the incompatible compile SDK override; align build model and resolve compiler-reported ArkTS incompatibilities.
+- [x] Build bundled pages, synchronize resources, compile a debug HAP and install on the emulator.
+- [x] Enable ArkWeb remote debugging only for debuggable applications to support actual application integration tests.
 
 ### 2. Secure Harmony transport and account integration
 
 Files: `src/lib/native/harmony-{rpc,http,session,policy}.ts`, `native/harmony/entry/src/main/ets/{ExportBridge,NetworkBridge,SessionVault}.ets`, existing sync/AI adapters, native sync script.
 
-- [ ] Write failing tests for RPC correlation, malformed replies, disposal/abort and timeouts.
-- [ ] Write failing tests for URL/method/header/body limits and real Request/FormData/binary response conversion.
-- [ ] Implement a reusable RPC port; keep existing export method compatibility.
-- [ ] Implement the same tested network policy in the native host, with redirects disabled and bounded streaming responses.
-- [ ] Implement system-encrypted session chunks with an atomic manifest and cleanup; test round trip, overwrite, remove, long sessions and interrupted writes on the emulator.
-- [ ] Route Supabase and account AI through the Harmony bridge while retaining the iOS path.
+- [x] Write failing tests for RPC correlation, malformed replies, disposal/abort and timeouts.
+- [x] Write failing tests for URL/method/header/body limits and real Request/FormData/binary response conversion.
+- [x] Implement a reusable RPC port; keep existing export method compatibility.
+- [x] Implement the same tested network policy in the native host, with redirects disabled and bounded streaming responses.
+- [x] Implement system-encrypted session chunks with an atomic manifest and cleanup; test round trip, overwrite, remove, long sessions and interrupted writes on the emulator.
+- [x] Route Supabase and account AI through the Harmony bridge while retaining the iOS path.
 
 ### 3. Functional acceptance and corrections
 
-- [ ] Run the real HAP in the phone emulator and record local application screenshots and machine-readable results from application integration tests.
-- [ ] Verify onboarding, navigation, vocabulary/library, reading/listening/speaking/writing, mock exams, mistakes, analytics/calendar/settings and persistence.
-- [ ] Verify microphone denial/retry, recording/playback, file selection, complete backup export/preview/restore using synthetic data.
+- [x] Run the real HAP in the phone emulator and record local application screenshots and machine-readable results from application integration tests.
+- [x] Verify onboarding, navigation, vocabulary/library, reading/listening/speaking/writing, mock exams, mistakes, analytics/calendar/settings and persistence.
+- [x] Verify microphone denial/retry, recording/playback, file selection, complete backup export/preview/restore using synthetic data.
 - [ ] Verify secure login lifecycle, offline access, two-client synchronization and conflicts with test data; verify actual AI feedback through the existing server where credentials are available.
-- [ ] Fix reproducible issues with focused regression tests; record platform limitations explicitly.
+- [x] Fix reproducible issues with focused regression tests; record platform limitations explicitly.
 
 ### 4. Delivery
 
-- [ ] Run unit/release checks, typecheck, a real Harmony debug build and applicable native integration tests.
+- [x] Run unit/release checks, typecheck, a real Harmony debug build and applicable native integration tests.
 - [ ] Review the complete diff and artifact for credentials and unintended changes.
 - [ ] Save the HAP, checksums, build instructions, acceptance report and any outstanding real-device requirements.
 - [ ] Commit and publish the Harmony branch/update to the user's GitHub under the existing publication authorization.
+
+## Acceptance limits
+
+2026-11-01: Shared offline UI, core learning flows, native session/HTTPS, recording and backup verified. Real account login/sync/AI, system English synthesis and signed physical installation remain pending; see the dated QA report. Page smoke coverage does not imply every lesson was answered.

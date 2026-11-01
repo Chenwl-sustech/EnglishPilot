@@ -114,9 +114,13 @@ test("audio larger than one chunk reconstructs original bytes and rejects corrup
   const restored = await materialize(prepared.document, async (hash) =>
     prepared.chunks.get(hash)!,
   );
+  // Compare every byte natively; generic deep equality expands a 4 MB typed
+  // array into millions of assertion values and can time out under emulators.
   expect(
-    new Uint8Array(await restored.recordings[0].blob.arrayBuffer()),
-  ).toEqual(bytes);
+    Buffer.from(await restored.recordings[0].blob.arrayBuffer()).equals(
+      Buffer.from(bytes),
+    ),
+  ).toBe(true);
   expect(restored.recordings[0].blob.type).toBe("audio/mp4");
   await expect(
     materialize(prepared.document, async () => new Blob(["bad"])),

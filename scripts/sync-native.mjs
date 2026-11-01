@@ -58,6 +58,7 @@ await cp(
 for (const [sourceName, targetName] of [
   ["harmony-policy.ts", "HarmonyPolicy.ets"],
   ["harmony-session-chunks.ts", "SessionChunks.ets"],
+  ["harmony-pcm.ts", "PcmWave.ets"],
 ]) {
   await cp(
     join(root, "src/lib/native", sourceName),

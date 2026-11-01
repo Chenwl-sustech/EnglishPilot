@@ -78,12 +78,16 @@ export function createHarmonyRpc(
           if (!pending.delete(id)) return;
           clearTimeout(timer);
           signal?.removeEventListener("abort", abort);
-          if (cancelNative && sent && method === "http") {
+          if (
+            cancelNative &&
+            sent &&
+            (method === "http" || method === "speech:render")
+          ) {
             try {
               bridge.postMessage(
                 JSON.stringify({
                   id: crypto.randomUUID(),
-                  method: "http:cancel",
+                  method: method === "http" ? "http:cancel" : "speech:cancel",
                   args: [id],
                 }),
               );

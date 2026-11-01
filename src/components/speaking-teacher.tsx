@@ -32,6 +32,8 @@ import { useStudy } from "./study-context";
 import { PageHeading } from "./exercises";
 import { TeacherComposer } from "./teacher-composer";
 import { TeacherAudio } from "./teacher-recorder";
+import { harmonyBridge } from "@/lib/native/harmony-rpc";
+import { harmonyEnglishVoices } from "@/lib/native/harmony-speech";
 
 const remoteClient = nativeBuild || isHostedWebClient;
 const modes = {
@@ -76,6 +78,32 @@ export function SpeakingTeacher() {
     voices[0];
   useEffect(() => {
     let active = true;
+    if (nativeBuild && harmonyBridge()) {
+      void harmonyEnglishVoices()
+        .then((voices) => {
+          if (!active) return;
+          setVoices(
+            voices.map((v) => ({
+              key: `device:${v.voiceURI}`,
+              name: `${v.name} · ${v.lang}`,
+              preference: {
+                voiceURI: v.voiceURI,
+                locale: v.lang,
+                mode: "device-local" as const,
+              },
+            })),
+          );
+          if (!voices.length)
+            setVoiceError("请在设置页下载鸿蒙本地英语声音后重试");
+        })
+        .catch(() => {
+          if (active) setVoiceError("鸿蒙本地声音暂不可用，请到设置页检查");
+        });
+      return () => {
+        active = false;
+        stopPronunciation();
+      };
+    }
     const refreshDevice = () => {
       const device =
         window.speechSynthesis

@@ -23,11 +23,15 @@ if (
   );
 
 export function hdc(...args) {
-  return execFileSync(tool, ["-t", target, ...args], {
+  const output = execFileSync(tool, ["-t", target, ...args], {
     encoding: "utf8",
     timeout: 20000,
     maxBuffer: 8 * 1024 * 1024,
   }).trim();
+  // Some HDC failures still exit zero. Never read a stale UI dump after a
+  // disconnected emulator or a failed file transfer.
+  if (/\[Fail\]|\[Error\]/i.test(output)) throw new Error(output);
+  return output;
 }
 export function restart() {
   hdc("shell", "aa", "force-stop", bundle);
@@ -80,6 +84,11 @@ export async function connect() {
     throw new Error("Local application page not found.");
   }
   await page.waitForLoadState("domcontentloaded");
+  page.setDefaultTimeout(15000);
+  page.setDefaultNavigationTimeout(20000);
+  // ArkWeb handles these with native UI. Playwright's default auto-dismiss
+  // would cancel application confirmations before UITest can answer them.
+  page.on("dialog", () => {});
   return { browser, page };
 }
 

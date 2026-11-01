@@ -76,3 +76,19 @@ test("Harmony RPC timeouts and disposal release pending calls and prevent reuse"
     vi.useRealTimers();
   }
 });
+
+test("stopping Harmony synthesis cancels the native job and discards late audio", async () => {
+  const f = fixture();
+  const control = new AbortController();
+  const pending = f.rpc.call(
+    "speech:render",
+    ["hello", "harmony:8"],
+    control.signal,
+  );
+  const id = f.sent[0].id;
+  control.abort();
+  await expect(pending).rejects.toThrow();
+  expect(f.sent[1]).toMatchObject({ method: "speech:cancel", args: [id] });
+  f.reply(id, { result: "late audio" });
+  f.rpc.dispose();
+});

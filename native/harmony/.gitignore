@@ -12,3 +12,4 @@ entry/src/main/ets/SessionChunks.ets
 *.hap
 *.app
 signing/
+entry/src/main/ets/PcmWave.ets
