@@ -40,6 +40,38 @@ try {
   await assert.rejects(
     nativeCall(page, "speech:render", ["x".repeat(10001), "harmony:flite-slt"]),
   );
+  const cancellation = await page.evaluate(
+    () =>
+      new Promise((resolve, reject) => {
+        const id = crypto.randomUUID();
+        const timeout = setTimeout(() => {
+          window.removeEventListener("englishpilot-native-reply", reply);
+          reject(new Error("cancel timed out"));
+        }, 10000);
+        function reply(event) {
+          if (event.detail.id !== id) return;
+          clearTimeout(timeout);
+          window.removeEventListener("englishpilot-native-reply", reply);
+          resolve(Boolean(event.detail.error));
+        }
+        window.addEventListener("englishpilot-native-reply", reply);
+        const send = (id, method, args) =>
+          window.EnglishPilotBridge.postMessage(
+            JSON.stringify({ id, method, args }),
+          );
+        send(id, "speech:render", [
+          "This is a long cancellable request. ".repeat(150),
+          "harmony:flite-slt",
+        ]);
+        send(crypto.randomUUID(), "speech:cancel", [id]);
+      }),
+  );
+  assert.equal(cancellation, true);
+  const replacement = await nativeCall(page, "speech:render", [
+    "Try again.",
+    "harmony:flite-slt",
+  ]);
+  assert.ok(Buffer.from(replacement, "base64").length > 44);
   console.log(
     JSON.stringify({
       systemVoiceInstalled: status.ready,
