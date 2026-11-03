@@ -1,7 +1,13 @@
 import { textToSpeech } from '@kit.CoreSpeechKit';
-import { util } from '@kit.ArkTS';
+import { util, taskpool } from '@kit.ArkTS';
+import { pcm } from 'libenglishvoice.so';
 import { PcmWave } from './PcmWave';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+
+@Concurrent
+function synthesizeSegment(text: string): ArrayBuffer {
+  return pcm(text);
+}
 
 interface VoiceStatus { ready: boolean; downloadable: boolean; downloading: boolean; message: string; }
 interface SpeechJob { cancel: () => void; }
@@ -17,14 +23,20 @@ export class SpeechBridge {
   async status(): Promise<string> {
     if (this.downloading) return JSON.stringify({ ready: false, downloadable: false, downloading: true, message: this.downloadMessage } as VoiceStatus);
     let ready = false, downloadable = false;
-    try {
-      const engine = await textToSpeech.createEngine({ language: 'en-US', person: 8, online: 1 });
-      engine.shutdown(); ready = true;
-    } catch {}
-    if (!ready && typeof textToSpeech.listVoices === 'function' && typeof textToSpeech.downloadVoice === 'function') {
+    let probeEngine = true;
+    if (typeof textToSpeech.listVoices === 'function') {
       try {
         const voices = await textToSpeech.listVoices({ requestId: util.generateRandomUUID().replace(/-/g, ''), online: 1 });
-        downloadable = voices.some((voice: textToSpeech.VoiceInfo) => voice.person === 8 && voice.status === 'GA');
+        const english = voices.find((voice: textToSpeech.VoiceInfo) => voice.person === 8);
+        probeEngine = english?.status === 'INSTALLED';
+        downloadable = english?.status === 'GA' && typeof textToSpeech.downloadVoice === 'function';
+      } catch {}
+    }
+    if (probeEngine) {
+      try {
+        const engine = await textToSpeech.createEngine({ language: 'en-US', person: 8, online: 1 });
+        engine.shutdown();
+        ready = true;
       } catch {}
     }
     const result: VoiceStatus = { ready, downloadable, downloading: this.downloading,
@@ -35,6 +47,7 @@ export class SpeechBridge {
   async install(): Promise<boolean> {
     if (this.closed || this.downloading) return false;
     const status = JSON.parse(await this.status()) as VoiceStatus;
+    if (this.closed || this.downloading) return false;
     if (status.ready) return true;
     if (!status.downloadable) throw new Error('English voice unavailable');
     this.downloading = true; this.downloadMessage = '正在下载鸿蒙系统英语声音…';
@@ -53,7 +66,9 @@ export class SpeechBridge {
   }
 
   async render(id: string, text: string, voice: string): Promise<string> {
-    if (this.closed || this.jobs.size || typeof text !== 'string' || !text.trim() || text.length > 10000 || voice !== 'harmony:8') throw new Error('Invalid speech request');
+    if (this.closed || this.jobs.size || typeof text !== 'string' || !text.trim() || text.length > 10000) throw new Error('Invalid speech request');
+    if (voice === 'harmony:flite-slt') return this.renderBundled(id, text);
+    if (voice !== 'harmony:8') throw new Error('Unknown voice');
     return new Promise<string>((resolve, reject) => {
       let engine: textToSpeech.TextToSpeechEngine | null = null;
       let ended = false, sampleRate = 16000, sampleBit = 16, channels = 1;
@@ -92,6 +107,33 @@ export class SpeechBridge {
         created.speak(text, { requestId, extraParams: { playType: 0, soundChannel: 1, audioType: 'pcm', speed: 1, volume: 1, pitch: 1, queueMode: 0, languageContext: 'en-US' } });
       }).catch(() => finish(true));
     });
+  }
+
+  private async renderBundled(id: string, text: string): Promise<string> {
+    let canceled = false;
+    const deadline = Date.now() + 75000;
+    const wave = new PcmWave();
+    this.jobs.set(id, { cancel: () => { canceled = true; } });
+    try {
+      let remaining = text.trim();
+      let sequence = 0;
+      while (remaining.length > 0) {
+        if (canceled || Date.now() >= deadline) throw new Error('Speech canceled');
+        let end = Math.min(remaining.length, 240);
+        if (end < remaining.length) {
+          const boundary = remaining.slice(0, end).lastIndexOf(' ');
+          if (boundary > 0) end = boundary;
+        }
+        const part = remaining.slice(0, end);
+        remaining = remaining.slice(end).trimStart();
+        const samples = await taskpool.execute(synthesizeSegment, part) as ArrayBuffer;
+        if (canceled || Date.now() >= deadline) throw new Error('Speech canceled');
+        wave.add(sequence++, samples);
+      }
+      return new util.Base64Helper().encodeToStringSync(new Uint8Array(wave.finish(16000, 16, 1)));
+    } finally {
+      this.jobs.delete(id);
+    }
   }
 
   cancel(id: string): void { this.jobs.get(id)?.cancel(); }

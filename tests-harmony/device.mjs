@@ -30,7 +30,7 @@ export function hdc(...args) {
   }).trim();
   // Some HDC failures still exit zero. Never read a stale UI dump after a
   // disconnected emulator or a failed file transfer.
-  if (/\[Fail\]|\[Error\]/i.test(output)) throw new Error(output);
+  if (/^(?:\[Fail\]|\[Error\])/im.test(output)) throw new Error(output);
   return output;
 }
 export function restart() {

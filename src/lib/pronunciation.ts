@@ -65,7 +65,10 @@ export function speak(
         if (request.signal.aborted) return;
         if (!voices.length)
           throw new Error("请在设置页下载鸿蒙本地英语声音后重试");
-        play(new HarmonySpeechEngine(), voices[0].voiceURI);
+        const selected =
+          voices.find((voice) => voice.voiceURI === preference?.voiceURI) ??
+          voices[0];
+        play(new HarmonySpeechEngine(), selected.voiceURI);
       })
       .catch(report);
   } else if (preference?.mode === "system-local" && !nativeBuild) {

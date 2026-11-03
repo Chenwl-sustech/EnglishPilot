@@ -8,6 +8,9 @@
 
 ```sh
 npm ci
+cd native/harmony
+ohpm install
+cd ../..
 npm run native:build
 npm run native:harmony:build
 ```
@@ -30,7 +33,7 @@ Mac 本次环境可先执行 `source ~/.config/englishpilot/harmony-env.zsh`；�
 - 网络经原生 HTTPS 桥接，只允许已定义的账号、同步、私有音频与 AI 路由；禁用自动重定向，限制请求数与传输大小。
 - 会话使用系统 Asset Store 加密存储；采用分块与原子提交标记支持长会话。不可用时明确失败，不降级到明文。
 - 系统返回键、确认弹窗与文字输入弹窗由原生宿主处理。仅调试包开启 ArkWeb CDP 检查。
-- 本地 Core Speech Kit 英语声音使用 Laura；设置页可以检测、下载和试听。下载由系统确认。合成文本留在本机，PCM 转 WAV 后由播放器提供暂停和变速。部分模拟器系统声音下载失败，不代表真实手机已验证成功；缺声音时显示错误和重试入口，不伪造成功。
+- 本地 Core Speech Kit 英语声音使用 Laura；设置页可以检测、下载和试听。下载由系统确认。合成文本留在本机，PCM 转 WAV 后由播放器提供暂停和变速。系统模型未安装时，应用使用随包提供的 Flite SLT 美式英语声音。内置声音通过 Harmony NDK 在设备上合成，无需下载模型。编译需要 SDK 中的 Native 工具链。上游许可证包含在 HAP 的 Flite-COPYING.txt 内。
 
 ## 模拟器验收
 
@@ -50,4 +53,4 @@ node tests-harmony/mock-exam.mjs
 HARMONY_RECORDING_GRANTED=1 node tests-harmony/recording.mjs
 ```
 
-`recording.mjs` 不设置变量时尝试使用官方 ATM 调试工具重置/恢复权限，适用于支持该工具的镜像；API 20 镜像需通过系统设置操作。结果与截图只保存至被 Git 忽略的 `.local/harmony-qa`。真实录音听感、真机签名、真实账号双向同步与 AI 回复仍需单独核验，不能由上述测试代替。
+`recording.mjs` 不设置变量时尝试使用官方 ATM 调试工具重置/恢复权限，适用于支持该工具的镜像；API 20 镜像需通过系统设置操作。结果与截图只保存至被 Git 忽略的 `.local/harmony-qa`。内置 SLT 已在 API 20 验证。真实录音听感、真机签名、真实账号双向同步与 AI 回复仍需单独核验，不能由上述测试代替。

@@ -39,7 +39,8 @@ export function HarmonyVoiceSettings() {
     <section className="card">
       <h2>鸿蒙本地英语声音</h2>
       <p className="small muted">
-        单词、听力和口语老师使用系统离线英语声音。下载声音需要联网，朗读文本留在设备上。
+        单词、听力和口语可直接使用内置英语声音。安装系统英语声音后会优先使用
+        Laura。两种声音都在本机朗读。
       </p>
       <p role="status">{status?.message ?? "正在检查系统英语声音…"}</p>
       {error && <p role="alert">{error}</p>}
@@ -69,20 +70,25 @@ export function HarmonyVoiceSettings() {
             {status.downloading ? "正在下载…" : "下载系统英语声音"}
           </button>
         )}
-        {status?.ready && (
+        {(status?.ready
+          ? ["harmony:8", "harmony:flite-slt"]
+          : ["harmony:flite-slt"]
+        ).map((voiceURI) => (
           <button
+            key={voiceURI}
             className="button secondary"
             onClick={() =>
               speak(
                 "Daily practice helps us learn to speak clearly.",
                 1,
                 setError,
+                { voiceURI, locale: "en-US", mode: "device-local" },
               )
             }
           >
-            试听鸿蒙英语声音
+            {voiceURI === "harmony:8" ? "试听系统英语声音" : "试听内置英语声音"}
           </button>
-        )}
+        ))}
         <button className="button secondary" onClick={stopPronunciation}>
           停止试听
         </button>

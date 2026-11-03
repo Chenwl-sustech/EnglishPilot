@@ -55,17 +55,26 @@ export async function downloadHarmonyVoice(): Promise<void> {
 }
 export async function harmonyEnglishVoices(): Promise<InstalledVoice[]> {
   const status = await harmonyVoiceStatus();
-  return status.ready
-    ? [
-        {
-          name: "Laura · 鸿蒙离线英语",
-          lang: "en-US",
-          voiceURI: "harmony:8",
-          localService: true,
-          default: true,
-        },
-      ]
-    : [];
+  return [
+    ...(status.ready
+      ? [
+          {
+            name: "Laura · 鸿蒙离线英语",
+            lang: "en-US",
+            voiceURI: "harmony:8",
+            localService: true,
+            default: true,
+          },
+        ]
+      : []),
+    {
+      name: "内置英语 · SLT",
+      lang: "en-US",
+      voiceURI: "harmony:flite-slt",
+      localService: true,
+      default: !status.ready,
+    },
+  ];
 }
 
 /** Synthesis stays native/offline; WAV playback supports pause and variable speed. */
@@ -86,7 +95,7 @@ export class HarmonySpeechEngine implements ListeningPlaybackEngine {
     this.stop();
     if (
       !playbackRates.includes(request.rate) ||
-      request.voiceURI !== "harmony:8"
+      !["harmony:8", "harmony:flite-slt"].includes(request.voiceURI)
     )
       throw new Error("鸿蒙英语声音或语速无效");
     const run = ++this.generation;
