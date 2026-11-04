@@ -13,6 +13,7 @@ const collections = new Set([
   "state.extension.practiceSessions",
   "state.extension.teacherSessions",
   "state.extension.evaluations",
+  "state.extension.disputes",
   "state.extension.speechAnalyses",
   "state.extension.listeningMaterials",
   "state.extension.sources",

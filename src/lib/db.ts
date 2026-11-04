@@ -61,14 +61,14 @@ export class PilotDB extends Dexie {
 }
 export const db = new PilotDB(activeDatabaseName());
 let channel: BroadcastChannel | undefined;
-export function announce() {
+export function announce(source: "local" | "sync" = "local") {
   if (typeof window !== "undefined") {
-    window.dispatchEvent(new Event("pilot-updated"));
+    window.dispatchEvent(new CustomEvent("pilot-updated", { detail: { source } }));
     channel ??=
       typeof BroadcastChannel !== "undefined"
         ? new BroadcastChannel("englishpilot")
         : undefined;
-    channel?.postMessage("changed");
+    channel?.postMessage({ source });
   }
 }
 export async function loadState(date = today(), dbTarget = db): Promise<State> {

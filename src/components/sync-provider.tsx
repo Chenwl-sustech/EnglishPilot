@@ -60,6 +60,8 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
   const generation = useRef(0),
     userId = useRef<string | null>(null),
     running = useRef(false),
+    followUp = useRef(false),
+    changes = useRef(0),
     mounted = useRef(true);
   const invalidate = useCallback(() => {
     generation.current++;
@@ -105,7 +107,12 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     };
     const accept = (next: User | null, signedOut = false) => {
       if (!live) return;
-      if (userId.current !== (next?.id ?? null)) generation.current++;
+      if (userId.current !== (next?.id ?? null)) {
+        generation.current++;
+        followUp.current = false;
+        setMeta(null);
+        setError("");
+      }
       userId.current = next?.id ?? null;
       setUser(next);
       setReady(true);
@@ -167,8 +174,7 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
   const run = useCallback(
-    async (choice?: "local" | "cloud" | "recheck") => {
-      if (running.current) return;
+    async (choice?: "local" | "cloud" | "recheck"): Promise<void> => {
       const space = activeSpace();
       if (
         !client ||
@@ -187,6 +193,12 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
         userId.current === space.uid &&
         activeSpace()?.uid === space.uid &&
         activeSpace()?.project === space.project;
+      if (running.current) {
+        // A background sync triggered during a slow upload must run afterward.
+        if (!choice) followUp.current = true;
+        return;
+      }
+      const startingChanges = changes.current;
       running.current = true;
       setBusy(true);
       setError("");
@@ -204,8 +216,14 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
             ? await resolveConflict(db, cloud, choice, guard)
             : await syncOnce(db, cloud, guard);
         if (guard()) {
-          setStatus(result.status);
-          setMeta((await db.syncMeta.get("main")) ?? null);
+          const meta = (await db.syncMeta.get("main")) ?? null;
+          if (!guard()) return;
+          setStatus(
+            result.status === "synced" && changes.current !== startingChanges
+              ? "pending"
+              : result.status,
+          );
+          setMeta(meta);
         }
       } catch (e) {
         if (guard()) {
@@ -217,6 +235,10 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
       } finally {
         running.current = false;
         if (mounted.current) setBusy(false);
+        if (followUp.current) {
+          followUp.current = false;
+          if (guard()) void run();
+        }
       }
     },
     [client, config, user],
@@ -237,7 +259,16 @@ export function SyncProvider({ children }: { children: React.ReactNode }) {
       () => run(),
       () => document.visibilityState === "visible",
     );
-    const changed = () => {
+    const changed = (event: Event) => {
+        // Remote application refreshes the UI without making this device dirty.
+        const detail =
+          event instanceof MessageEvent
+            ? event.data
+            : event instanceof CustomEvent
+              ? event.detail
+              : null;
+        if (detail?.source === "sync") return;
+        changes.current++;
         setStatus(pendingAfterLocalChange);
         scheduler.changed();
       },
