@@ -3,7 +3,156 @@ import {
   harmonyRequestAllowed,
   harmonyHeaders,
 } from "../src/lib/native/harmony-policy";
-import { createHarmonyFetch } from "../src/lib/native/harmony-http";
+import {
+  createHarmonyFetch,
+  harmonySyncTimeout,
+} from "../src/lib/native/harmony-http";
+
+test("only allowlisted Harmony audio downloads receive a bounded longer deadline", () => {
+  const audio =
+    "https://test.supabase.co/storage/v1/object/authenticated/englishpilot-sync/11111111-1111-4111-8111-111111111111/chunks/" +
+    "a".repeat(64);
+  expect(harmonySyncTimeout(audio)).toBe(180000);
+  expect(harmonySyncTimeout(audio, { method: "POST" })).toBe(45000);
+  expect(harmonySyncTimeout("https://test.supabase.co/auth/v1/user")).toBe(
+    45000,
+  );
+  expect(harmonySyncTimeout("https://evil.test/storage/v1/object/x")).toBe(
+    45000,
+  );
+});
+
+test("Harmony relay downloads large audio in validated 256 KiB ranges without changing chunk bytes", async () => {
+  const data = new Uint8Array(700000);
+  for (let i = 0; i < data.length; i++) data[i] = i % 251;
+  const ranges: string[] = [];
+  const fetcher = createHarmonyFetch(
+    {
+      call: async (_method, args) => {
+        const req = JSON.parse(args[0] as string);
+        ranges.push(req.headers.range);
+        const m = /^bytes=(\d+)-(\d+)$/.exec(req.headers.range)!;
+        const start = +m[1],
+          end = Math.min(+m[2], data.length - 1);
+        return JSON.stringify({
+          status: 206,
+          headers: {
+            "content-type": "audio/wav",
+            "content-range": `bytes ${start}-${end}/${data.length}`,
+          },
+          bodyBase64: Buffer.from(data.slice(start, end + 1)).toString(
+            "base64",
+          ),
+        });
+      },
+    },
+    {
+      origin: "https://englishpilot-chenwl-sync.netlify.app",
+      project: "https://test.supabase.co",
+    },
+  );
+  const url =
+    "https://test.supabase.co/storage/v1/object/authenticated/englishpilot-sync/11111111-1111-4111-8111-111111111111/chunks/" +
+    "a".repeat(64);
+  const response = await fetcher(url);
+  expect(response.status).toBe(200);
+  expect(response.headers.has("content-range")).toBe(false);
+  expect(new Uint8Array(await response.arrayBuffer())).toEqual(data);
+  expect(ranges).toEqual([
+    "bytes=0-262143",
+    "bytes=262144-524287",
+    "bytes=524288-699999",
+  ]);
+});
+
+test("Harmony ranged download rejects missing or conflicting ranges and stops after cancellation", async () => {
+  const url =
+    "https://test.supabase.co/storage/v1/object/authenticated/englishpilot-sync/11111111-1111-4111-8111-111111111111/chunks/" +
+    "a".repeat(64);
+  for (const bad of [
+    undefined,
+    "bytes 1-3/4",
+    "bytes 0-3/999999999",
+    "bytes 0-3/4",
+  ]) {
+    const f = createHarmonyFetch(
+      {
+        call: async () =>
+          JSON.stringify({
+            status: 206,
+            headers: bad ? { "content-range": bad } : {},
+            bodyBase64: "AQI=",
+          }),
+      },
+      {
+        origin: "https://englishpilot-chenwl-sync.netlify.app",
+        project: "https://test.supabase.co",
+      },
+    );
+    await expect(f(url)).rejects.toThrow(/音频分段/);
+  }
+  const controller = new AbortController();
+  let calls = 0;
+  const f = createHarmonyFetch(
+    {
+      call: async () => {
+        calls++;
+        controller.abort();
+        return JSON.stringify({
+          status: 206,
+          headers: { "content-range": "bytes 0-262143/524288" },
+          bodyBase64: Buffer.alloc(262144).toString("base64"),
+        });
+      },
+    },
+    {
+      origin: "https://englishpilot-chenwl-sync.netlify.app",
+      project: "https://test.supabase.co",
+    },
+  );
+  await expect(f(url, { signal: controller.signal })).rejects.toThrow();
+  expect(calls).toBe(1);
+});
+
+test("explicit Harmony relay preserves the configured project, query and request bytes", async () => {
+  const relay = "https://englishpilot-chenwl-sync.netlify.app";
+  let sent: any;
+  const transport = createHarmonyFetch(
+    {
+      call: async (_method, args) => {
+        sent = JSON.parse(args[0] as string);
+        return JSON.stringify({ status: 200, headers: {}, bodyBase64: "e30=" });
+      },
+    },
+    { origin: relay, project: "https://test.supabase.co" },
+  );
+  await transport(
+    "https://test.supabase.co/auth/v1/token?grant_type=password",
+    {
+      method: "POST",
+      headers: { apikey: "public-fixture", "content-type": "application/json" },
+      body: JSON.stringify({
+        email: "fixture@example.test",
+        password: "synthetic-only",
+      }),
+    },
+  );
+  expect(sent.url).toBe(
+    relay + "/api/sync/test/auth/v1/token?grant_type=password",
+  );
+  expect(JSON.parse(atob(sent.bodyBase64)).password).toBe("synthetic-only");
+  expect(harmonyRequestAllowed(sent.url, "POST")).toBe(true);
+  await transport("https://other.supabase.co/auth/v1/settings");
+  expect(sent.url).toBe("https://other.supabase.co/auth/v1/settings");
+  for (const path of [
+    "/api/sync/test/auth/v1/admin/users",
+    "/api/sync/test/storage/v1/object/public/other/a",
+    "/api/sync/test/rest/v1/unrelated",
+    "/api/sync/test/auth/v1/%2e%2e/admin",
+  ]) {
+    expect(harmonyRequestAllowed(relay + path, "POST")).toBe(false);
+  }
+});
 
 test("Harmony network allows only account endpoints and owned content address shapes", () => {
   expect(

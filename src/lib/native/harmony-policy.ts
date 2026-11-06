@@ -16,6 +16,16 @@ export function harmonyRequestAllowed(
   const host = match[1],
     path = match[2];
   if (host === "englishpilot-chenwl-sync.netlify.app") {
+    const relay = /^\/api\/sync\/([a-z0-9-]+)(\/[^%]*)$/.exec(path);
+    if (relay) {
+      const query = address.includes("?")
+        ? address.slice(address.indexOf("?"))
+        : "";
+      return harmonyRequestAllowed(
+        `https://${relay[1]}.supabase.co${relay[2]}${query}`,
+        method,
+      );
+    }
     return (
       ["GET", "POST"].includes(method) &&
       [

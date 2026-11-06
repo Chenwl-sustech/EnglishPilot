@@ -14,9 +14,11 @@ export type NativeAiTransport = (
   request: NativeAiRequest,
 ) => Promise<NativeAiResponse>;
 
-const nativeAi = registerPlugin<{ request: NativeAiTransport }>(
-  "EnglishPilotAI",
-);
+const nativeAi = registerPlugin<{
+  request: (
+    request: Omit<NativeAiRequest, "signal"> & { accountToken?: string },
+  ) => Promise<NativeAiResponse>;
+}>("EnglishPilotAI");
 export const requestNativeAi: NativeAiTransport = async (request) => {
   const { signal, ...wire } = request;
   if (harmonyBridge()) {
@@ -45,5 +47,16 @@ export const requestNativeAi: NativeAiTransport = async (request) => {
   }
   if (Capacitor.getPlatform() !== "ios")
     throw new Error("当前安装平台尚未配置在线 AI 连接。");
-  return nativeAi.request(wire);
+  const [{ webSessionToken }, { activeSpace }] = await Promise.all([
+    import("../sync/web-session"),
+    import("../sync/space"),
+  ]);
+  const token = await webSessionToken();
+  signal?.throwIfAborted();
+  if (!token && activeSpace())
+    throw new Error("请重新登录学习账号以使用在线 AI");
+  return nativeAi.request({
+    ...wire,
+    ...(token ? { accountToken: token } : {}),
+  });
 };

@@ -2,8 +2,9 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 import { nativeBuild } from "../native/runtime";
 import { harmonyBridge } from "../native/harmony-rpc";
-import { harmonyFetch } from "../native/harmony-http";
+import { harmonyFetch, harmonySyncTimeout } from "../native/harmony-http";
 import { harmonySessionStorage } from "../native/harmony-session";
+import { createSyncRelayFetch } from "../native/sync-relay";
 import { documentSchema, sha256, type SyncDocument } from "./document";
 import { parseSyncConfig, type SyncConfig } from "./config";
 import {
@@ -16,6 +17,7 @@ import {
 } from "./session-storage";
 import type { CloudStore, CloudHead } from "./engine";
 let cached: { signature: string; client: SupabaseClient } | undefined;
+let iosRelay: typeof fetch | undefined;
 const secure = registerPlugin<SecureSessionTransport>(
   "EnglishPilotAccountSession",
 );
@@ -53,15 +55,34 @@ async function boundedFetch(
 ): Promise<Response> {
   const controller = new AbortController(),
     source = init?.signal;
+  const usingHarmony = nativeBuild && !!harmonyBridge();
+  const relayOrigin =
+    process.env.NEXT_PUBLIC_NATIVE_SYNC_RELAY ??
+    process.env.NEXT_PUBLIC_HARMONY_SYNC_RELAY;
+  const project = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const usingIosRelay =
+    nativeBuild &&
+    Capacitor.getPlatform() === "ios" &&
+    !!relayOrigin &&
+    !!project;
   const abort = () => controller.abort(source?.reason);
   if (source?.aborted) abort();
   else source?.addEventListener("abort", abort, { once: true });
   const timer = setTimeout(
     () => controller.abort(new Error("云同步连接超时，请检查网络后重试")),
-    45000,
+    usingHarmony || usingIosRelay ? harmonySyncTimeout(input, init) : 45000,
   );
   try {
-    const fetcher = nativeBuild && harmonyBridge() ? harmonyFetch : fetch;
+    if (usingIosRelay)
+      iosRelay ??= createSyncRelayFetch(fetch, {
+        origin: relayOrigin!,
+        project: project!,
+      });
+    const fetcher = usingHarmony
+      ? harmonyFetch
+      : usingIosRelay
+        ? iosRelay!
+        : fetch;
     return await fetcher(input, {
       ...init,
       signal: controller.signal,

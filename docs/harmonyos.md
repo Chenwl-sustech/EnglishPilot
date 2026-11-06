@@ -1,6 +1,6 @@
 # HarmonyOS 开发与安装
 
-鸿蒙版复用离线学习页面和题库，以 ArkWeb 承载界面。源码在 `feature/harmony-adaptation` 分支。当前产物是**未签名调试 HAP**：已在本地手机模拟器安装运行，不能直接作为公开分发或真机签名安装包。实际验收范围见 [2026-11-01 验收记录](qa/2026-11-01-harmony.md)。
+鸿蒙版复用离线学习页面和题库，以 ArkWeb 承载界面。源码在 `feature/harmony-adaptation` 分支。已在 Mate 60 上完成开发签名、覆盖安装、真实学习账号登录、云端资料下载和 AI 对话。公开附件仍是**未签名调试 HAP**，每位开发者需使用自己的账号和设备签名。实际范围见 [2026-11-07 真机记录](qa/2026-11-07-physical-sync.md)，此前模拟器结果见 [2026-11-01 记录](qa/2026-11-01-harmony.md)。
 
 ## 编译
 
@@ -29,6 +29,8 @@ Mac 本次环境可先执行 `source ~/.config/englishpilot/harmony-env.zsh`；�
 
 编译前可设置公开配置 `NEXT_PUBLIC_SUPABASE_URL` 与 `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`，与现有网页版指向同一项目。它们是客户端公开配置，不能用服务端密钥替代。既有 Netlify AI 接口由学习账号授权；服务端模型 Key、配对令牌、签名私钥均不应进入源码、HAP、备份或日志。
 
+如果真机网络不能直连 Supabase，可在生成内置页面前额外设置 `NEXT_PUBLIC_NATIVE_SYNC_RELAY=https://englishpilot-chenwl-sync.netlify.app`，使用当前个人部署的固定项目转发。默认留空时仍直连；此变量只支持代码中明确允许的服务，不能填写任意代理。转发同时支持鸿蒙和 iPad，保留原 Supabase 项目作为账号空间身份。详见[安装版账号网络转发](account-sync.md#安装版账号网络转发)。
+
 - ArkWeb 只加载内置 `https://englishpilot.local` 页面，保留资源映射和 CSP 限制。
 - 网络经原生 HTTPS 桥接，只允许已定义的账号、同步、私有音频与 AI 路由；禁用自动重定向，限制请求数与传输大小。
 - 会话使用系统 Asset Store 加密存储；采用分块与原子提交标记支持长会话。不可用时明确失败，不降级到明文。
@@ -53,4 +55,4 @@ node tests-harmony/mock-exam.mjs
 HARMONY_RECORDING_GRANTED=1 node tests-harmony/recording.mjs
 ```
 
-`recording.mjs` 不设置变量时尝试使用官方 ATM 调试工具重置/恢复权限，适用于支持该工具的镜像；API 20 镜像需通过系统设置操作。结果与截图只保存至被 Git 忽略的 `.local/harmony-qa`。内置 SLT 已在 API 20 验证。真实录音听感、真机签名、真实账号双向同步与 AI 回复仍需单独核验，不能由上述测试代替。
+`recording.mjs` 不设置变量时尝试使用官方 ATM 调试工具重置/恢复权限，适用于支持该工具的镜像；API 20 镜像需通过系统设置操作。结果与截图只保存至被 Git 忽略的 `.local/harmony-qa`。内置 SLT 已在 API 20 验证。模拟器脚本会修改专用测试数据，不可直接用于真实学习账号。真机结果及尚未覆盖的场景见[单独验收记录](qa/2026-11-07-physical-sync.md)。

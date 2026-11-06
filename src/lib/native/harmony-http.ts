@@ -1,3 +1,4 @@
+import { createSyncRelayFetch, type SyncRelay } from "./sync-relay";
 import {
   createHarmonyRpc,
   harmonyBridge,
@@ -16,9 +17,7 @@ export function base64Bytes(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-export function createHarmonyFetch(
-  rpc: Pick<HarmonyRpc, "call">,
-): typeof fetch {
+function createHarmonyTransport(rpc: Pick<HarmonyRpc, "call">): typeof fetch {
   return async (input, init) => {
     const request = new Request(input, init);
     request.signal.throwIfAborted();
@@ -98,6 +97,35 @@ export function createHarmonyFetch(
   };
 }
 
+/** Keep individual native responses small on mobile networks; stored hashes remain unchanged. */
+export function createHarmonyFetch(
+  rpc: Pick<HarmonyRpc, "call">,
+  relay?: SyncRelay,
+): typeof fetch {
+  const transport = createHarmonyTransport(rpc);
+  return relay ? createSyncRelayFetch(transport, relay) : transport;
+}
+
+export function harmonySyncTimeout(
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): number {
+  const address =
+    typeof input === "string"
+      ? input
+      : input instanceof URL
+        ? input.href
+        : input.url;
+  const method = (
+    init?.method ?? (input instanceof Request ? input.method : "GET")
+  ).toUpperCase();
+  return method === "GET" &&
+    address.includes("/storage/v1/object/") &&
+    harmonyRequestAllowed(address, method)
+    ? 180000
+    : 45000;
+}
+
 /** The RPC channel is shared by authenticated HTTP requests, never by iOS. */
 let transport: ReturnType<typeof createHarmonyFetch> | undefined;
 export function harmonyFetch(
@@ -106,6 +134,13 @@ export function harmonyFetch(
 ): Promise<Response> {
   const bridge = harmonyBridge();
   if (!bridge) throw new Error("鸿蒙设备网络接口尚未就绪");
-  transport ??= createHarmonyFetch(createHarmonyRpc(bridge));
+  const relayOrigin =
+    process.env.NEXT_PUBLIC_NATIVE_SYNC_RELAY ??
+    process.env.NEXT_PUBLIC_HARMONY_SYNC_RELAY;
+  const project = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  transport ??= createHarmonyFetch(
+    createHarmonyRpc(bridge),
+    relayOrigin && project ? { origin: relayOrigin, project } : undefined,
+  );
   return transport(input, init);
 }

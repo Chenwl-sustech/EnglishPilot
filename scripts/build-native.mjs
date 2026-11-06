@@ -19,7 +19,7 @@ import { parsePublicSyncConfig } from "../src/lib/sync/public-config.mjs";
 const require = createRequire(import.meta.url);
 const config = `export default { output: "export", trailingSlash: true, poweredByHeader: false, images: { unoptimized: true } };\n`;
 
-/** @param {Record<string,string|undefined>} source */
+/** @param {Record<string,string|undefined>} source @returns {Record<string,string|undefined>} */
 export function nativeBuildEnvironment(source = process.env) {
   const sync =
     source.NEXT_PUBLIC_SUPABASE_URL ||
@@ -29,8 +29,17 @@ export function nativeBuildEnvironment(source = process.env) {
           key: source.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
         })
       : null;
+  const relay =
+    source.NEXT_PUBLIC_NATIVE_SYNC_RELAY ??
+    source.NEXT_PUBLIC_HARMONY_SYNC_RELAY;
+  if (
+    relay &&
+    (!sync || relay !== "https://englishpilot-chenwl-sync.netlify.app")
+  )
+    throw Error("鸿蒙账号转发需要公开项目配置与受信任的 HTTPS 地址");
   return {
     ...source,
+    NEXT_PUBLIC_NATIVE_SYNC_RELAY: relay ?? "",
     ...(sync
       ? {
           NEXT_PUBLIC_SUPABASE_URL: sync.url,
