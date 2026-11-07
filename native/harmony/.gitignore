@@ -5,8 +5,13 @@ build/
 entry/build/
 entry/src/main/resources/rawfile/web/
 entry/src/main/ets/ResourcePath.ets
+entry/src/main/ets/HarmonyPolicy.ets
+entry/src/main/ets/SessionChunks.ets
 *.p7b
 *.cer
 *.hap
 *.app
 signing/
+entry/src/main/ets/PcmWave.ets
+
+.cxx/

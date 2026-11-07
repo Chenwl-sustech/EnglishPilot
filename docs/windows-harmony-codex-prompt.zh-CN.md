@@ -8,16 +8,16 @@
 
 ## 正确获取代码
 
-仓库是 `https://github.com/Chenwl-sustech/EnglishPilot.git`。当前账号同步和 iPad AI 代码在 `feature/account-sync` 分支，而不是默认 `main` / v0.1.3 Release。开始先获取该分支并记录实际 commit，检查是否存在更新或未提交修改，尊重既有工作，不要强制覆盖：
+仓库是 `https://github.com/Chenwl-sustech/EnglishPilot.git`。当前鸿蒙适配、账号同步和 iPad AI 代码在 `feature/harmony-adaptation` 分支，而不是默认 `main` / v0.1.3 Release。开始先获取该分支并记录实际 commit，检查是否存在更新或未提交修改，尊重既有工作，不要强制覆盖：
 
 ```powershell
-git clone --branch feature/account-sync https://github.com/Chenwl-sustech/EnglishPilot.git
+git clone --branch feature/harmony-adaptation https://github.com/Chenwl-sustech/EnglishPilot.git
 cd EnglishPilot
 git log -1 --oneline
 git status --short --branch
 ```
 
-截至本提示词撰写时，功能代码基线为 `2b58be4`；分支可能有更新，请使用并报告获取到的最新提交。阅读仓库 `AGENTS.md`（如存在）、`README.md`、`docs/account-sync.md`、`docs/qa/2026-10-26-account-sync.md`、`docs/cloud-backend.md`，以及 `native/harmony/`、`native/ios/`、`src/lib/native/`、`src/components/account-sync.tsx` 和相关测试。以代码与真实测试为准，建立逐项对照表，再制定和执行方案。
+2026-11-01 已在 Mac 完成真实 HAP 编译和模拟器安装，安全网络／会话桥接、原生返回键、确认／输入弹窗和离线语音适配已加入；分支可能有更新，请使用并报告获取到的最新提交。阅读仓库 `AGENTS.md`（如存在）、`README.md`、`docs/harmonyos.md`、`docs/qa/2026-11-01-harmony.md`、`docs/account-sync.md`、`docs/qa/2026-10-26-account-sync.md`、`docs/cloud-backend.md`，以及 `native/harmony/`、`native/ios/`、`src/lib/native/`、`src/components/account-sync.tsx` 和相关测试。以代码与真实测试为准，建立逐项对照表，再制定和执行方案。
 
 ## 环境与目标设备
 
@@ -28,10 +28,10 @@ git status --short --branch
 ## 功能目标和重点缺口
 
 - 对照现有页面与 iPad：首次设置、学习计划、词汇、题库与资源、语法、听力、阅读、口语、写作、小测、模考、错题、AI 教师、分析、日历、设置、深浅主题、离线学习和持久化。共享页面与已有题库尽量复用，保留第三方授权与来源；不要宣称题库覆盖全部雅思/托福官方题。
-- 保持现有 ArkWeb 本地资源与离线能力，检查 `native/harmony/entry/src/main/ets/pages/Index.ets` 的资源拦截、CSP、来源限制与导航控制。当前实现会拦截非本地资源，账号和在线 AI 不能假定已经可用。设计受约束的原生网络访问和桥接，严格验证来源、目标地址、方法、数据大小、重定向及错误处理，避免直接放开任意 URL 或将服务器密钥暴露到网页。
-- 账号登录：复用现有 Supabase 账号与云同步协议，实现符合当前 HarmonyOS 官方安全能力的会话/刷新凭据安全存储和隔离，核查生命周期、过期、离线打开、退出及恢复。当前 Harmony 原生工程尚缺安全账号会话接口；不要用明文 Preferences、localStorage 或日志存储敏感令牌。若 API 或设备不支持，说明并提供安全方案，不降级泄露。
+- 保持现有 ArkWeb 本地资源与离线能力，检查 `native/harmony/entry/src/main/ets/pages/Index.ets` 的资源拦截、CSP、来源限制与导航控制。当前已有受约束的 Remote Communication Kit 网络桥接。继续保持来源、目标地址、方法、数据大小、重定向及错误处理限制，并用测试账号验证在线业务，避免直接放开任意 URL 或将服务器密钥暴露到网页。
+- 账号登录：复用现有 Supabase 账号与云同步协议，实现符合当前 HarmonyOS 官方安全能力的会话/刷新凭据安全存储和隔离，核查生命周期、过期、离线打开、退出及恢复。当前已有 Asset Store Kit 分块安全会话接口，已验证长会话与重启持久化；不要用明文 Preferences、localStorage 或日志存储敏感令牌。若 API 或设备不支持，说明并提供安全方案，不降级泄露。
 - 同步：保留本机优先、学习空间隔离、离线修改、音频分块/完整性校验、并发冲突检测、备份两端与用户明确选择。先用合成数据验证手机与 Mac/iPad 双向同步，避免覆盖真实学习记录或自动选冲突版本；用户数据迁移和覆盖之前先保留完整备份。
-- AI：复用现有账号授权/私人后端与模型额度机制，检查现有生产服务能力和可达性；iPad 的设备配对身份不能直接导出或复制。设计鸿蒙设备自己的安全认证或账号授权，服务器的 DeepSeek Key 和服务令牌绝不打包客户端或提交 Git。写作反馈与 AI 教师实际请求必须测试，明确 AI 文字发送范围、录音同步行为及潜在调用费用。
+- AI：复用现有账号授权/私人后端与模型额度机制，检查现有生产服务能力和可达性；iPad 的设备配对身份不能直接导出或复制。鸿蒙使用自身安全保存的学习账号会话进行授权，继续验证过期和刷新流程，服务器的 DeepSeek Key 和服务令牌绝不打包客户端或提交 Git。写作反馈与 AI 教师实际请求必须测试，明确 AI 文字发送范围、录音同步行为及潜在调用费用。
 - 麦克风、权限拒绝后重试、口语录音与播放、导入素材、导出完整 `.epbackup`、系统文件选择、备份预览和恢复等，逐项实现并以合成数据核验。考虑手机和平板适配、竖横屏、可访问性与进程终止后数据恢复。
 - 不要擅自卸载已有 App、删除或覆盖本地/云端数据、轮换生产密钥或重置数据库。私人登录、设备授权、签名资料由本人在官方界面操作；不要索要密码或要求我把 API Key 发给你。
 

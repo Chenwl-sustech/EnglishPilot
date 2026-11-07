@@ -119,6 +119,8 @@ class EnglishPilotAiPlugin: CAPPlugin, CAPBridgedPlugin {
     let jsName = "EnglishPilotAI"
     let pluginMethods: [CAPPluginMethod] = [CAPPluginMethod(name: "request", returnType: CAPPluginReturnPromise)]
     private static let cloudOrigin = "https://your-englishpilot-ai.vercel.app"
+    // Learning-account requests use the same fixed service as Harmony. The API key stays on the server.
+    private static let accountOrigin = "https://englishpilot-chenwl-sync.netlify.app"
     private static let allowedPaths = Set(["/api/evaluate", "/api/teacher", "/api/configuration", "/api/ai-usage"])
     private static var keychainQuery: [String: Any] {
         [kSecClass as String: kSecClassGenericPassword,
@@ -180,10 +182,24 @@ class EnglishPilotAiPlugin: CAPPlugin, CAPBridgedPlugin {
             return
         }
         do {
-            let connection = try Self.connection()
-            var request = URLRequest(url: URL(string: connection.origin + path)!)
+            let origin: String
+            let token: String
+            if call.options["accountToken"] != nil {
+                guard let accountToken = call.getString("accountToken"),
+                      !accountToken.isEmpty, accountToken.utf8.count <= 8192,
+                      accountToken.utf8.allSatisfy({ (33...126).contains($0) }) else {
+                    throw Self.error("学习账号授权无效，请重新登录。")
+                }
+                origin = Self.accountOrigin
+                token = accountToken
+            } else {
+                let connection = try Self.connection()
+                origin = connection.origin
+                token = connection.deviceToken
+            }
+            var request = URLRequest(url: URL(string: origin + path)!)
             request.httpMethod = method
-            request.setValue("Bearer " + connection.deviceToken, forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue("application/json", forHTTPHeaderField: "Accept")
             if let body = call.getString("body") {
@@ -201,7 +217,7 @@ class EnglishPilotAiPlugin: CAPPlugin, CAPBridgedPlugin {
                 do {
                     let (bytes, response) = try await session.bytes(for: request, delegate: NoAiRedirect())
                     guard let http = response as? HTTPURLResponse,
-                          http.url?.scheme == "https", http.url?.host == URL(string: connection.origin)?.host,
+                          http.url?.scheme == "https", http.url?.host == URL(string: origin)?.host,
                           !(300..<400).contains(http.statusCode),
                           http.value(forHTTPHeaderField: "Content-Type")?.lowercased().contains("application/json") == true else {
                         throw Self.error("后端未返回有效接口响应，请检查网络或设备访问授权。")

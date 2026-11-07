@@ -3,7 +3,7 @@ import { apiFetch } from "@/lib/native/api";
 
 import { useEffect, useState } from "react";
 import { evaluationSchema } from "@/lib/adaptive-model";
-import { saveEvaluation } from "@/lib/evaluations";
+import { evaluationHistory, saveEvaluation } from "@/lib/evaluations";
 import { useStudy } from "./study-context";
 import type { Attempt } from "@/lib/model";
 export function AiFeedback({
@@ -30,9 +30,16 @@ export function AiFeedback({
     } | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const [selected, setSelected] = useState("");
+  const [check, setCheck] = useState(0);
   useEffect(() => {
+    setConfig(null);
+    setError("");
+    const controller = new AbortController();
+    const retry = () => setCheck((value) => value + 1);
+    window.addEventListener("online", retry);
     let alive = true;
-    void apiFetch("/api/evaluate")
+    void apiFetch("/api/evaluate", { signal: controller.signal })
       .then(async (response) => {
         const data = await response.json();
         if (!alive) return;
@@ -54,11 +61,12 @@ export function AiFeedback({
       });
     return () => {
       alive = false;
+      controller.abort();
+      window.removeEventListener("online", retry);
     };
-  }, []);
-  const result = state.extension.evaluations
-    .filter((e) => e.attemptId === attempt.id)
-    .at(-1);
+  }, [check]);
+  const history = evaluationHistory(state.extension.evaluations, attempt.id);
+  const result = history.find((row) => row.id === selected) ?? history[0];
   async function submit() {
     setBusy(true);
     setError("");
@@ -79,7 +87,13 @@ export function AiFeedback({
       const body = await response.json();
       if (!response.ok) throw new Error(body.error ?? "AI 反馈失败");
       const evaluation = evaluationSchema.parse(body);
+      if (
+        evaluation.attemptId !== attempt.id ||
+        evaluation.skill !== attempt.skill
+      )
+        throw new Error("AI 返回的反馈与这次练习不匹配，请重试");
       await update((s) => saveEvaluation(s, evaluation));
+      setSelected(evaluation.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "反馈失败");
     } finally {
@@ -143,11 +157,18 @@ export function AiFeedback({
           (error ? "AI 服务设置暂不可用。" : "正在检查 AI 设置…")}{" "}
         {config?.model && `模型：${config.model}`}
       </p>
+      {!config?.configured && (error || config) && (
+        <button
+          className="button secondary"
+          onClick={() => setCheck((v) => v + 1)}
+        >
+          重新检查 AI 连接
+        </button>
+      )}
       {!config?.local && (
         <p className="small muted">
-          点击后会把当前文本及前一篇文本（如有）发送给配置的 AI
-          服务；本次 AI 分析不发送录音。需要完全本地时，请配置本机兼容 Responses API
-          的服务。
+          点击后会把当前文本及前一篇文本（如有）发送给配置的 AI 服务；本次 AI
+          分析不发送录音。需要完全本地时，请配置本机兼容 Responses API 的服务。
         </p>
       )}
       <button
@@ -158,6 +179,23 @@ export function AiFeedback({
         {busy ? "正在分析…" : result ? "重新分析已保存版本" : "分析已保存版本"}
       </button>
       {error && <p role="alert">{error}</p>}
+      {history.length > 1 && (
+        <label>
+          反馈历史
+          <select
+            value={result?.id}
+            onChange={(event) => setSelected(event.target.value)}
+          >
+            {history.map((row, index) => (
+              <option key={row.id} value={row.id}>
+                第 {history.length - index} 次 ·{" "}
+                {new Date(row.createdAt).toLocaleString("zh-CN")} · {row.model}
+                {row.disputed ? " · 已标记争议" : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       {result && (
         <>
           <p className="small">
@@ -218,6 +256,20 @@ export function AiFeedback({
               {v}
             </p>
           ))}
+          {state.extension.disputes
+            .filter(
+              (item) =>
+                item.kind === "evaluation" && item.targetId === result.id,
+            )
+            .map((item) => (
+              <p className="version" key={item.id}>
+                <strong>
+                  异议说明 · {new Date(item.createdAt).toLocaleString("zh-CN")}
+                </strong>
+                <br />
+                {item.reason}
+              </p>
+            ))}
           <button className="button secondary" onClick={() => void dispute()}>
             对反馈提出异议
           </button>

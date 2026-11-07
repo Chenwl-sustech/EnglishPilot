@@ -141,7 +141,7 @@ export function ServiceSettings() {
       </div>
       <p className="muted">
         {nativeBuild ? (
-          <>安装版通过 HTTPS 连接私人 AI 后端。连接凭据保存在设备钥匙串，AI 密钥仅在后端保存。AI 请求只发送核对后的文字；录音先保存在设备，启用账号同步后会同步到私有云空间。检查连接不发送学习内容。</>
+          <>安装版通过 HTTPS 连接私人 AI 后端。连接凭据由设备安全保存，AI 密钥仅在后端保存。AI 请求只发送核对后的文字；录音先保存在设备，启用账号同步后会同步到私有云空间。检查连接不发送学习内容。</>
         ) : isHostedWebClient ? (
           <>
             网页版通过 HTTPS 连接部署服务器。AI

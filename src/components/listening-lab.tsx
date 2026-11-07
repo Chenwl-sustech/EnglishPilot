@@ -1,7 +1,6 @@
 "use client";
 import { apiFetch } from "@/lib/native/api";
 
-
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -45,6 +44,11 @@ import { stopPronunciation } from "@/lib/pronunciation";
 import { ImportedListeningLibrary } from "./imported-listening";
 import { nativeBuild } from "@/lib/native/runtime";
 import { recordingError } from "@/lib/recording-error";
+import { harmonyBridge } from "@/lib/native/harmony-rpc";
+import {
+  HarmonySpeechEngine,
+  harmonyEnglishVoices,
+} from "@/lib/native/harmony-speech";
 
 type Mode = "understanding" | "dictation" | "shadowing";
 const modes: { id: Mode; label: string }[] = [
@@ -224,8 +228,8 @@ function ListeningSession({ lesson, mode }: { lesson: Lesson; mode: Mode }) {
   const [voiceError, setVoiceError] = useState("");
   const [allowOnline, setAllowOnline] = useState(false);
   const [voiceURI, setVoiceURI] = useState(
-    (state.extension.voicePreference.mode === "device-local" ||
-      (!nativeBuild && state.extension.voicePreference.mode === "system-local"))
+    state.extension.voicePreference.mode === "device-local" ||
+      (!nativeBuild && state.extension.voicePreference.mode === "system-local")
       ? state.extension.voicePreference.voiceURI
       : "",
   );
@@ -239,14 +243,15 @@ function ListeningSession({ lesson, mode }: { lesson: Lesson; mode: Mode }) {
   const repeatCurrent = useRef(false);
   const catalog = installedVoiceCatalog(voices, allowOnline);
   const available = catalog.flatMap((accent) => accent.voices);
-  const voice = available.find((item) => item.voiceURI === voiceURI) ??
-      available.find(
-        (item) =>
-          item.lang === state.extension.voicePreference.locale &&
-          item.localService,
-      ) ??
-      available.find((item) => item.default && item.localService) ??
-      available.find((item) => item.localService);
+  const voice =
+    available.find((item) => item.voiceURI === voiceURI) ??
+    available.find(
+      (item) =>
+        item.lang === state.extension.voicePreference.locale &&
+        item.localService,
+    ) ??
+    available.find((item) => item.default && item.localService) ??
+    available.find((item) => item.localService);
   const sentence = sentences[index];
 
   useEffect(() => {
@@ -254,6 +259,29 @@ function ListeningSession({ lesson, mode }: { lesson: Lesson; mode: Mode }) {
     setVoices([]);
     setVoiceError("");
     const generationRef = generation;
+    if (nativeBuild && harmonyBridge()) {
+      const player = new HarmonySpeechEngine();
+      engine.current = player;
+      void harmonyEnglishVoices()
+        .then((voices) => {
+          if (!alive) return;
+          setVoices(voices);
+          if (!voices.length)
+            setVoiceError("请在设置页下载鸿蒙本地英语声音后返回重试");
+        })
+        .catch((error) => {
+          if (alive)
+            setVoiceError(
+              error instanceof Error ? error.message : "鸿蒙声音检测失败",
+            );
+        });
+      return () => {
+        alive = false;
+        generationRef.current++;
+        player.dispose();
+        engine.current = null;
+      };
+    }
     if (source === "system") {
       const player = new LocalWavEngine();
       engine.current = player;
@@ -469,7 +497,9 @@ function ListeningSession({ lesson, mode }: { lesson: Lesson; mode: Mode }) {
               }}
             >
               <option value="browser">浏览器设备语音</option>
-              {!nativeBuild && <option value="system">本机系统语音 · WAV 缓存</option>}
+              {!nativeBuild && (
+                <option value="system">本机系统语音 · WAV 缓存</option>
+              )}
             </select>
           </label>
           {source === "system" && (

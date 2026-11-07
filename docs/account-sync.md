@@ -2,13 +2,13 @@
 
 本功能使用 **Supabase Auth + PostgreSQL + 私有 Storage**，Mac 关机后仍由云服务处理同步。现有 Vercel AI 服务保持独立；学习账号不自动获得任何私人 AI 配对令牌。
 
-当前个人部署使用[Netlify 手机网页预览](https://englishpilot-chenwl-sync.netlify.app/)，原 Vercel 默认域名在用户手机网络中无法打开。首次页面展开“已有学习账号？登录并同步到此设备”，使用管理员已创建的学习账号；忘记密码可在[重设页面](https://englishpilot-chenwl-sync.netlify.app/reset-password/)申请邮件。Mac 已通过实际账号登录、写作评价和 AI 文字对话；与 iPad 测试安装版已验证双向草稿与合成音频完整传输，以及离线关闭重开、重连冲突导出和选择版本后的继续同步。验收范围及剩余事项见[验证记录](qa/2026-10-26-account-sync.md)。v0.1.3 安装包尚未包含此功能。
+当前个人部署使用[Netlify 手机网页预览](https://englishpilot-chenwl-sync.netlify.app/)，原 Vercel 默认域名在用户手机网络中无法打开。首次页面展开“已有学习账号？登录并同步到此设备”，使用管理员已创建的学习账号；忘记密码可在[重设页面](https://englishpilot-chenwl-sync.netlify.app/reset-password/)申请邮件。Mac 已通过实际账号登录、写作评价和 AI 文字对话；与 iPad 测试安装版已验证双向草稿与合成音频完整传输，以及离线关闭重开、重连冲突导出和选择版本后的继续同步。此前范围见[验证记录](qa/2026-10-26-account-sync.md)，Mate 60 安装版进展见[2026-11-07 记录](qa/2026-11-07-physical-sync.md)。原 v0.1.3 Release 安装包尚未包含账号功能，应使用后续账号 / 鸿蒙预览构建。
 
 ## 当前接入范围
 
 - iPhone / iPad：更新后的 iOS 安装版；账号会话存储在设备钥匙串。最低 iOS 15，实际系统兼容性以 Xcode / 设备为准。
 - iPhone、iPad 和华为鸿蒙手机：部署后的 HTTPS 网页，可在 Safari / 华为浏览器使用并按系统提供的菜单添加到主屏幕。
-- 现有 Harmony 原生工程尚未提供账号会话安全存储接口，因此这一版不在 Harmony 原生包里保存会话；请使用手机浏览器。账号数据协议相同，后续原生接口可继续复用。
+- Harmony 原生预览版通过 Asset Store 保存学习账号会话，并通过原生 HTTPS 桥接使用同一套同步协议和账号 AI 服务。Mate 60 已验证本人登录、云端资料接收和实际 AI 回复；详情见[真机记录](qa/2026-11-07-physical-sync.md)。iPad 也可直接使用当前匹配的学习账号授权 AI，无需复制其他设备的配对凭据。
 - 页面前台每 60 秒检查，数据修改后防抖 10 秒，联网恢复或回到前台也会同步。关闭应用后不保证后台同步；离开设备前可点“立即同步”并核对成功时间。
 
 ## 免费云项目配置
@@ -69,6 +69,20 @@
 
 Netlify [Free 计划](https://docs.netlify.com/manage/accounts-and-billing/billing/billing-for-credit-based-plans/credit-based-pricing-plans/)有每月 credit 上限，达到限额后可能暂停；模型调用费仍由原服务商账号承担。其[同步函数默认限时 60 秒](https://docs.netlify.com/build/functions/configuration/)，此适配器在 55 秒网络期限前返回 JSON 错误，不自动重试 AI。慢请求的额度仍以原后端账本为准。更换托管平台不保证所有网络长期可达，必须继续实测手机网页、Auth、音频和 AI。
 
+## 安装版账号网络转发
+
+2026-11-07 在 Mate 60 和 iPad 上观察到直连 Supabase 的 TLS 连接中断，已有 Netlify 域名仍可正常访问。可选转发通过现有站点的 `/api/sync/<project-ref>/...` 提供相同账号、同步及私有音频接口。它使用服务器已有的 `SUPABASE_URL` 和公开 Key，转发当前用户自己的 JWT；数据库与 Storage 继续执行原 RLS。无需管理密钥，也不改变学习空间身份。
+
+在 `npm run native:build` 前提供以下公开变量，并按平台重新编译安装。旧变量 `NEXT_PUBLIC_HARMONY_SYNC_RELAY` 继续兼容；新变量优先。
+
+```dotenv
+NEXT_PUBLIC_NATIVE_SYNC_RELAY=https://englishpilot-chenwl-sync.netlify.app
+```
+
+该选项只允许当前代码中的固定 Netlify 服务，部署其他服务须同时更新客户端允许列表和服务器配置并审核。留空时使用原直连通路。网页继续使用自身现有通路；iOS 转发只允许精确的 `capacitor://localhost` CORS 来源。服务器校验配置项目及公开 Key，仅接受规定路径和方法，不跟随重定向、不转发 Cookie、不缓存响应。
+
+单次服务端请求和响应限制为 4 MiB + 64 KiB，服务端网络期限 40 秒。安装版下载既有 4 MiB 音频块时，按 256 KiB 顺序请求 Range，核对 Content-Range、长度和总大小，再由同步引擎验证 SHA-256；音频完整下载期限为 180 秒。上传块格式、云端存储身份和哈希不变。转发会增加函数请求数量，仍计入既有免费托管用量；不保证任意网络长期可用。
+
 ## 邮件、公开注册与找回密码
 
 Supabase 默认邮件服务只向项目组织成员邮箱发送，当前额度为每小时 2 封，不适合公开注册。私人部署可以先在控制台创建并确认自己的账号；需要向其他邮箱发送注册 / 找回邮件时必须配置自己的 SMTP 服务。参见 [官方 SMTP 说明](https://supabase.com/docs/guides/auth/auth-smtp)。
@@ -121,3 +135,7 @@ Supabase 默认邮件服务只向项目组织成员邮箱发送，当前额度�
 5. 以上测试通过后，再由本人在原 iPad 明确启用个人数据上传。
 
 代码和本地 PostgreSQL / IndexedDB 测试通过，只说明实现具备验证基础；未配置真实云项目、未做双设备验收时，不能称为云同步已上线。
+
+## 2026-11-04 更新
+
+AI 反馈增加历史选择与异议说明，独立异议记录可跨设备合并。账号调用会检查当前学习空间，同步请求在忙碌期间可以排队。远端同步更新与本机编辑有独立来源标记，避免显示错误的待同步状态。真实 AI 回复和云端备份读取验证见 [本轮验收记录](qa/2026-11-04-ai-sync.md)。

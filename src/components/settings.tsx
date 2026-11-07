@@ -13,6 +13,7 @@ import { AiUsageSettings } from "./ai-usage-settings";
 import { PwaSettings } from "./pwa-settings";
 import { AccountSync } from "./account-sync";
 import { nativeBuild } from "@/lib/native/runtime";
+import { HarmonyVoiceSettings } from "./harmony-voice-settings";
 export function Settings() {
   const { state, update, notify, fail } = useStudy();
   const [settings, setSettings] = useState(state.settings),
@@ -298,6 +299,7 @@ export function Settings() {
       <PwaSettings />
       <AccountSync />
       <ServiceSettings />
+      <HarmonyVoiceSettings />
       <AiUsageSettings />
       <BackupSettings
         onRestored={(next) => {

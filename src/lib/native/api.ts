@@ -103,6 +103,7 @@ export function createApiFetch({
         path,
         method,
         ...(rawBody == null ? {} : { body: rawBody }),
+        ...(signal ? { signal } : {}),
       });
       const result = await new Promise<Awaited<ReturnType<NativeAiTransport>>>(
         (resolve, reject) => {

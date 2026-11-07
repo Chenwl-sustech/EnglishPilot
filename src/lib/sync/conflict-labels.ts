@@ -1,5 +1,7 @@
 const areas: [string, string][] = [
   ["state.extension.writingTimers", "写作计时"],
+  ["state.extension.disputes", "反馈与题目异议"],
+  ["state.extension.evaluations", "AI 练习反馈"],
   ["state.extension.teacherSessions", "AI 教师对话"],
   ["state.extension.fsrsReviews", "词汇复习进度"],
   ["state.extension.listeningMaterials", "听力素材与标注"],

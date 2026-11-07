@@ -14,7 +14,7 @@
 
 当前公开 Release 提供可自行签名的工程，**不是免签安装包**。免费 Personal Team 的安装仅适用于自己的已登记设备，签名会到期。面向其他用户的 TestFlight / App Store 分发需要适当的 Apple 开发者资格和签名；本项目没有发布他人的个人签名 Profile。
 
-完整步骤见 [iPhone/iPad 安装](docs/installation.md)。HarmonyOS 工程需在 DevEco Studio 中自行配置和验证，本次未提供已签名 HAP。
+完整步骤见 [iPhone/iPad 安装](docs/installation.md)。HarmonyOS 已完成 SDK 26 编译和 API 20/26 模拟器安装验证，提供未签名调试 HAP；真机需自行签名。参见 [鸿蒙开发与安装](docs/harmonyos.md) 和 [验收范围及待验证项目](docs/qa/2026-11-01-harmony.md)。
 
 ## 本地运行
 

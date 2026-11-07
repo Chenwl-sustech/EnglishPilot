@@ -1,0 +1,75 @@
+# HarmonyOS adaptation implementation plan
+
+> **For agentic workers:** Execute inline using superpowers:executing-plans. The user explicitly requested continuous implementation without intermediate questions.
+
+**Goal:** Build an EnglishPilot HAP and verify the existing iPad learning experience on a HarmonyOS phone emulator, with working secure account synchronization and account-authorized AI.
+
+**Architecture:** Keep the shared offline Next.js export inside ArkWeb. Adapt the ArkTS host to DevEco 26 while retaining API 12 compatibility where the APIs permit. Native RPC provides bounded, allowlisted HTTPS using Remote Communication Kit with redirects disabled, and secure session storage using Asset Store Kit. No server credentials or real learning backups enter source control or artifacts.
+
+**Tech Stack:** Next.js/React, TypeScript/Vitest, ArkTS/ArkWeb, Remote Communication Kit, Asset Store Kit, Hvigor, HDC, emulator integration tests.
+
+**Spec:** Existing `docs/windows-harmony-codex-prompt.zh-CN.md`, repository code, and the user's instruction to continue HarmonyOS adaptation through completion. Implementation choices here are the agent's decisions under that authorization.
+
+## Global constraints
+
+- Reuse `feature/account-sync` baseline, preserve real local and cloud learning records.
+- Use synthetic emulator data and distinct test accounts for acceptance; do not copy private credentials from other devices.
+- Keep local-origin resource and navigation restrictions; never expose arbitrary native HTTP or filesystem access.
+- Session credentials must remain in system encrypted storage; fail closed when unavailable.
+- Label unsigned emulator builds honestly and report all untested physical-device behavior.
+
+## Review focus
+
+- Reject lookalike origins, traversal, redirects, disallowed methods and oversize HTTP payloads.
+- Preserve bytes and content type for 4 MB audio chunks and multipart upload bodies.
+- Session writes must survive failures without replacing the committed session with incomplete data.
+- Abort/navigation must clean pending native RPC and HTTP work.
+- Offline drafts, microphone recovery and backup cancellation must retain existing data.
+
+## Tasks
+
+### 1. Compile the actual application
+
+- [x] Reproduce `00303313` and compare with the official SDK 26 template.
+- [x] Remove the incompatible compile SDK override; align build model and resolve compiler-reported ArkTS incompatibilities.
+- [x] Build bundled pages, synchronize resources, compile a debug HAP and install on the emulator.
+- [x] Enable ArkWeb remote debugging only for debuggable applications to support actual application integration tests.
+
+### 2. Secure Harmony transport and account integration
+
+Files: `src/lib/native/harmony-{rpc,http,session,policy}.ts`, `native/harmony/entry/src/main/ets/{ExportBridge,NetworkBridge,SessionVault}.ets`, existing sync/AI adapters, native sync script.
+
+- [x] Write failing tests for RPC correlation, malformed replies, disposal/abort and timeouts.
+- [x] Write failing tests for URL/method/header/body limits and real Request/FormData/binary response conversion.
+- [x] Implement a reusable RPC port; keep existing export method compatibility.
+- [x] Implement the same tested network policy in the native host, with redirects disabled and bounded streaming responses.
+- [x] Implement system-encrypted session chunks with an atomic manifest and cleanup; test round trip, overwrite, remove, long sessions and interrupted writes on the emulator.
+- [x] Route Supabase and account AI through the Harmony bridge while retaining the iOS path.
+
+### 3. Functional acceptance and corrections
+
+- [x] Run the real HAP in the phone emulator and record local application screenshots and machine-readable results from application integration tests.
+- [x] Verify onboarding, navigation, vocabulary/library, reading/listening/speaking/writing, mock exams, mistakes, analytics/calendar/settings and persistence.
+- [x] Verify microphone denial/retry, recording/playback, file selection, complete backup export/preview/restore using synthetic data.
+- [ ] Verify secure login lifecycle, offline access, two-client synchronization and conflicts with test data; verify actual AI feedback through the existing server where credentials are available.
+- [x] Fix reproducible issues with focused regression tests; record platform limitations explicitly.
+
+### 4. Delivery
+
+- [x] Run unit/release checks, typecheck, a real Harmony debug build and applicable native integration tests.
+- [x] Review the complete diff and artifact for credentials and unintended changes.
+- [x] Save the HAP, checksums, build instructions, acceptance report and any outstanding real-device requirements.
+- [x] Commit and publish the Harmony branch/update to the user's GitHub under the existing publication authorization.
+
+## Acceptance limits
+
+2026-11-01: Shared offline UI, core learning flows, native session/HTTPS, recording and backup verified. Real account login/sync/AI, system English synthesis and signed physical installation remain pending; see the dated QA report. Page smoke coverage does not imply every lesson was answered.
+
+## Delivery — 2026-11-02
+
+- Code and reviewed lifecycle fix: `0d875c01fe7536a339b2ea393f86730dda515e01`.
+- [Draft PR #2](https://github.com/Chenwl-sustech/EnglishPilot/pull/2), based on `feature/account-sync`.
+- [Unsigned HAP preview, ZIP and SHA-256 checksums](https://github.com/Chenwl-sustech/EnglishPilot/releases/tag/harmony-preview-2026-11-02).
+- Remote asset SHA-256 digests match local files. Final HAP installation, native bridges (5), document cleanup and application checks (23) passed.
+- No CI checks are configured for this head; reported checks were run locally.
+- Real authenticated cloud flows, successful system English synthesis and physical-device signing/acceptance remain open; the draft and prerelease labels reflect these limits.

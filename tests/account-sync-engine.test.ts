@@ -1,4 +1,5 @@
 import "fake-indexeddb/auto";
+import { evaluationHistory } from "../src/lib/evaluations";
 import { afterEach, expect, test } from "vitest";
 import { PilotDB } from "../src/lib/db";
 import { prepareAccountSpace, readSnapshot } from "../src/lib/sync/local";
@@ -189,4 +190,117 @@ test("idle sync leaves unchanged recording rows intact", async () => {
   await syncOnce(db, cloud);
   expect((await db.recordings.get("voice"))!._syncStamp).toBe(stamp);
   expect(cloud.head!.revision).toBe(1);
+});
+
+test("independent AI feedback and disputes converge on both devices, but competing edits to the same dispute pause", async () => {
+  const { db, cloud } = await setup();
+  const phone = store();
+  await prepareAccountSpace(store(), phone, cloud.project, cloud.owner, false);
+  await syncOnce(db, cloud);
+  await syncOnce(phone, cloud);
+  const addFeedback = async (
+    device: PilotDB,
+    id: string,
+    createdAt: string,
+  ) => {
+    const state = (await readSnapshot(device)).state;
+    state.extension.evaluations.push({
+      id,
+      createdAt,
+      attemptId: "shared-essay",
+      skill: "writing",
+      exam: "ielts",
+      taskType: "essay",
+      kind: "ai-estimate",
+      model: "test",
+      rubric: "test",
+      dimensions: [],
+      normalized: null,
+      suggestions: [],
+      revised: "",
+      exemplar: "",
+      comparison: "",
+      limitations: [],
+      errors: [],
+      disputed: true,
+    });
+    state.extension.disputes.push({
+      id: "dispute-" + id,
+      targetId: id,
+      kind: "evaluation",
+      reason: id,
+      createdAt,
+    });
+    await device.state.put({ id: "main", value: state });
+  };
+  await addFeedback(db, "newer", "2026-11-03T09:01:00Z");
+  await addFeedback(phone, "older", "2026-11-03T09:00:00Z");
+  for (const device of [db, phone, db])
+    expect((await syncOnce(device, cloud)).status).toBe("synced");
+  for (const device of [db, phone]) {
+    const state = (await readSnapshot(device)).state;
+    expect(state.extension.disputes.map((d) => d.targetId).sort()).toEqual([
+      "newer",
+      "older",
+    ]);
+    expect(
+      evaluationHistory(state.extension.evaluations, "shared-essay").map(
+        (e) => e.id,
+      ),
+    ).toEqual(["newer", "older"]);
+    state.extension.disputes.find((d) => d.targetId === "older")!.reason =
+      device === db ? "iPad change" : "Phone change";
+    await device.state.put({ id: "main", value: state });
+  }
+  await syncOnce(db, cloud);
+  expect((await syncOnce(phone, cloud)).status).toBe("conflict");
+  expect(
+    (await readSnapshot(phone)).state.extension.disputes.find(
+      (d) => d.targetId === "older",
+    )!.reason,
+  ).toBe("Phone change");
+});
+
+test("applying remote work announces a sync refresh rather than a new local edit", async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, "window");
+  const events: Event[] = [];
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      dispatchEvent(event: Event) {
+        events.push(event);
+      },
+    },
+  });
+  let observer: BroadcastChannel | undefined;
+  try {
+    const { db, cloud } = await setup();
+    await syncOnce(db, cloud);
+    observer = new BroadcastChannel("englishpilot");
+    const broadcast = new Promise<MessageEvent>((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error("Missing sync broadcast")),
+        2000,
+      );
+      observer!.onmessage = (event) => {
+        clearTimeout(timer);
+        resolve(event);
+      };
+    });
+    cloud.head!.revision++;
+    cloud.head!.document.state.drafts.remote = "Changed on the other device";
+    expect((await syncOnce(db, cloud)).status).toBe("synced");
+    const refresh = events
+      .filter((event) => event.type === "pilot-updated")
+      .at(-1) as CustomEvent;
+    expect(refresh.detail).toEqual({ source: "sync" });
+    expect((await broadcast).data).toEqual({ source: "sync" });
+    expect((await readSnapshot(db)).state.drafts.remote).toBe(
+      "Changed on the other device",
+    );
+  } finally {
+    observer?.close();
+    if (previous) Object.defineProperty(globalThis, "window", previous);
+    else Reflect.deleteProperty(globalThis, "window");
+  }
 });

@@ -9,17 +9,42 @@ interface ResourceEntry { file: string; mime: string; bytes: number; sha256: str
 interface ResourceManifest { version: number; origin: string; resources: Record<string, ResourceEntry>; }
 const APP_ORIGIN: string = 'https://englishpilot.local';
 
+@CustomDialog
+struct WebPrompt {
+  controller?: CustomDialogController;
+  message: string = '';
+  @State value: string = '';
+  complete: (value: string | null) => void = () => {};
+
+  build() {
+    Column({ space: 16 }) {
+      Text('EnglishPilot').fontSize(20).fontWeight(FontWeight.Bold)
+      Text(this.message).width('100%')
+      TextInput({ text: this.value, placeholder: '请输入内容' })
+        .onChange((value: string) => { this.value = value; })
+      Row({ space: 24 }) {
+        Button('取消').onClick(() => { this.complete(null); this.controller?.close(); })
+        Button('确认').onClick(() => { this.complete(this.value); this.controller?.close(); })
+      }
+    }.padding(24).width('100%')
+  }
+}
+
 @Entry
 @Component
 struct Index {
   private controller: webview.WebviewController = new webview.WebviewController();
   private files: ExportBridge = new ExportBridge(this.controller, () => this.getUIContext().getHostContext() as common.UIAbilityContext);
   private manifest: ResourceManifest = { version: 1, origin: APP_ORIGIN, resources: {} };
+  private cancelDialog: (() => void) | null = null;
+  private promptDialog: CustomDialogController | null = null;
   @State error: string = '';
 
   aboutToAppear(): void {
     try {
-      const manager = this.getUIContext().getHostContext()!.resourceManager;
+      const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      webview.WebviewController.setWebDebuggingAccess(context.applicationInfo.debug);
+      const manager = context.resourceManager;
       const data = manager.getRawFileContentSync('web/native-resources.json');
       this.manifest = JSON.parse(new util.TextDecoder('utf-8').decodeToString(data)) as ResourceManifest;
       if (this.manifest.version !== 1 || this.manifest.origin !== APP_ORIGIN) throw new Error('Invalid resource manifest');
@@ -27,8 +52,20 @@ struct Index {
   }
 
   aboutToDisappear(): void {
+    this.cancelDialog?.();
+    this.promptDialog?.close();
     this.files.dispose();
     try { this.controller.deleteJavaScriptRegister('EnglishPilotBridge'); } catch {}
+  }
+
+  onBackPress(): boolean {
+    try {
+      if (this.controller.accessBackward()) {
+        this.controller.backward();
+        return true;
+      }
+    } catch {}
+    return false;
   }
 
   private resource(url: string): WebResourceResponse {
@@ -80,6 +117,11 @@ struct Index {
           .javaScriptAccess(true)
           .domStorageAccess(true)
           .databaseAccess(true)
+          .onPageBegin(() => {
+            this.cancelDialog?.();
+            this.promptDialog?.close();
+            this.files.resetDocument();
+          })
           .fileAccess(false)
           .mixedMode(MixedMode.None)
           .javaScriptProxy({
@@ -94,6 +136,51 @@ struct Index {
           })
           .onLoadIntercept((event) => !!event && bundledResourcePath(event.data.getRequestUrl(), APP_ORIGIN) === null)
           .onPermissionRequest((event) => { if (event) this.microphone(event.request); })
+          .onConfirm((event) => {
+            if (!event) return false;
+            if (bundledResourcePath(event.url, APP_ORIGIN) === null || this.cancelDialog !== null) {
+              event.result.handleCancel(); return true;
+            }
+            let resolved = false;
+            const finish = (accepted: boolean): void => {
+              if (resolved) return;
+              resolved = true;
+              this.cancelDialog = null;
+              if (accepted) event.result.handleConfirm(); else event.result.handleCancel();
+            };
+            this.cancelDialog = () => finish(false);
+            try {
+              this.getUIContext().showAlertDialog({
+                title: 'EnglishPilot', message: event.message, autoCancel: true,
+                cancel: () => finish(false),
+                primaryButton: { value: '取消', action: () => finish(false) },
+                secondaryButton: { value: '确认', action: () => finish(true) }
+              });
+            } catch { finish(false); }
+            return true;
+          })
+          .onPrompt((event) => {
+            if (!event) return false;
+            if (bundledResourcePath(event.url, APP_ORIGIN) === null || this.cancelDialog !== null) {
+              event.result.handleCancel(); return true;
+            }
+            let resolved = false;
+            const finish = (value: string | null): void => {
+              if (resolved) return;
+              resolved = true;
+              this.cancelDialog = null;
+              if (value === null) event.result.handleCancel(); else event.result.handlePromptConfirm(value);
+            };
+            this.cancelDialog = () => finish(null);
+            try {
+              this.promptDialog = new CustomDialogController({
+                builder: WebPrompt({ message: event.message, value: event.value, complete: finish }),
+                autoCancel: true, cancel: () => finish(null)
+              });
+              this.promptDialog.open();
+            } catch { finish(null); }
+            return true;
+          })
           .onShowFileSelector((event) => {
             if (!event) return false;
             const options = new picker.DocumentSelectOptions();

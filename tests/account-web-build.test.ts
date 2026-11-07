@@ -14,6 +14,31 @@ import {
   assembleAccountWeb,
 } from "../scripts/build-account-web.mjs";
 import { nativeBuildEnvironment } from "../scripts/build-native.mjs";
+test("native relay build configuration requires a public project and the fixed trusted origin", () => {
+  const base = {
+    NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test123456789",
+  };
+  expect(
+    nativeBuildEnvironment({
+      ...base,
+      NEXT_PUBLIC_HARMONY_SYNC_RELAY:
+        "https://englishpilot-chenwl-sync.netlify.app",
+    }).NEXT_PUBLIC_HARMONY_SYNC_RELAY,
+  ).toBe("https://englishpilot-chenwl-sync.netlify.app");
+  expect(() =>
+    nativeBuildEnvironment({
+      ...base,
+      NEXT_PUBLIC_HARMONY_SYNC_RELAY: "https://evil.test",
+    }),
+  ).toThrow();
+  expect(() =>
+    nativeBuildEnvironment({
+      NEXT_PUBLIC_HARMONY_SYNC_RELAY:
+        "https://englishpilot-chenwl-sync.netlify.app",
+    }),
+  ).toThrow();
+});
 test("web link recovery is explicitly enabled and default builds leave recovery off", () => {
   const base = {
     NEXT_PUBLIC_SUPABASE_URL: "https://test.supabase.co",

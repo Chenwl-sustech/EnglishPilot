@@ -135,7 +135,7 @@ async function applyCommitted(
       lastSync: new Date().toISOString(),
     };
     if (await applySnapshot(db, current, snapshot, next, guard, meta)) {
-      if (!equal(prepared.document, rebased.document)) announce();
+      if (!equal(prepared.document, rebased.document)) announce("sync");
       return {
         status: equal(rebased.document, committed.document)
           ? "synced"
