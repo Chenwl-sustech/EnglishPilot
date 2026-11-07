@@ -43,9 +43,9 @@ Files: `web-cloud/server/sync-proxy.mjs`, `web-cloud/netlify-functions/sync.mjs`
 - [x] Assemble and deploy existing Netlify site under prior user authorization; verify phone native GET auth settings through relay.
 - [x] Build full native payload with explicit public relay config; sign from local private config; overwrite-install without uninstalling on Mate 60 and iPad.
 - [x] Real personal login, receive existing cloud data, phone audio upload/playback and real AI reply. Phone QA conversation received on iPad.
-- [ ] iPad reverse draft / AI / new audio playback verification after local screens are unlocked.
+- [x] iPad reverse draft / AI / new audio playback verification after local screens are unlocked. Both physical devices received the peer's QA content; iPad actual AI reply reached Mate 60; new 3-second phone audio reached playback end on iPad.
 
 ### 3. Delivery
 
 - [x] Independent review of relay, range, iOS CORS and account AI diffs; no outstanding actionable findings.
-- [ ] Record exact physical results and limitations, preserve local signed HAP, publish code/docs to the existing GitHub branch/PR.
+- [x] Record exact physical results and limitations, preserve local signed HAP, publish code/docs to the existing GitHub branch/PR. Public release remains unsigned; final acceptance notes supplement the existing preview.
